@@ -73,7 +73,6 @@ export const TYPES: DocType[] = [
     body: { label: 'Page text', help: 'Use ## for headings, **bold**, *italic*, and - for bullet lists. Forms (donate, newsletter) are added automatically.' },
     fields: [
       { key: 'title', label: 'Page title', type: 'text', required: true, max: 200 },
-      { key: 'eyebrow', label: 'Small label above the title', type: 'text', max: 60 },
       { key: 'lede', label: 'Opening sentence', type: 'textarea', max: 400 },
       { key: 'image', label: 'Top picture', type: 'image' },
       { key: 'imageAlt', label: 'Describe the picture', type: 'text', max: 200, help: 'For people who cannot see it, and for search engines.' },

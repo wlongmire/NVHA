@@ -12,10 +12,7 @@ const youtubeId = (href: string) => href.match(/(?:youtube\.com\/watch\?v=|youtu
 ---
   <dialog class="video-pop" aria-labelledby="video-title">
     <div class="video-head">
-      <div>
-        <p class="tag">Watch</p>
-        <h2 id="video-title" class="video-title"></h2>
-      </div>
+      <h2 id="video-title" class="video-title"></h2>
       <button type="button" class="video-close" aria-label="Close video">×</button>
     </div>
     <div class="video-frame"></div>
@@ -62,7 +59,6 @@ const youtubeId = (href: string) => href.match(/(?:youtube\.com\/watch\?v=|youtu
     <nav class="wrap actions" aria-label="Jump to a section">
       {home.actions.map((a) => (
         <a class="action" href={a.href}>
-          <span class="label">{a.kicker}</span>
           <strong>{a.title}</strong>
           <span>{a.text}</span>
           <span class="more">{a.link} ↓</span>
@@ -73,7 +69,6 @@ const youtubeId = (href: string) => href.match(/(?:youtube\.com\/watch\?v=|youtu
 
   <section class="haiku" aria-label="Haiku of the week">
     <div class="wrap">
-      <p class="label">Haiku of the week</p>
       <blockquote>{haiku.lines.map((l) => <span>{l}</span>)}</blockquote>
       <p class="credit">{haiku.credit} · {haiku.note} · <a class="arrow-link" href={haiku.href}>Read more poems</a></p>
     </div>
@@ -169,7 +164,7 @@ const youtubeId = (href: string) => href.match(/(?:youtube\.com\/watch\?v=|youtu
   .video-pop { width: min(60rem, 92vw); max-height: 92vh; padding: clamp(1.25rem, 3vw, 2rem); border: 0; border-top: 6px solid var(--periwinkle); border-radius: var(--radius); background: var(--paper); color: var(--ink); box-shadow: 0 24px 60px #1f1d1d55; }
   .video-pop::backdrop { background: #1f1d1dcc; }
   .video-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: 1.25rem; }
-  .video-title { font-style: italic; font-weight: 400; font-size: clamp(1.5rem, 3vw, 2.25rem); line-height: 1.1; margin: .75rem 0 0; }
+  .video-title { font-style: italic; font-weight: 400; font-size: clamp(1.5rem, 3vw, 2.25rem); line-height: 1.1; margin: .25rem 0 0; }
   .video-frame { aspect-ratio: 16 / 9; background: #000; border-radius: var(--radius); overflow: hidden; }
   .video-frame :global(iframe) { width: 100%; height: 100%; border: 0; display: block; }
   .video-caption { margin: 1.1rem 0 0; color: var(--muted); max-width: 46rem; }
