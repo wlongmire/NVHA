@@ -15,11 +15,6 @@ const { hero, house, educators, haiku, impact, donate } = home;
         <h1>{hero.headline}</h1>
         <p class="lede">{hero.text}</p>
         <p class="btns">{hero.buttons.map((b) => <a class={`btn ${b.style === 'rose' ? 'rose' : ''}`} href={b.href}>{b.label}</a>)}</p>
-        <div class="give" role="group" aria-label="Donate">
-          <span class="label">Give today</span>
-          {donate.amounts.map((a) => <a class="btn" href={`${donate.href}?amount=${a}`}>${a}</a>)}
-          <a class="btn ghost" href={donate.href}>Other</a>
-        </div>
       </div>
       <div class="hero-art">
         <Photo src={hero.image} alt={hero.imageAlt} ratio="3 / 2" position={hero.imagePosition} label="Hero image" loading="eager" />
@@ -189,9 +184,6 @@ const { hero, house, educators, haiku, impact, donate } = home;
   .shop { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; margin-block: 1.5rem 2rem; } .shop a { font-size: .8rem; text-decoration: none; } .shop :global(.photo) { margin-bottom: .6rem; }
 
   /* donation row (from version B) */
-  .give { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem; margin-top: 1.5rem; }
-  .give .label { margin: 0 .5rem 0 0; } .give .btn { min-width: 4.5rem; text-align: center; }
-  .give .ghost { background: transparent; border-color: var(--ink); }
   /* haiku of the week (from version A) */
   .haiku { background: var(--cream); text-align: center; padding-block: clamp(3.5rem, 7vw, 5.5rem); }
   .haiku blockquote { margin: 1rem 0; font-family: var(--font-display); font-style: italic; font-size: clamp(1.75rem, 4.5vw, 3rem); line-height: 1.25; }
