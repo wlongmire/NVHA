@@ -4,8 +4,13 @@ import Photo from '../Photo.astro';
 import site from '../../data/site.json';
 import home from '../../data/home.json';
 import { loadHome } from '../../lib/homeData';
+import { fmtDay } from '../../lib/dates';
 
 const { hasNext, upcoming, products } = await loadHome();
+// "Visit the House" points at what's on next, worked out when the site is built (every save in /edit rebuilds it)
+const nextEvent = hasNext ? upcoming[0] : undefined;
+const describe = (a: { href: string; blurb: string }) =>
+  a.href === '#house' && nextEvent ? `Next up: ${nextEvent.data.title}, ${fmtDay(nextEvent.data.start)}.` : a.blurb;
 const { hero, house, educators, featured, impact, donate } = home;
 // A hero button that links to a YouTube video or an audio file opens it in a popup on the page instead of leaving the site.
 const youtubeId = (href: string) => href.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]{11})/)?.[1];
@@ -103,15 +108,12 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
       {home.actions.map((a, i) => (
         <div class="action-slot">
           {/* invisible copy of the label that holds the slot's size, so the box can grow without moving anything */}
-          <span class="action-label sizer" aria-hidden="true"><span>{a.link}</span><span class="arrow">↓</span></span>
+          <span class="action-label sizer" aria-hidden="true"><span>{a.href === '#house' && nextEvent && <span class="live-dot" />}{a.link}</span><span class="arrow">↓</span></span>
           <div class="action-box">
             <div class="action-more" id={`more-${i}`}>
-              <div>
-                <p>{a.blurb}</p>
-                <ul>{a.links.map((l) => <li><a href={l.href}>{l.label}</a></li>)}</ul>
-              </div>
+              <div><p>{describe(a)}</p></div>
             </div>
-            <a class="action-label action-link" href={a.href} aria-describedby={`more-${i}`}><span>{a.link}</span><span class="arrow" aria-hidden="true">↓</span></a>
+            <a class="action-label action-link" href={a.href} aria-describedby={`more-${i}`}><span>{a.href === '#house' && nextEvent && <span class="live-dot" aria-hidden="true" />}{a.link}</span><span class="arrow" aria-hidden="true">↓</span></a>
           </div>
         </div>
       ))}
@@ -275,33 +277,29 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   .sizer { display: none; }
   .action-box { border: 2px solid var(--ink); border-radius: var(--radius); background: var(--paper); box-shadow: 3px 3px 0 var(--ink); }
   .action-more { display: none; }
+  /* a small rose dot on "Visit the House" when something is coming up */
+  .live-dot { display: inline-block; width: .5rem; height: .5rem; margin-right: .45rem; border-radius: 999px; background: var(--accent); vertical-align: .1em; box-shadow: 0 0 0 0 #b35b5966; animation: live 2.4s ease-out infinite; }
+  @keyframes live { 0% { box-shadow: 0 0 0 0 #b35b5980; } 70%, 100% { box-shadow: 0 0 0 .45rem #b35b5900; } }
+  @media (prefers-reduced-motion: reduce) { .live-dot { animation: none; } }
   .action-link .arrow { flex: none; transition: transform .25s ease; }
   .action-slot:hover .arrow, .action-link:focus-visible .arrow { transform: translateY(2px); }
 
   @media (min-width: 56rem) {
     /* under the mural only, aligned right, quieter than the hero buttons */
-    .actions { width: auto; max-width: none; margin: -6.25rem 0 0 46vw; padding: 0 clamp(1.5rem, 3vw, 3rem) 0 .75rem; grid-template-columns: repeat(4, auto); justify-content: end; align-items: end; gap: .5rem; }
+    .actions { width: auto; max-width: none; margin: -1.6rem 0 0 46vw; padding: 0 clamp(1.5rem, 3vw, 3rem) 0 .75rem; grid-template-columns: repeat(4, auto); justify-content: end; align-items: end; gap: .5rem; }
     .action-label { gap: .45rem; padding: .75rem .85rem; font-size: .9rem; white-space: nowrap; }
     .sizer { display: flex; visibility: hidden; border: 1.5px solid transparent; }
     /* the box sits on the slot's bottom edge, so when it grows it grows upward over the mural */
     .action-box { position: absolute; bottom: 0; left: 0; width: 100%; overflow: hidden; border: 1.5px solid #1f1d1d66; background: #ffffff99; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); box-shadow: 2px 2px 0 #1f1d1d55; transition: width .25s ease, background-color .25s ease; }
-    .action-slot:nth-child(n+4) .action-box { left: auto; right: 0; }
-    /* Featured gets its own line above the other four, larger and a little more solid */
-    .action-slot:first-child { grid-column: 1 / -1; justify-self: end; margin-bottom: .1rem; }
-    .action-slot:first-child .action-box { left: auto; right: 0; background-color: #ffffffcc; border-color: #1f1d1d99; }
-    .action-slot:first-child .action-label { padding: .95rem 1.2rem; font-size: 1.15rem; gap: .75rem; }
+    .action-slot:nth-child(n+3) .action-box { left: auto; right: 0; }
   }
   /* only where there is a mouse: hovering or tabbing to a box widens it and reveals a short line and links inside it */
   @media (min-width: 56rem) and (hover: hover), (min-width: 56rem) and (pointer: fine) {
     .action-more { display: grid; grid-template-rows: 0fr; opacity: 0; transition: grid-template-rows .25s ease, opacity .2s ease; }
     .action-more > div { min-height: 0; overflow: hidden; padding: 0 .85rem; }
-    .action-more p { margin: .75rem 0 .45rem; font-size: .78rem; line-height: 1.45; color: var(--muted); }
-    .action-more ul { list-style: none; margin: 0; padding: 0 0 .1rem; }
-    .action-more a { display: inline-block; padding: .12rem 0; font-size: .76rem; font-weight: 700; color: var(--ink); text-decoration: none; }
-    .action-more a:hover, .action-more a:focus-visible { text-decoration: underline; text-underline-offset: 3px; }
+    .action-more p { margin: .75rem 0 .1rem; font-size: .78rem; line-height: 1.45; color: var(--muted); }
     .action-slot:hover, .action-slot:focus-within { z-index: 2; }
-    .action-slot:hover .action-box, .action-slot:focus-within .action-box { width: 15rem; background-color: #ffffffe6; }
-    .action-slot:first-child:hover .action-box, .action-slot:first-child:focus-within .action-box { width: 19rem; }
+    .action-slot:hover .action-box, .action-slot:focus-within .action-box { width: 14rem; background-color: #ffffffe6; }
     .action-slot:hover .action-more, .action-slot:focus-within .action-more { grid-template-rows: 1fr; opacity: 1; }
   }
   @media (prefers-reduced-motion: reduce) { .action-box, .action-more, .action-link .arrow { transition: none; } }
@@ -310,10 +308,11 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
     .action-label { padding: .6rem .7rem; font-size: .8rem; gap: .35rem; }
     .actions { gap: .4rem; }
   }
-  /* narrow desktops: two rows of two under the Featured box */
+  /* narrow desktops: two rows of two */
   @media (min-width: 56rem) and (max-width: 76rem) {
     .actions { grid-template-columns: repeat(2, auto); }
-    .action-slot:nth-child(odd):not(:first-child) .action-box { left: auto; right: 0; }
+    .action-slot:nth-child(even) .action-box { left: auto; right: 0; }
+    .action-slot:nth-child(odd) .action-box { left: 0; right: auto; }
   }
 
 

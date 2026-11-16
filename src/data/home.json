@@ -26,19 +26,6 @@
   },
   "actions": [
     {
-      "link": "Featured",
-      "blurb": "This season's highlight: The Midnight Notes Live, late-night workshops for young Camden writers.",
-      "href": "#featured",
-      "title": "Featured",
-      "text": "",
-      "links": [
-        {
-          "label": "Learn more",
-          "href": "/the-midnight-notes-live-series/"
-        }
-      ]
-    },
-    {
       "link": "Write with us",
       "blurb": "A weekly prompt, recorded workshops and a youth contest for short-form poets everywhere.",
       "href": "#poets",
