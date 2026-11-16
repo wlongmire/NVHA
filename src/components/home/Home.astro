@@ -127,7 +127,7 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
     </div>
     <div class="carousel" data-carousel>
       <button class="car-btn" type="button" data-dir="-1" aria-label="Previous supporter">&#8592;</button>
-      <div class="car-view" tabindex="0" aria-label="Supporters">
+      <div class="car-view">
         <ul class="car-track">
           {home.supporters.map((s) => <li><img src={s.logo} alt={s.name} loading="lazy" /><span>{s.caption ?? s.name}</span></li>)}
         </ul>
@@ -136,25 +136,31 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
     </div>
   </section>
   <script>
-    document.querySelectorAll('[data-carousel]').forEach((car) => {
-      const view = car.querySelector('.car-view');
-      const step = (dir) => {
-        const w = view.querySelector('li').offsetWidth;
-        const max = view.scrollWidth - view.clientWidth - 2;
-        if (dir > 0 && view.scrollLeft >= max) view.scrollTo({ left: 0, behavior: 'smooth' });
-        else if (dir < 0 && view.scrollLeft <= 2) view.scrollTo({ left: view.scrollWidth, behavior: 'smooth' });
-        else view.scrollBy({ left: dir * w, behavior: 'smooth' });
-      };
-      car.querySelectorAll('.car-btn').forEach((b) => b.addEventListener('click', () => { stop(); step(Number(b.dataset.dir)); }));
+    // supporters: the logos drift past continuously; arrows nudge by one logo; hover or focus pauses
+    document.querySelectorAll<HTMLElement>('[data-carousel]').forEach((car) => {
+      const view = car.querySelector<HTMLElement>('.car-view')!;
+      const track = car.querySelector<HTMLElement>('.car-track')!;
+      const originals = Array.from(track.children) as HTMLElement[];
+      originals.forEach((li) => { const c = li.cloneNode(true) as HTMLElement; c.setAttribute('aria-hidden', 'true'); c.querySelector('img')?.setAttribute('alt', ''); track.appendChild(c); });
       const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
-      let timer = 0, paused = false;
-      const start = () => { if (!still && !timer) timer = setInterval(() => { if (!paused && !document.hidden) step(1); }, 3500); };
-      const stop = () => { clearInterval(timer); timer = 0; };
+      const speed = 45; // pixels per second
+      let offset = 0, pending = 0, paused = false, last = 0;
+      const setWidth = () => track.scrollWidth / 2;
+      const draw = () => { const w = setWidth(); offset = ((offset % w) + w) % w; track.style.transform = `translate3d(${-offset}px,0,0)`; };
+      const tick = (t: number) => {
+        const dt = Math.min(0.05, (t - (last || t)) / 1000); last = t;
+        if (!paused && !still && !document.hidden) offset += speed * dt;
+        if (Math.abs(pending) > 0.5) { const d = pending * 0.12; offset += d; pending -= d; } else pending = 0;
+        draw();
+        requestAnimationFrame(tick);
+      };
+      const nudge = (dir: number) => { pending += dir * (originals[0].offsetWidth); };
+      car.querySelectorAll<HTMLElement>('.car-btn').forEach((b) => b.addEventListener('click', () => nudge(Number(b.dataset.dir))));
       car.addEventListener('mouseenter', () => { paused = true; });
       car.addEventListener('mouseleave', () => { paused = false; });
       car.addEventListener('focusin', () => { paused = true; });
       car.addEventListener('focusout', () => { paused = false; });
-      start();
+      requestAnimationFrame(tick);
     });
   </script>
 
@@ -352,14 +358,13 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
 
   .supporters { padding-block: 1.5rem .5rem; }
   .supporters .wrap { display: flex; justify-content: center; margin-bottom: 1rem; }
-  /* one logo at a time: arrows step along, and it advances by itself until someone touches it */
+  /* the logos drift past continuously; arrows nudge by one logo, hover pauses */
   .carousel { --per: 4; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: .75rem; max-width: 80rem; margin-inline: auto; padding-inline: var(--gutter); }
   @media (max-width: 62rem) { .carousel { --per: 3; } }
   @media (max-width: 40rem) { .carousel { --per: 2; } }
-  .car-view { overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; outline-offset: 4px; }
-  .car-view::-webkit-scrollbar { display: none; }
-  .car-track { display: flex; list-style: none; margin: 0; padding: 0; }
-  .car-track li { flex: 0 0 calc(100% / var(--per)); scroll-snap-align: start; display: flex; flex-direction: column; align-items: center; gap: .6rem; padding-inline: .75rem; text-align: center; }
+  .car-view { overflow: hidden; container-type: inline-size; }
+  .car-track { display: flex; width: max-content; list-style: none; margin: 0; padding: 0; will-change: transform; }
+  .car-track li { flex: 0 0 calc(100cqw / var(--per)); display: flex; flex-direction: column; align-items: center; gap: .6rem; padding-inline: .75rem; text-align: center; }
   .car-track img { height: clamp(4rem, 7.5vw, 6rem); max-width: 100%; width: auto; object-fit: contain; mix-blend-mode: multiply; }
   .car-track span { font-size: .85rem; font-weight: 700; line-height: 1.25; color: var(--ink); }
   .car-btn { flex: none; width: 2.6rem; height: 2.6rem; display: grid; place-items: center; font: inherit; font-size: 1.2rem; font-weight: 700; line-height: 1; color: var(--ink); background: var(--paper); border: 2px solid var(--ink); border-radius: var(--radius); cursor: pointer; transition: background-color .25s ease; }
