@@ -125,13 +125,38 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
     <div class="wrap">
       <span class="label">Our supporters</span>
     </div>
-    <div class="marquee">
-      <ul class="track">
-        {home.supporters.map((s) => <li><img src={s.logo} alt={s.name} loading="lazy" /></li>)}
-        {[1, 2, 3].map(() => home.supporters.map((s) => <li aria-hidden="true"><img src={s.logo} alt="" loading="lazy" /></li>))}
-      </ul>
+    <div class="carousel" data-carousel>
+      <button class="car-btn" type="button" data-dir="-1" aria-label="Previous supporter">&#8592;</button>
+      <div class="car-view" tabindex="0" aria-label="Supporters">
+        <ul class="car-track">
+          {home.supporters.map((s) => <li><img src={s.logo} alt={s.name} loading="lazy" /><span>{s.caption ?? s.name}</span></li>)}
+        </ul>
+      </div>
+      <button class="car-btn" type="button" data-dir="1" aria-label="Next supporter">&#8594;</button>
     </div>
   </section>
+  <script>
+    document.querySelectorAll('[data-carousel]').forEach((car) => {
+      const view = car.querySelector('.car-view');
+      const step = (dir) => {
+        const w = view.querySelector('li').offsetWidth;
+        const max = view.scrollWidth - view.clientWidth - 2;
+        if (dir > 0 && view.scrollLeft >= max) view.scrollTo({ left: 0, behavior: 'smooth' });
+        else if (dir < 0 && view.scrollLeft <= 2) view.scrollTo({ left: view.scrollWidth, behavior: 'smooth' });
+        else view.scrollBy({ left: dir * w, behavior: 'smooth' });
+      };
+      car.querySelectorAll('.car-btn').forEach((b) => b.addEventListener('click', () => { stop(); step(Number(b.dataset.dir)); }));
+      const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      let timer = 0, paused = false;
+      const start = () => { if (!still && !timer) timer = setInterval(() => { if (!paused && !document.hidden) step(1); }, 3500); };
+      const stop = () => { clearInterval(timer); timer = 0; };
+      car.addEventListener('mouseenter', () => { paused = true; });
+      car.addEventListener('mouseleave', () => { paused = false; });
+      car.addEventListener('focusin', () => { paused = true; });
+      car.addEventListener('focusout', () => { paused = false; });
+      start();
+    });
+  </script>
 
   <section class="band yellow" id="poets">
     <div class="wrap">
@@ -326,19 +351,20 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
 
 
   .supporters { padding-block: 1.5rem .5rem; }
-  .supporters .wrap { display: flex; justify-content: center; margin-bottom: .75rem; }
-  /* the logos glide past one after another; hover pauses, reduced motion shows them still */
-  .marquee { overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); }
-  .supporters .track { display: flex; align-items: center; width: max-content; list-style: none; margin: 0; padding: 0; animation: glide 40s linear infinite; }
-  .supporters .marquee:hover .track { animation-play-state: paused; }
-  .supporters li { display: flex; flex: none; margin-right: clamp(2.5rem, 5vw, 4.5rem); }
-  .supporters img { height: clamp(4rem, 7.5vw, 6.5rem); width: auto; mix-blend-mode: multiply; }
-  @keyframes glide { to { transform: translateX(-50%); } }
-  @media (prefers-reduced-motion: reduce) {
-    .supporters .track { animation: none; width: auto; flex-wrap: wrap; justify-content: center; row-gap: 1rem; padding-inline: var(--gutter); }
-    .supporters li[aria-hidden] { display: none; }
-    .marquee { -webkit-mask-image: none; mask-image: none; }
-  }
+  .supporters .wrap { display: flex; justify-content: center; margin-bottom: 1rem; }
+  /* one logo at a time: arrows step along, and it advances by itself until someone touches it */
+  .carousel { --per: 4; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: .75rem; max-width: 80rem; margin-inline: auto; padding-inline: var(--gutter); }
+  @media (max-width: 62rem) { .carousel { --per: 3; } }
+  @media (max-width: 40rem) { .carousel { --per: 2; } }
+  .car-view { overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; outline-offset: 4px; }
+  .car-view::-webkit-scrollbar { display: none; }
+  .car-track { display: flex; list-style: none; margin: 0; padding: 0; }
+  .car-track li { flex: 0 0 calc(100% / var(--per)); scroll-snap-align: start; display: flex; flex-direction: column; align-items: center; gap: .6rem; padding-inline: .75rem; text-align: center; }
+  .car-track img { height: clamp(4rem, 7.5vw, 6rem); max-width: 100%; width: auto; object-fit: contain; mix-blend-mode: multiply; }
+  .car-track span { font-size: .85rem; font-weight: 700; line-height: 1.25; color: var(--ink); }
+  .car-btn { flex: none; width: 2.6rem; height: 2.6rem; display: grid; place-items: center; font: inherit; font-size: 1.2rem; font-weight: 700; line-height: 1; color: var(--ink); background: var(--paper); border: 2px solid var(--ink); border-radius: var(--radius); cursor: pointer; transition: background-color .25s ease; }
+  .car-btn:hover { background: #0000000d; }
+  .car-btn:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
 
   /* numbered bands */
   .band { padding-block: clamp(4rem, 8vw, 7rem); }

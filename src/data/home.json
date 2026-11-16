@@ -177,27 +177,33 @@
   "supporters": [
     {
       "name": "Red Moon Press",
-      "logo": "/brand/supporters/red-moon-press.png"
+      "logo": "/brand/supporters/red-moon-press.png",
+      "caption": "Red Moon Press"
     },
     {
       "name": "The Free Books Project",
-      "logo": "/brand/supporters/free-books-project.png"
+      "logo": "/brand/supporters/free-books-project.png",
+      "caption": "The Free Books Project"
     },
     {
       "name": "Camden County Cultural & Heritage Commission, a partner of the New Jersey State Council on the Arts",
-      "logo": "/brand/supporters/nj-state-council-arts.png"
+      "logo": "/brand/supporters/nj-state-council-arts.png",
+      "caption": "Camden County Cultural & Heritage Commission"
     },
     {
       "name": "Mighty Writers",
-      "logo": "/brand/supporters/mighty-writers.png"
+      "logo": "/brand/supporters/mighty-writers.png",
+      "caption": "Mighty Writers"
     },
     {
       "name": "The Salvation Army Ray & Joan Kroc Corps Community Center",
-      "logo": "/brand/supporters/salvation-army-kroc.png"
+      "logo": "/brand/supporters/salvation-army-kroc.png",
+      "caption": "Salvation Army Kroc Center"
     },
     {
       "name": "Rutgers–Camden Writers House",
-      "logo": "/brand/supporters/rutgers-camden-writers-house.png"
+      "logo": "/brand/supporters/rutgers-camden-writers-house.png",
+      "caption": "Rutgers–Camden Writers House"
     }
   ],
   "donate": {
