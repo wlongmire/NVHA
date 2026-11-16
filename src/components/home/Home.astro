@@ -170,26 +170,9 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
     });
   </script>
 
-  <section class="band yellow" id="poets">
-    <div class="wrap">
-      <header class="band-head"><span class="num">01</span><h2>Poets &amp; Haikuists</h2></header>
-      <div class="three">
-        {home.programs.map((p) => (
-          <article class="card">
-            <Photo src={p.image} alt="" ratio="4 / 3" />
-            <h3>{p.title}</h3>
-            <p>{p.text}</p>
-            {p.note && <p class="note">{p.note}</p>}
-            <a class="arrow-link" href={p.href}>{p.link}</a>
-          </article>
-        ))}
-      </div>
-    </div>
-  </section>
-
   <section class="band cream" id="house">
     <div class="wrap">
-      <header class="band-head"><span class="num">02</span><h2>At the Writers House</h2></header>
+      <header class="band-head"><span class="num">01</span><h2>At the Writers House</h2></header>
       <div class="house">
         <figure>
           <Photo src={house.houseImage} alt="" ratio="4 / 3" />
@@ -205,6 +188,23 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
           {upcoming.map((e) => <EventCard event={e} />)}
           <a class="arrow-link" href="/house-events/">More events</a>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band yellow" id="poets">
+    <div class="wrap">
+      <header class="band-head"><span class="num">02</span><h2>Poets &amp; Haikuists</h2></header>
+      <div class="three">
+        {home.programs.map((p) => (
+          <article class="card">
+            <Photo src={p.image} alt="" ratio="4 / 3" />
+            <h3>{p.title}</h3>
+            <p>{p.text}</p>
+            {p.note && <p class="note">{p.note}</p>}
+            <a class="arrow-link" href={p.href}>{p.link}</a>
+          </article>
+        ))}
       </div>
     </div>
   </section>
