@@ -64,6 +64,7 @@ const pages = defineCollection({
     lede: z.string().default(''),
     image: z.string().default(''),
     imageAlt: z.string().default(''),
+    seo,
     embed: z.enum(['donate', 'newsletter', 'contact']).optional(),   // adds the donation form, newsletter signup or contact buttons below the text
     noindex: z.boolean().default(false),
     draft: z.boolean().default(false),

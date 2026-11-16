@@ -1,0 +1,355 @@
+---
+// The staff editor. Everything on this page is for changing content (events, articles, pages, store items and the homepage);
+// layouts, styles and code cannot be changed from here. Saves become commits on GitHub, and Vercel redeploys the site.
+import '../../styles/tokens.css';
+export const prerender = false;
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>NVHA site editor</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <header class="top">
+    <strong>NVHA site editor</strong>
+    <span id="mode" class="mode" hidden></span>
+    <span class="grow"></span>
+    <a href="/" target="_blank" rel="noopener">View site ↗</a>
+    <button type="button" id="signout" hidden>Sign out</button>
+  </header>
+
+  <section id="login" class="login" hidden>
+    <form id="login-form">
+      <h1>Sign in</h1>
+      <label>Password <input type="password" id="password" autocomplete="current-password" required /></label>
+      <p id="login-error" class="error" role="alert"></p>
+      <button class="primary" type="submit">Sign in</button>
+    </form>
+  </section>
+
+  <div id="app" class="app" hidden>
+    <aside>
+      <nav id="tabs" class="tabs" aria-label="What to edit"></nav>
+      <div class="tools">
+        <input type="search" id="search" placeholder="Search" aria-label="Search the list" />
+        <button type="button" id="new" class="primary"></button>
+      </div>
+      <ul id="list" class="list"></ul>
+    </aside>
+
+    <main id="editor" class="editor" aria-live="polite">
+      <div class="empty">
+        <h1>What would you like to change?</h1>
+        <p>Pick something from the list on the left, or add something new. When you press Save, the website updates in about a minute.</p>
+      </div>
+    </main>
+  </div>
+
+  <div id="toast" class="toast" role="status" hidden></div>
+</body>
+</html>
+
+<script>
+  import { TYPES, typeById, getPath, setPath, fromFile, toFile, slugify, type DocType, type Field } from '../../lib/editor/schema';
+
+  const $ = <T extends HTMLElement = HTMLElement>(id: string) => document.getElementById(id) as T;
+  const el = (tag: string, attrs: Record<string, any> = {}, ...kids: (Node | string)[]) => {
+    const e = document.createElement(tag);
+    for (const [k, v] of Object.entries(attrs)) {
+      if (v === false || v == null) continue;
+      if (k === 'class') e.className = v; else if (k.startsWith('on')) e.addEventListener(k.slice(2), v); else if (v === true) e.setAttribute(k, ''); else e.setAttribute(k, String(v));
+    }
+    for (const kid of kids) e.append(kid);
+    return e;
+  };
+
+  type Item = { id: string; path: string; title: string; date: string; draft: boolean };
+  const state: {
+    type: DocType; items: Item[]; filter: string;
+    cur: null | { path: string; sha: string; isNew: boolean; original: Record<string, any>; body: string };
+    dirty: boolean;
+  } = { type: TYPES[0], items: [], filter: '', cur: null, dirty: false };
+
+  // ---------- talking to the server ----------
+  async function api(method: string, url: string, body?: unknown, form?: FormData) {
+    const res = await fetch(url, {
+      method, credentials: 'same-origin',
+      headers: { ...(method !== 'GET' ? { 'x-edit': '1' } : {}), ...(body ? { 'content-type': 'application/json' } : {}) },
+      body: form ?? (body ? JSON.stringify(body) : undefined),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (res.status === 401) { showLogin(); throw Object.assign(new Error('Please sign in again.'), { handled: true }); }
+    if (!res.ok) throw Object.assign(new Error(data.error ?? 'Something went wrong.'), { problems: data.problems, status: res.status });
+    return data;
+  }
+  let toastTimer: any;
+  function toast(msg: string, bad = false) {
+    const t = $('toast'); t.textContent = msg; t.hidden = false; t.className = 'toast' + (bad ? ' bad' : '');
+    clearTimeout(toastTimer); toastTimer = setTimeout(() => (t.hidden = true), bad ? 8000 : 4500);
+  }
+
+  // ---------- sign in ----------
+  function showLogin() { $('app').hidden = true; $('login').hidden = false; $('signout').hidden = true; $('password').focus(); }
+  $('login-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    try { await api('POST', '/api/edit/login/', { password: ($('password') as HTMLInputElement).value }); $('login-error').textContent = ''; ($('password') as HTMLInputElement).value = ''; start(); }
+    catch (err: any) { if (!err.handled) $('login-error').textContent = err.message; }
+  });
+  $('signout').addEventListener('click', async () => { await api('POST', '/api/edit/logout/', {}).catch(() => {}); location.reload(); });
+
+  // ---------- the list ----------
+  function renderTabs() {
+    const nav = $('tabs'); nav.replaceChildren();
+    for (const t of TYPES) nav.append(el('button', { type: 'button', 'aria-pressed': String(t.id === state.type.id), onclick: () => switchType(t.id) }, t.label));
+    const btn = $('new');
+    btn.hidden = !state.type.creatable;
+    btn.textContent = `+ New ${state.type.singular}`;
+    $('search').hidden = state.type.format === 'json';
+  }
+  function renderList() {
+    const ul = $('list'); ul.replaceChildren();
+    if (state.type.format === 'json') {
+      ul.append(el('li', {}, el('button', { type: 'button', class: 'row', 'aria-current': String(state.cur?.path === state.type.file), onclick: () => confirmLeave(() => openPath(state.type.file!)) }, el('span', { class: 'title' }, 'Edit the homepage'))));
+      return;
+    }
+    const q = state.filter.toLowerCase();
+    for (const it of state.items.filter((i) => !q || i.title.toLowerCase().includes(q))) {
+      const sub = it.date ? it.date.slice(0, 10) : '';
+      ul.append(el('li', {}, el('button', { type: 'button', class: 'row', 'aria-current': String(state.cur?.path === it.path), onclick: () => confirmLeave(() => openPath(it.path)) },
+        el('span', { class: 'title' }, it.title || it.id), sub ? el('span', { class: 'sub' }, sub) : '', it.draft ? el('span', { class: 'badge' }, 'Hidden') : '')));
+    }
+    if (!ul.children.length) ul.append(el('li', { class: 'none' }, state.items.length ? 'Nothing matches.' : 'Nothing here yet.'));
+  }
+  async function loadList() {
+    if (state.type.format === 'json') { state.items = []; renderList(); return; }
+    $('list').replaceChildren(el('li', { class: 'none' }, 'Loading…'));
+    try {
+      const d = await api('GET', `/api/edit/files/?type=${state.type.id}`);
+      state.items = d.items; showMode(d.mode); renderList();
+    } catch (e: any) { if (!e.handled) { $('list').replaceChildren(el('li', { class: 'none error' }, e.message)); } }
+  }
+  function showMode(mode: string) { const m = $('mode'); m.hidden = mode !== 'local files'; m.textContent = 'Test mode: saving to local files'; }
+  function switchType(id: string) {
+    confirmLeave(() => { state.type = typeById(id)!; state.filter = ''; ($('search') as HTMLInputElement).value = ''; state.cur = null; clearEditor(); renderTabs(); loadList(); if (state.type.format === 'json') openPath(state.type.file!); });
+  }
+  $('search').addEventListener('input', (e) => { state.filter = (e.target as HTMLInputElement).value; renderList(); });
+  $('new').addEventListener('click', () => confirmLeave(() => {
+    const t = state.type;
+    state.cur = { path: '', sha: '', isNew: true, original: t.empty(), body: '' };
+    buildForm(); renderList();
+  }));
+  function clearEditor() { $('editor').replaceChildren(el('div', { class: 'empty' }, el('h1', {}, 'What would you like to change?'), el('p', {}, 'Pick something from the list on the left, or add something new.'))); state.dirty = false; }
+  function confirmLeave(go: () => void) { if (state.dirty && !confirm('You have changes that are not saved. Leave without saving?')) return; state.dirty = false; go(); }
+  window.addEventListener('beforeunload', (e) => { if (state.dirty) { e.preventDefault(); e.returnValue = ''; } });
+
+  // ---------- opening and saving ----------
+  async function openPath(path: string) {
+    try {
+      const d = await api('GET', `/api/edit/doc/?path=${encodeURIComponent(path)}`);
+      state.type = typeById(d.type)!; renderTabs();
+      state.cur = { path, sha: d.sha, isNew: false, original: d.data, body: d.body };
+      buildForm(); renderList();
+    } catch (e: any) { if (!e.handled) toast(e.message, true); }
+  }
+
+  // ---------- the form ----------
+  const pictureUrl = (ref: string) => `/api/edit/image/?path=${encodeURIComponent('public' + ref)}`;
+
+  async function shrink(file: File): Promise<Blob> {
+    const bmp = await createImageBitmap(file);
+    const scale = Math.min(1, 1600 / Math.max(bmp.width, bmp.height));
+    const c = document.createElement('canvas'); c.width = Math.round(bmp.width * scale); c.height = Math.round(bmp.height * scale);
+    const ctx = c.getContext('2d')!; ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, c.width, c.height); ctx.drawImage(bmp, 0, 0, c.width, c.height);
+    return new Promise((ok, no) => c.toBlob((b) => (b ? ok(b) : no(new Error('Could not read that picture.'))), 'image/jpeg', 0.85));
+  }
+
+  function control(f: Field, value: any): { node: HTMLElement; read: () => any } {
+    const id = 'f-' + f.key.replace(/\W/g, '-') + '-' + Math.random().toString(36).slice(2, 6);
+    const dirty = () => { state.dirty = true; };
+    switch (f.type) {
+      case 'textarea': case 'lines': {
+        const t = el('textarea', { id, rows: f.type === 'lines' ? 4 : 3, maxlength: f.max && f.type === 'textarea' ? f.max : undefined }) as HTMLTextAreaElement;
+        t.value = f.type === 'lines' ? (Array.isArray(value) ? value.join('\n') : '') : (value ?? ''); t.addEventListener('input', dirty);
+        return { node: t, read: () => (f.type === 'lines' ? t.value.split('\n').map((s) => s.trim()).filter(Boolean) : t.value) };
+      }
+      case 'checkbox': {
+        const c = el('input', { id, type: 'checkbox' }) as HTMLInputElement; c.checked = !!value; c.addEventListener('change', dirty);
+        return { node: c, read: () => c.checked };
+      }
+      case 'number': {
+        const n = el('input', { id, type: 'number', step: '0.01', min: '0' }) as HTMLInputElement; n.value = value ?? ''; n.addEventListener('input', dirty);
+        return { node: n, read: () => (n.value === '' ? '' : Number(n.value)) };
+      }
+      case 'numbers': {
+        const n = el('input', { id, type: 'text', inputmode: 'numeric', placeholder: '25, 50, 100' }) as HTMLInputElement; n.value = Array.isArray(value) ? value.join(', ') : ''; n.addEventListener('input', dirty);
+        return { node: n, read: () => n.value.split(',').map((s) => s.trim()).filter(Boolean).map(Number) };
+      }
+      case 'date': case 'time': case 'text': {
+        const i = el('input', { id, type: f.type, maxlength: f.max, placeholder: f.placeholder }) as HTMLInputElement; i.value = value ?? ''; i.addEventListener('input', dirty);
+        return { node: i, read: () => i.value };
+      }
+      case 'image': {
+        let ref: string = value ?? '';
+        const img = el('img', { alt: '', class: 'thumb' }) as HTMLImageElement; const none = el('span', { class: 'sub' }, 'No picture yet');
+        const msg = el('span', { class: 'sub', role: 'status' });
+        const file = el('input', { id, type: 'file', accept: 'image/jpeg,image/png,image/webp', class: 'file' }) as HTMLInputElement;
+        const remove = el('button', { type: 'button', class: 'link', onclick: () => { ref = ''; show(); dirty(); } }, 'Remove picture');
+        const show = () => { img.hidden = !ref; none.hidden = !!ref; remove.hidden = !ref; if (ref) img.src = pictureUrl(ref); };
+        img.addEventListener('error', () => { msg.textContent = 'Preview not available yet (it appears after the site updates).'; });
+        file.addEventListener('change', async () => {
+          const f0 = file.files?.[0]; if (!f0) return;
+          msg.textContent = 'Uploading…';
+          try {
+            const blob = await shrink(f0); const fd = new FormData(); fd.append('file', blob, f0.name);
+            const r = await api('POST', '/api/edit/upload/', undefined, fd); ref = r.reference; msg.textContent = 'Picture added.'; show(); dirty();
+          } catch (e: any) { msg.textContent = e.message; }
+          file.value = '';
+        });
+        show();
+        return { node: el('div', { class: 'pic' }, img, none, el('div', { class: 'picbtns' }, file, remove), msg), read: () => ref };
+      }
+      case 'repeater': {
+        const rows = el('div', { class: 'rows' }); const getters: (() => any)[] = [];
+        const addRow = (v: any) => {
+          const sub: Record<string, () => any> = {};
+          const row = el('div', { class: 'rrow' });
+          for (const sf of f.fields!) { const c = control(sf, v?.[sf.key]); sub[sf.key] = c.read; row.append(el('label', { class: 'mini' }, sf.label, c.node)); }
+          const g = () => Object.fromEntries(Object.entries(sub).map(([k, r]) => [k, r()]));
+          getters.push(g);
+          row.append(el('button', { type: 'button', class: 'link', onclick: () => { getters.splice(getters.indexOf(g), 1); row.remove(); dirty(); } }, 'Remove'));
+          rows.append(row);
+        };
+        (Array.isArray(value) ? value : []).forEach(addRow);
+        const add = el('button', { type: 'button', onclick: () => { addRow({}); dirty(); } }, '+ ' + (f.addLabel ?? 'Add'));
+        return { node: el('div', {}, rows, add), read: () => getters.map((g) => g()) };
+      }
+    }
+  }
+
+  function buildForm() {
+    const cur = state.cur!, t = state.type;
+    const values = fromFile(t, cur.original);
+    const readers: { f: Field; read: () => any }[] = [];
+    const form = el('form', { class: 'form', novalidate: true });
+    const heading = cur.isNew ? `New ${t.singular}` : (getPath(values, t.titleKey) || t.label);
+    form.append(el('h1', {}, String(heading)));
+
+    for (const f of t.fields) {
+      const c = control(f, getPath(values, f.key)); readers.push({ f, read: c.read });
+      const lab = el('label', { class: 'field' + (f.type === 'checkbox' ? ' check' : '') });
+      if (f.type === 'checkbox') lab.append(c.node, el('span', {}, f.label));
+      else lab.append(el('span', { class: 'lbl' }, f.label + (f.required ? ' *' : '')), c.node);
+      if (f.help) lab.append(el('span', { class: 'help' }, f.help));
+      form.append(lab);
+    }
+
+    let bodyArea: HTMLTextAreaElement | null = null;
+    if (t.body) {
+      bodyArea = el('textarea', { id: 'body', rows: 14 }) as HTMLTextAreaElement; bodyArea.value = cur.body; bodyArea.addEventListener('input', () => { state.dirty = true; if (!pv.hidden) pv.innerHTML = md(bodyArea!.value); });
+      const pv = el('div', { class: 'preview prose', hidden: true }) as HTMLElement;
+      const toggle = el('button', { type: 'button', class: 'link', onclick: () => { pv.hidden = !pv.hidden; bodyArea!.hidden = !pv.hidden; toggle.textContent = pv.hidden ? 'Show preview' : 'Back to editing'; if (!pv.hidden) pv.innerHTML = md(bodyArea!.value); } }, 'Show preview');
+      form.append(el('div', { class: 'field' }, el('span', { class: 'lbl' }, t.body.label), el('span', { class: 'help' }, t.body.help), bodyArea, pv, toggle));
+    }
+
+    const problems = el('ul', { class: 'problems', role: 'alert' });
+    const save = el('button', { type: 'submit', class: 'primary' }, 'Save');
+    form.append(problems, el('div', { class: 'savebar' }, save, el('span', { class: 'sub' }, 'The website updates about a minute after you save.')));
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault(); problems.replaceChildren(); save.disabled = true; save.textContent = 'Saving…';
+      try {
+        const out = structuredClone(values);
+        for (const { f, read } of readers) setPath(out, f.key, read());
+        const data = toFile(t, out);
+        const body = bodyArea?.value ?? '';
+        if (cur.isNew) {
+          const base = slugify(String(getPath(out, t.titleKey) ?? '')) || '';
+          if (!base) throw Object.assign(new Error('Add a title first.'), { problems: [] });
+          let created = false;
+          for (let n = 1; n <= 6 && !created; n++) {
+            const path = `${t.dir}/${base}${n > 1 ? '-' + n : ''}.md`;
+            try { const r = await api('POST', '/api/edit/doc/', { path, data, body }); cur.path = path; cur.sha = r.sha; cur.isNew = false; created = true; }
+            catch (err: any) { if (err.status !== 409) throw err; }
+          }
+          if (!created) throw new Error('Could not find a free name for this. Try a different title.');
+        } else {
+          const r = await api('PUT', '/api/edit/doc/', { path: cur.path, data, body, sha: cur.sha }); cur.sha = r.sha;
+        }
+        cur.original = data; cur.body = body; state.dirty = false;
+        toast('Saved. The website will update in about a minute.');
+        await loadList(); buildForm();
+      } catch (err: any) {
+        if (err.handled) return;
+        for (const p of err.problems ?? []) problems.append(el('li', {}, p));
+        toast(err.message, true);
+      } finally { save.disabled = false; save.textContent = 'Save'; }
+    });
+    $('editor').replaceChildren(form); state.dirty = false;
+    window.scrollTo({ top: 0 });
+  }
+
+  // a small Markdown preview: headings, bold, italic, links, lists, pictures, paragraphs
+  function md(src: string): string {
+    const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    const inline = (s: string) => esc(s)
+      .replace(/!\[([^\]]*)\]\(([^)\s]+)\)/g, '<img alt="$1" src="$2">')
+      .replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, '<a href="$2">$1</a>')
+      .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>').replace(/\*([^*]+)\*/g, '<em>$1</em>');
+    return src.replace(/\r\n/g, '\n').split(/\n{2,}/).map((block) => {
+      const lines = block.split('\n');
+      if (lines.every((l) => /^\s*[-*] /.test(l))) return '<ul>' + lines.map((l) => `<li>${inline(l.replace(/^\s*[-*] /, ''))}</li>`).join('') + '</ul>';
+      const h = block.match(/^(#{1,4}) (.*)$/); if (h) return `<h${h[1].length + 1}>${inline(h[2])}</h${h[1].length + 1}>`;
+      return `<p>${inline(block).replace(/\n/g, '<br>')}</p>`;
+    }).join('');
+  }
+
+  // ---------- start ----------
+  async function start() {
+    $('login').hidden = true; $('app').hidden = false; $('signout').hidden = false;
+    renderTabs(); clearEditor(); await loadList();
+  }
+  api('GET', '/api/edit/files/?type=events').then((d) => { state.items = d.items; showMode(d.mode); $('login').hidden = true; $('app').hidden = false; $('signout').hidden = false; renderTabs(); renderList(); })
+    .catch((e) => { if (!e.handled) { $('login').hidden = false; $('login-error').textContent = e.message; } });
+</script>
+
+<style is:global>
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  body { margin: 0; font-family: var(--font-body); color: var(--ink); background: #f4f2ee; line-height: 1.5; font-size: 16px; }
+  .top { display: flex; align-items: center; gap: 1rem; padding: .75rem 1.25rem; background: var(--ink); color: #fff; position: sticky; top: 0; z-index: 5; }
+  .top a, .top button { color: #fff; } .top button { background: none; border: 1px solid #fff6; border-radius: 4px; padding: .3rem .7rem; font: inherit; cursor: pointer; }
+  .grow { flex: 1; } .mode { background: var(--mustard); color: var(--ink); font-size: .75rem; padding: .15rem .5rem; border-radius: 3px; font-weight: 700; }
+  button { font: inherit; cursor: pointer; } button.primary { background: var(--ink); color: #fff; border: 0; border-radius: 4px; padding: .6rem 1.2rem; font-weight: 700; }
+  button.primary:disabled { opacity: .6; } button.link { background: none; border: 0; color: var(--ink); text-decoration: underline; padding: .25rem 0; }
+  .login { display: grid; place-items: center; min-height: 70vh; padding: 1rem; }
+  .login form { background: #fff; padding: 2rem; border-radius: 8px; width: min(24rem, 100%); display: grid; gap: 1rem; }
+  .login h1 { margin: 0; font-size: 1.5rem; } label { display: grid; gap: .3rem; font-weight: 700; font-size: .9rem; }
+  input[type='text'], input[type='password'], input[type='date'], input[type='time'], input[type='number'], input[type='search'], textarea {
+    font: inherit; font-weight: 400; padding: .55rem .65rem; border: 1px solid #0006; border-radius: 4px; background: #fff; width: 100%; }
+  textarea { resize: vertical; } .error { color: #a32; margin: 0; min-height: 1.2em; }
+  .app { display: grid; grid-template-columns: 20rem 1fr; min-height: calc(100vh - 3.5rem); }
+  aside { background: #fff; border-right: 1px solid #0002; padding: 1rem; display: flex; flex-direction: column; gap: .75rem; max-height: calc(100vh - 3.5rem); position: sticky; top: 3.5rem; }
+  .tabs { display: flex; flex-wrap: wrap; gap: .35rem; } .tabs button { background: #f4f2ee; border: 1px solid transparent; border-radius: 999px; padding: .3rem .8rem; }
+  .tabs button[aria-pressed='true'] { background: var(--ink); color: #fff; }
+  .tools { display: grid; gap: .5rem; } .list { list-style: none; margin: 0; padding: 0; overflow: auto; flex: 1; }
+  .row { display: grid; width: 100%; text-align: left; background: none; border: 0; border-bottom: 1px solid #0001; padding: .6rem .4rem; gap: .1rem; }
+  .row:hover { background: #f4f2ee; } .row[aria-current='true'] { background: var(--periwinkle); } .row .title { font-weight: 700; } .sub { font-size: .8rem; color: var(--muted); }
+  .badge { font-size: .7rem; background: var(--mustard); padding: 0 .4rem; border-radius: 3px; justify-self: start; } .none { padding: .75rem .4rem; color: var(--muted); }
+  .editor { padding: clamp(1rem, 3vw, 2.5rem); max-width: 52rem; } .empty h1, .form h1 { font-family: var(--font-display); font-size: 1.9rem; margin: 0 0 1rem; }
+  .form { display: grid; gap: 1.25rem; } .field { display: grid; gap: .3rem; } .field .lbl { font-weight: 700; font-size: .9rem; } .help { font-size: .8rem; color: var(--muted); }
+  .field.check { display: flex; align-items: center; flex-wrap: wrap; gap: .5rem; font-weight: 700; } .field.check .help { flex-basis: 100%; }
+  .pic { display: grid; gap: .5rem; justify-items: start; } .thumb { max-width: 12rem; max-height: 9rem; border-radius: 4px; border: 1px solid #0003; object-fit: cover; }
+  .picbtns { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; } .file { font: inherit; width: auto; padding: 0; border: 0; background: none; }
+  .rows { display: grid; gap: .75rem; margin-bottom: .75rem; } .rrow { display: grid; grid-template-columns: 8rem 1fr auto; gap: .75rem; align-items: end; background: #fff; padding: .75rem; border-radius: 4px; }
+  .mini { font-size: .8rem; } .preview { background: #fff; padding: 1rem; border-radius: 4px; border: 1px solid #0002; } .preview img { max-width: 100%; }
+  .problems { color: #a32; margin: 0; padding-left: 1.2rem; } .problems:empty { display: none; }
+  .savebar { display: flex; align-items: center; gap: 1rem; position: sticky; bottom: 0; background: #f4f2ee; padding: .75rem 0; border-top: 1px solid #0002; }
+  .toast { position: fixed; bottom: 1.25rem; left: 50%; transform: translateX(-50%); background: var(--ink); color: #fff; padding: .7rem 1.1rem; border-radius: 6px; z-index: 10; max-width: 90vw; }
+  .toast.bad { background: #a32; }
+  @media (max-width: 52rem) { .app { grid-template-columns: 1fr; } aside { position: static; max-height: 22rem; } .rrow { grid-template-columns: 1fr; } }
+</style>

@@ -35,7 +35,7 @@ const jsonLd = kind === 'post' ? {
     </article>
   </Base>
 ) : (
-  <Base seoKey={entry.id} title={d.title} description={d.lede || undefined} image={d.image} seo={d.noindex ? { robots: 'noindex' } : {}}>
+  <Base seoKey={entry.id} title={d.title} description={d.lede || undefined} image={d.image} seo={{ ...d.seo, ...(d.noindex ? { robots: 'noindex' } : {}) }}>
     <header class="phead">
       <div class="wrap phead-grid">
         <div>

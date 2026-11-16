@@ -1,5 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
 import Home from '../components/home/Home.astro';
+import home from '../data/home.json';
 ---
-<Base seoKey="home" theme="c"><Home /></Base>
+<Base seoKey="home" seo={home.seo} theme="c"><Home /></Base>
