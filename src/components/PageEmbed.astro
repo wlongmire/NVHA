@@ -1,0 +1,45 @@
+---
+// Forms that sit inside a text page: the donation form (Qgiv), the newsletter signup (Mailchimp) and the contact buttons.
+const { kind } = Astro.props;
+---
+  {kind === 'donate' && (
+    <div class="embed">
+      <div class="qgiv-embed-container" data-qgiv-embed="true" data-embed-id="77582" data-embed="https://secure.qgiv.com/for/nickvirgiliohaikuassociationdonation/embed/77582/" data-width="630"></div>
+      <script is:inline>(function(w,d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(d.getElementById(id))return;js=d.createElement(s);js.id=id;js.src="https://secure.qgiv.com/resources/core/js/embed.js";fjs.parentNode.insertBefore(js,fjs);})(window,document,'script','qgiv-embedjs');</script>
+      <noscript><p><a class="btn rose" href="https://secure.qgiv.com/for/nickvirgiliohaikuassociationdonation/">Donate securely</a></p></noscript>
+    </div>
+  )}
+
+  {kind === 'newsletter' && (
+    <form class="signup" action="https://nickvirgiliohaiku.us14.list-manage.com/subscribe/post?u=37ba933db5a64738c7f0c2b30&id=a67a8c6ebe&f_id=0013b6e5f0" method="post" target="_blank">
+      <h2>Join our haiku and poetry community</h2>
+      <label>Name <input type="text" name="NAME" required autocomplete="name" /></label>
+      <label>Email address <input type="email" name="EMAIL" required autocomplete="email" /></label>
+      <label>Country <input type="text" name="COUNTRY" required autocomplete="country-name" /></label>
+      <fieldset>
+        <legend>I am interested in information about</legend>
+        {['Programs in Camden area', 'Virtual programs', 'Learning to write poetry and haiku', 'All of the above'].map((o) => <label class="radio"><input type="radio" name="INTERESTED" value={o} /> {o}</label>)}
+      </fieldset>
+      <div aria-hidden="true" style="position:absolute;left:-5000px"><input type="text" name="b_37ba933db5a64738c7f0c2b30_a67a8c6ebe" tabindex="-1" value="" /></div>
+      <button class="btn rose" type="submit">Subscribe</button>
+    </form>
+  )}
+
+  {kind === 'contact' && (
+    <p class="contact-btns">
+      <a class="btn rose" href="mailto:info@nickvirgiliohaiku.org">Email us</a>
+      <a class="btn" href="tel:+18564322489">Call 856-432-2489</a>
+    </p>
+  )}
+
+<style>
+  .embed { margin-top: 2.5rem; min-height: 24rem; }
+  .signup { margin-top: 2.5rem; display: grid; gap: 1rem; background: var(--cream); padding: clamp(1.25rem, 4vw, 2rem); border-radius: var(--radius); position: relative; }
+  .signup h2 { margin: 0 0 .5rem; }
+  .signup label { display: grid; gap: .3rem; font-weight: 700; font-size: .9rem; }
+  .signup input[type='text'], .signup input[type='email'] { font: inherit; padding: .6rem .7rem; border: 1px solid #0006; border-radius: var(--radius); background: #fff; }
+  .signup fieldset { border: 0; padding: 0; margin: 0; display: grid; gap: .5rem; } .signup legend { font-weight: 700; font-size: .9rem; margin-bottom: .5rem; }
+  .signup .radio { display: flex; gap: .5rem; align-items: center; font-weight: 400; font-size: 1rem; }
+  .signup button { justify-self: start; cursor: pointer; font: inherit; font-weight: 700; }
+  .contact-btns { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 2rem; }
+</style>

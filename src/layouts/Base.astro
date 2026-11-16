@@ -1,0 +1,129 @@
+---
+// Shared frame for every page: search-engine tags, header, footer.
+// Search settings come from the page's own `seo` fields, or from src/data/seo.json (kept from the old Yoast settings)
+// when a page passes `seoKey`, and fall back to the site defaults in src/data/site.json.
+import '../styles/tokens.css';
+import '../styles/global.css';
+import site from '../data/site.json';
+import seoData from '../data/seo.json';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  seoKey?: string;
+  seo?: { title?: string; description?: string; canonical?: string; ogImage?: string; robots?: string };
+  type?: 'website' | 'article';
+  published?: string;
+  jsonLd?: Record<string, unknown>;
+  theme?: 'a' | 'b' | 'c';   // set by the /design/ pages; other pages follow the visitor's choice
+}
+const { title, description, image, seoKey, seo = {}, type = 'website', published, jsonLd, theme } = Astro.props;
+const saved = (seoKey ? (seoData as Record<string, any>)[seoKey] : undefined) ?? {};
+const pick = <T,>(...v: (T | undefined)[]) => v.find((x) => x);
+
+const pageTitle = pick(seo.title, saved.title, title ? `${title} | ${site.shortName}` : undefined) ?? site.name;
+const pageDesc = pick(seo.description, saved.description, description) ?? site.description;
+const canonical = new URL(pick(seo.canonical, saved.canonical, Astro.url.pathname)!.replace(/^https?:\/\/[^/]+/, ''), Astro.site).href;
+const ogImage = new URL(pick(seo.ogImage, saved.ogImage, image, site.defaultImage)!, Astro.site).href;
+const robots = pick(seo.robots, saved.robots);
+const here = Astro.url.pathname;
+
+const org = {
+  '@context': 'https://schema.org',
+  '@type': 'NonprofitOrganization',
+  name: site.name,
+  url: Astro.site!.href,
+  logo: new URL(site.defaultImage, Astro.site).href,
+  address: { '@type': 'PostalAddress', streetAddress: '1801 Broadway', addressLocality: 'Camden', addressRegion: 'NJ', postalCode: '08104' },
+};
+---
+<!doctype html>
+<html lang="en" data-theme={theme ?? 'c'} data-fixed={theme ? '' : undefined}>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script is:inline>try { var t = localStorage.getItem('nvha-design'); if (t && !document.documentElement.hasAttribute('data-fixed')) document.documentElement.dataset.theme = t; } catch (e) {}</script>
+  <title>{pageTitle}</title>
+  <meta name="description" content={pageDesc} />
+  <meta name="robots" content={robots ? 'noindex, nofollow' : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'} />
+  <link rel="canonical" href={canonical} />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:type" content={type} />
+  <meta property="og:title" content={pageTitle} />
+  <meta property="og:description" content={pageDesc} />
+  <meta property="og:url" content={canonical} />
+  <meta property="og:site_name" content={site.name} />
+  <meta property="og:image" content={ogImage} />
+  {published && <meta property="article:published_time" content={published} />}
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;700&family=Source+Serif+4:wght@400;600&family=Playfair+Display:ital,wght@0,500;0,700;1,400;1,500&display=swap" rel="stylesheet" />
+  <script type="application/ld+json" set:html={JSON.stringify(here === '/' ? org : jsonLd ?? org)} />
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <div class="site-top">
+  <div class="topbar"><div class="wrap">Free poetry workshops, readings and youth programs in Camden, NJ.</div></div>
+  <header class="site-header">
+    <div class="wrap bar">
+      <a class="brand" href="/" aria-label={`${site.shortName}, home`}>
+        <span class="brand-mark">NVHA</span>
+        <span class="brand-name">Nick Virgilio<br />Writers House</span>
+      </a>
+      <input type="checkbox" id="nav-toggle" class="nav-toggle" aria-label="Menu" />
+      <label for="nav-toggle" class="nav-burger" aria-hidden="true"><span></span></label>
+      <nav class="site-nav" aria-label="Main">
+        {site.nav.map((n) => <a href={n.href} aria-current={n.href === '/' ? (here === '/' ? 'page' : undefined) : here.startsWith(n.href) ? 'page' : undefined}>{n.label}</a>)}
+        <a class="btn" href={site.donateHref}>Support</a>
+      </nav>
+    </div>
+  </header>
+  </div>
+
+  <main id="main"><slot /></main>
+
+  <footer class="site-footer">
+    <div class="wrap foot">
+      <div>
+        <strong class="foot-brand">Nick Virgilio<br />Writers House</strong>
+        <p>Since 2002, a local &amp; global space for poets — inspiring writers, strengthening education and promoting community.</p>
+      </div>
+      {site.footerGroups.map((g) => (
+        <div>
+          <h2 class="label">{g.title}</h2>
+          <ul>{g.links.map((l) => <li><a href={l.href}>{l.label}</a></li>)}</ul>
+        </div>
+      ))}
+      <div>
+        <h2 class="label">Visit</h2>
+        <p>Writers House, Waterfront South<br />{site.address}</p>
+        <p><a href="https://www.njhistory.org/">A NJ Literary Landmark</a></p>
+      </div>
+    </div>
+    <div class="wrap legal">© {new Date().getFullYear()} Nick Virgilio Haiku Association &amp; Writers House. All rights reserved.</div>
+  </footer>
+  <div class="switcher" role="group" aria-label="Design version">
+    Design
+    <button type="button" data-v="blend">Blend</button>
+    <button type="button" data-v="a">A<span class="long"> · Editorial</span></button>
+    <button type="button" data-v="b">B<span class="long"> · Story</span></button>
+  </div>
+  <script is:inline>
+    (function () {
+      var root = document.documentElement, btns = document.querySelectorAll('.switcher button');
+      var cur = function () { var t = root.dataset.theme; return t === 'c' ? 'blend' : t; };
+      function mark() { btns.forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.v === cur())); }); }
+      mark();
+      btns.forEach(function (b) { b.addEventListener('click', function () {
+        var theme = b.dataset.v === 'blend' ? 'c' : b.dataset.v;
+        try { localStorage.setItem('nvha-design', theme); } catch (e) {}
+        var home = location.pathname === '/' || location.pathname.indexOf('/design/') === 0;
+        if (home) location.href = b.dataset.v === 'blend' ? '/' : '/design/' + theme + '/'; else { root.dataset.theme = theme; mark(); }
+      }); });
+    })();
+  </script>
+</body>
+</html>

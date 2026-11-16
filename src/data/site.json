@@ -1,0 +1,31 @@
+{
+  "name": "Nick Virgilio Haiku Association & Writers House",
+  "shortName": "NVHA",
+  "tagline": "A local & global space for poets.",
+  "description": "A nonprofit poetry community in Camden, NJ offering haiku workshops, youth contests, readings and events inspired by Nick Virgilio's lasting legacy.",
+  "email": "",
+  "address": "1801 Broadway, Camden, NJ 08104",
+  "defaultImage": "/uploads/2024/07/l2.jpg",
+  "nav": [
+    { "label": "Home", "href": "/" },
+    { "label": "About", "href": "/about-us/" },
+    { "label": "Programming", "href": "/house-events/" },
+    { "label": "Youth + Education", "href": "/poetry-teaching-for-camden-schools/" },
+    { "label": "Articles", "href": "/blogs/" },
+    { "label": "Store", "href": "/store/" }
+  ],
+  "donateHref": "/donate-now/",
+  "footerGroups": [
+    { "title": "Explore", "links": [
+      { "label": "About Nick Virgilio", "href": "/nick-virgilio-poet/" },
+      { "label": "Events", "href": "/house-events/" },
+      { "label": "Education", "href": "/poetry-teaching-for-camden-schools/" },
+      { "label": "Store", "href": "/store/" }
+    ] },
+    { "title": "Get involved", "links": [
+      { "label": "Donate", "href": "/donate-now/" },
+      { "label": "Contact us", "href": "/contact-us/" },
+      { "label": "Newsletter", "href": "/newsletter/" }
+    ] }
+  ]
+}
