@@ -97,7 +97,6 @@ export const TYPES: DocType[] = [
   {
     id: 'home', label: 'Homepage', singular: 'homepage', format: 'json', file: 'src/data/home.json', titleKey: 'hero.headline', creatable: false,
     fields: [
-      { key: 'hero.eyebrow', label: 'Small label above the headline', type: 'text', max: 100 },
       { key: 'hero.headline', label: 'Headline', type: 'text', required: true, max: 120 },
       { key: 'hero.text', label: 'Intro text', type: 'textarea', max: 400 },
       { key: 'hero.image', label: 'Hero picture', type: 'image' },
