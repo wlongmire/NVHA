@@ -141,7 +141,15 @@ const { hero, house, educators, haiku, impact, donate } = home;
   .btns { display: flex; flex-wrap: wrap; gap: .75rem; margin: 0; }
   .hero-art { position: relative; width: 100%; }
   .hero-art :global(.photo) { position: relative; }
-  @media (min-width: 56rem) { .hero-grid { grid-template-columns: 1fr 1.35fr; gap: 3.5rem; } }
+  /* on wide screens the mural fills the right side of the hero edge to edge, fading into the periwinkle behind the words */
+  @media (min-width: 56rem) {
+    .hero { position: relative; overflow: hidden; }
+    .hero-grid { position: relative; z-index: 1; min-height: 34rem; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+    .hero-art { position: absolute; z-index: 0; top: calc(-1 * clamp(3rem, 8vw, 7rem)); right: calc(50% - 50vw); bottom: 0; width: 62vw; }
+    .hero-art :global(.photo) { height: 100%; aspect-ratio: auto !important; border-radius: 0; }
+    .hero-art::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, var(--periwinkle) 0%, var(--periwinkle) 8%, #9a9df700 55%); pointer-events: none; }
+    .hero-copy { position: relative; z-index: 2; padding-bottom: clamp(3rem, 6vw, 5rem); }
+  }
 
   /* the four audience cards sit inside the hero, light, and jump to their sections */
   .hero { padding-bottom: clamp(2.5rem, 5vw, 4rem); }
