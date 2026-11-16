@@ -10,11 +10,18 @@ const d = event.data;
     <p class="label">{fmtDay(d.start)}{hasTime(d.start) && ` · ${fmtTime(d.start)}`}</p>
     <h3><a href={`/event/${event.id}/`}>{d.title}</a></h3>
     {d.venue && <p class="where">{d.venue}</p>}
-    {d.link && <a class="btn rose" href={d.link} rel="noopener">RSVP</a>}
   </div>
+  {d.link && <a class="btn rose rsvp" href={d.link} rel="noopener">RSVP</a>}
 </article>
 <style>
-  .event { display: grid; grid-template-columns: 6rem 1fr; gap: 1.25rem; align-items: start; padding-block: 1.5rem; border-bottom: 2px solid var(--ink); }
-  .event h3 { font-size: 1.25rem; margin-bottom: .25rem; } .event h3 a { text-decoration: none; }
-  .where { color: var(--muted); margin: 0 0 .75rem; }
+  /* every event row is the same height: picture, text, and the RSVP button off to the side */
+  .event { display: grid; grid-template-columns: 6rem minmax(0, 1fr) auto; gap: 1rem 1.25rem; align-items: center; box-sizing: border-box; height: 10.5rem; padding-block: 1rem; border-bottom: 2px solid var(--ink); }
+  .event h3 { font-size: 1.25rem; margin-bottom: .25rem; display: -webkit-box; -webkit-line-clamp: 3; line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; } .event h3 a { text-decoration: none; }
+  .where { color: var(--muted); margin: 0; }
+  .event .label { margin-bottom: .35rem; }
+  .rsvp { grid-column: 3; align-self: center; }
+  @media (max-width: 36rem) {
+    .event { grid-template-columns: 5rem minmax(0, 1fr); height: auto; }
+    .rsvp { grid-column: 2; justify-self: start; }
+  }
 </style>
