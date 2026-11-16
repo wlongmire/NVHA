@@ -246,7 +246,7 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   /* on wide screens the mural and the texture run the full height of the hero, top to bottom, edge to edge */
   @media (min-width: 56rem) {
     .hero { position: relative; isolation: isolate; overflow: hidden; padding-top: 0; }
-    .hero-grid { max-width: none; padding-inline: clamp(1.5rem, 3vw, 3rem); position: static; min-height: clamp(26rem, calc(100svh - 11.5rem), 46vw); grid-template-columns: minmax(0, calc(46vw - clamp(1.5rem, 3vw, 3rem))) minmax(0, 1fr); }
+    .hero-grid { max-width: none; padding-inline: clamp(1.5rem, 3vw, 3rem); position: static; min-height: clamp(26rem, calc(100svh - 7.75rem), 46vw); grid-template-columns: minmax(0, calc(46vw - clamp(1.5rem, 3vw, 3rem))) minmax(0, 1fr); }
     .hero-art { position: absolute; z-index: 0; top: 0; right: 0; bottom: 0; width: 54vw; }
     .hero-art :global(.photo) { height: 100%; aspect-ratio: auto !important; border-radius: 0; }
     .hero-grid::before { content: ''; position: absolute; z-index: -1; left: 0; right: 0; bottom: 0; top: 0; background: url('/brand/hero-texture.svg') left center / cover no-repeat; pointer-events: none; }
@@ -274,7 +274,9 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
 
   @media (min-width: 56rem) {
     /* under the mural only, aligned right, quieter than the hero buttons */
-    .actions { width: auto; max-width: none; margin: -1.6rem 0 0 46vw; padding: 0 clamp(1.5rem, 3vw, 3rem) 0 .75rem; grid-template-columns: repeat(4, auto); justify-content: end; align-items: end; gap: .5rem; }
+    /* pinned to the bottom of the hero, spread from a little left of the mural to the page margin */
+    .hero { padding-bottom: 0; }
+    .actions { position: absolute; z-index: 2; bottom: .75rem; left: 40vw; right: clamp(1.5rem, 3vw, 3rem); width: auto; max-width: none; margin: 0; padding: 0; grid-template-columns: repeat(4, minmax(0, 1fr)); align-items: end; gap: .6rem; }
     .action-label { gap: .45rem; padding: .75rem .85rem; font-size: .9rem; white-space: nowrap; }
     .sizer { display: flex; visibility: hidden; border: 1.5px solid transparent; }
     /* the box sits on the slot's bottom edge, so when it grows it grows upward over the mural */
@@ -287,7 +289,7 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
     .action-more > div { min-height: 0; overflow: hidden; padding: 0 .85rem; }
     .action-more p { margin: .75rem 0 .1rem; font-size: .78rem; line-height: 1.45; color: var(--muted); }
     .action-slot:hover, .action-slot:focus-within { z-index: 2; }
-    .action-slot:hover .action-box, .action-slot:focus-within .action-box { width: 14rem; background-color: #ffffffe6; }
+    .action-slot:hover .action-box, .action-slot:focus-within .action-box { width: max(100%, 14rem); background-color: #ffffffe6; }
     .action-slot:hover .action-more, .action-slot:focus-within .action-more { grid-template-rows: 1fr; opacity: 1; }
   }
   @media (prefers-reduced-motion: reduce) { .action-box, .action-more, .action-link .arrow { transition: none; } }
@@ -298,7 +300,7 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   }
   /* narrow desktops: two rows of two */
   @media (min-width: 56rem) and (max-width: 76rem) {
-    .actions { grid-template-columns: repeat(2, auto); }
+    .actions { left: calc(46vw + .75rem); grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .action-slot:nth-child(even) .action-box { left: auto; right: 0; }
     .action-slot:nth-child(odd) .action-box { left: 0; right: auto; }
   }
