@@ -362,8 +362,9 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   }
 
 
-  .supporters { padding-block: 1.5rem .5rem; }
-  .supporters .wrap { display: flex; justify-content: center; margin-bottom: 1rem; }
+  .supporters { padding-block: 1.1rem .75rem; }
+  .supporters .wrap { display: flex; justify-content: center; margin-bottom: .5rem; }
+  .supporters .label { margin: 0; }
   /* logos step along one at a time and loop round; arrows step by hand, hover pauses */
   .carousel { --per: 4; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: .75rem; max-width: 80rem; margin-inline: auto; padding-inline: var(--gutter); }
   @media (max-width: 62rem) { .carousel { --per: 3; } }
