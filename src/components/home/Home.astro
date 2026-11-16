@@ -246,9 +246,9 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   /* on wide screens the mural and the texture run the full height of the hero, top to bottom, edge to edge */
   @media (min-width: 56rem) {
     .hero { position: relative; isolation: isolate; overflow: hidden; padding-top: 0; }
-    .hero::after { content: ''; position: absolute; inset: 0; z-index: 3; border: 2px solid var(--ink); pointer-events: none; }
-    .hero-grid { max-width: none; padding-inline: clamp(1.5rem, 3vw, 3rem); position: static; min-height: max(26rem, calc(100svh - 7.75rem)); grid-template-columns: minmax(0, calc(46vw - clamp(1.5rem, 3vw, 3rem))) minmax(0, 1fr); }
-    .hero-art { position: absolute; z-index: 0; top: 0; right: 0; bottom: 0; width: 54vw; border-left: 2px solid var(--ink); }
+    .hero::after { content: ''; position: absolute; inset: 0; z-index: 3; border: 4px solid var(--ink); border-top: 0; pointer-events: none; }
+    .hero-grid { max-width: none; padding-inline: clamp(1.5rem, 3vw, 3rem); position: static; min-height: max(26rem, calc(100svh - 7.75rem - 3px)); grid-template-columns: minmax(0, calc(46vw - clamp(1.5rem, 3vw, 3rem))) minmax(0, 1fr); }
+    .hero-art { position: absolute; z-index: 0; top: 0; right: 0; bottom: 0; width: 54vw; border-left: 4px solid var(--ink); }
     .hero-art :global(.photo) { height: 100%; aspect-ratio: auto !important; border-radius: 0; }
     .hero-grid::before { content: ''; position: absolute; z-index: -1; left: 0; right: 0; bottom: 0; top: 0; background: url('/brand/hero-texture.svg') left center / cover no-repeat; pointer-events: none; }
     .hero h1 { font-size: clamp(2.6rem, 4.4vw, 4.5rem); }
@@ -281,7 +281,7 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
     .action-label { gap: .45rem; padding: 1.05rem 1.15rem; font-size: .9rem; white-space: nowrap; }
     .sizer { display: flex; visibility: hidden; border: 1.5px solid transparent; }
     /* the box sits on the slot's bottom edge, so when it grows it grows upward over the mural */
-    .action-box { position: absolute; bottom: 0; left: 0; width: 100%; overflow: hidden; border: 1.5px solid #1f1d1d66; background: #ffffff99; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); box-shadow: none; transition: width .25s ease, background-color .25s ease; }
+    .action-box { position: absolute; bottom: 0; left: 0; width: 100%; overflow: hidden; border: 3px solid var(--ink); background: #ffffff99; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); box-shadow: none; transition: width .25s ease, background-color .25s ease; }
     .action-slot:nth-child(n+3) .action-box { left: auto; right: 0; }
   }
   /* only where there is a mouse: hovering or tabbing to a box widens it and reveals a short line and links inside it */
