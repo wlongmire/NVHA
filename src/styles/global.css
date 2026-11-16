@@ -30,6 +30,22 @@ p { margin: 0 0 1em; }
 .brand-mark { background: var(--accent); color: #fff; font-family: var(--font-label); font-weight: 500; padding: .5rem .45rem; border-radius: var(--radius); }
 .brand-name { font-family: var(--font-display); font-weight: 700; line-height: 1.05; font-size: .95rem; }
 .site-nav { display: flex; align-items: center; gap: 1.25rem; font-size: .9rem; }
+.nav-links, .nav-actions { display: flex; align-items: center; gap: 1.25rem; }
+.nav-actions { gap: .6rem; }
+.site-nav .btn.line { background: transparent; border: 1px solid var(--ink); color: var(--ink); }
+.brand-tag { display: none; }
+/* wide screens: the bar runs edge to edge like the hero below it; the menu spreads across the middle,
+   the logo carries a short tagline, and the two buttons sit at the far right */
+@media (min-width: 64rem) {
+  .site-header .bar { max-width: none; padding-inline: clamp(1.5rem, 3vw, 3rem); gap: 2rem; }
+  .brand { gap: 1rem; flex: none; }
+  .site-nav a { white-space: nowrap; }
+  .site-nav { flex: 1; gap: 2rem; font-size: .95rem; }
+  .nav-links { flex: 1; justify-content: center; gap: clamp(1.25rem, 2.6vw, 2.75rem); }
+}
+@media (min-width: 80rem) {
+  .brand-tag { display: block; white-space: nowrap; padding-left: 1rem; border-left: 1px solid #1f1d1d33; font-size: .78rem; line-height: 1.35; color: var(--muted); }
+}
 .site-nav a { text-decoration: none; padding: .25rem 0; }
 .site-nav a[aria-current] { border-bottom: 2px solid var(--accent); }
 .site-nav .btn { padding: .4rem .9rem; }
@@ -41,6 +57,8 @@ p { margin: 0 0 1em; }
   .nav-toggle { display: block; position: absolute; right: 1rem; width: 3rem; height: 3rem; opacity: 0; z-index: 2; cursor: pointer; }
   .nav-toggle:focus-visible + .nav-burger { outline: 3px solid var(--ink); }
   .site-nav { display: none; position: absolute; left: 0; right: 0; top: 100%; background: var(--paper); flex-direction: column; align-items: flex-start; padding: 1rem var(--gutter) 1.5rem; border-bottom: 1px solid #0002; }
+  .nav-links { flex-direction: column; align-items: flex-start; gap: .75rem; }
+  .nav-actions { margin-top: .5rem; }
   .nav-toggle:checked ~ .site-nav { display: flex; }
 }
 

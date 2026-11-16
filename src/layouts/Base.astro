@@ -70,12 +70,18 @@ const org = {
     <div class="wrap bar">
       <a class="brand" href="/" aria-label={`${site.shortName}, home`}>
         <img class="brand-logo" src="/brand/nvha-horizontal.png" alt="The Nick Virgilio Haiku Association" width="1778" height="869" />
+        <span class="brand-tag">Home of the Virgilio<br />Writers House, Camden</span>
       </a>
       <input type="checkbox" id="nav-toggle" class="nav-toggle" aria-label="Menu" />
       <label for="nav-toggle" class="nav-burger" aria-hidden="true"><span></span></label>
       <nav class="site-nav" aria-label="Main">
-        {site.nav.map((n) => <a href={n.href} aria-current={n.href === '/' ? (here === '/' ? 'page' : undefined) : here.startsWith(n.href) ? 'page' : undefined}>{n.label}</a>)}
-        <a class="btn" href={site.donateHref}>Support</a>
+        <div class="nav-links">
+          {site.nav.map((n) => <a href={n.href} aria-current={n.href === '/' ? (here === '/' ? 'page' : undefined) : here.startsWith(n.href) ? 'page' : undefined}>{n.label}</a>)}
+        </div>
+        <div class="nav-actions">
+          <a class="btn line" href="/newsletter/">Newsletter</a>
+          <a class="btn" href={site.donateHref}>Support</a>
+        </div>
       </nav>
     </div>
   </header>
