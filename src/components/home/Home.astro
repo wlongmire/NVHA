@@ -246,13 +246,13 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   /* on wide screens the mural and the texture run the full height of the hero, top to bottom, edge to edge */
   @media (min-width: 56rem) {
     .hero { position: relative; isolation: isolate; overflow: hidden; padding-top: 0; }
-    .hero::after { content: ''; position: absolute; inset: 0; z-index: 3; border: 4px solid var(--ink); border-top: 0; pointer-events: none; }
+    .hero::after { content: ''; position: absolute; inset: 0; z-index: 3; border-bottom: 4px solid var(--ink); pointer-events: none; }
     .hero-grid { max-width: none; padding-inline: clamp(1.5rem, 3vw, 3rem); position: static; min-height: max(26rem, calc(100svh - 7.75rem - 3px)); grid-template-columns: minmax(0, calc(46vw - clamp(1.5rem, 3vw, 3rem))) minmax(0, 1fr); }
     .hero-art { position: absolute; z-index: 0; top: 0; right: 0; bottom: 0; width: 54vw; border-left: 4px solid var(--ink); }
     .hero-art :global(.photo) { height: 100%; aspect-ratio: auto !important; border-radius: 0; }
     .hero-grid::before { content: ''; position: absolute; z-index: -1; left: 0; right: 0; bottom: 0; top: 0; background: url('/brand/hero-texture.svg') left center / cover no-repeat; pointer-events: none; }
     .hero h1 { font-size: clamp(2.6rem, 4.4vw, 4.5rem); }
-    .hero-copy { position: relative; z-index: 2; padding-block: 3.5rem 0; padding-right: clamp(1.5rem, 3vw, 3rem); }
+    .hero-copy { position: relative; z-index: 2; padding-block: 0 1.5rem; padding-right: clamp(1.5rem, 3vw, 3rem); }
   }
 
   /* the four audience cards sit inside the hero, light, and jump to their sections */
