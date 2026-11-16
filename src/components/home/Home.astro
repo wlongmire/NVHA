@@ -247,10 +247,13 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   @media (max-width: 55.99rem) {
     .hero-grid { gap: 0; }
     .hero-copy { display: contents; }
-    .hero { padding-top: 0; border-bottom: 3px solid var(--ink); }
-    .hero h1 { order: 1; margin-block: 0 2rem; }
-    .hero-art { order: 0; margin: 0 calc(-1 * var(--gutter)) 2rem; width: auto; }
-    .hero-art :global(.photo) { height: clamp(14rem, 68vw, 24rem); aspect-ratio: auto !important; border: 0; border-bottom: 3px solid var(--ink); border-radius: 0; object-position: 30% 50% !important; }
+    .hero { padding-top: 1.5rem; border-bottom: 3px solid var(--ink); }
+    .hero h1 { order: 1; margin-block: 0 1.5rem; font-size: clamp(2.4rem, 10.2vw, 3.6rem); }
+    .hero .lede { font-size: 1.05rem; margin-bottom: 1.25rem; }
+    .hero-copy .btns { gap: .6rem; flex-wrap: nowrap; }
+    .hero-copy .btn { padding: .75rem 1rem; font-size: .95rem; white-space: nowrap; }
+    .hero-art { order: 2; margin-bottom: 1.5rem; }
+    .hero-art :global(.photo) { height: clamp(9rem, 42vw, 15rem); aspect-ratio: auto !important; border: 3px solid var(--ink); border-radius: 0; object-position: 30% 52% !important; }
     .hero .lede { order: 3; }
     .hero .btns { order: 4; }
   }
