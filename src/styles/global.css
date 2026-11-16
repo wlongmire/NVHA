@@ -14,14 +14,13 @@ p { margin: 0 0 1em; }
 .label { font-family: var(--font-label); font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; margin: 0 0 .75rem; font-weight: 500; }
 .btn { display: inline-block; background: var(--btn-bg); color: var(--btn-ink); border: 2px solid var(--btn-border); font-weight: 700; text-decoration: none; padding: .55rem 1.1rem; border-radius: var(--radius); }
 /* the site's signature accent: a black outline with a solid offset shadow, pressing in on hover and click */
-.btn, .pop-card { border: 2px solid var(--ink); box-shadow: 3px 3px 0 var(--ink); transition: transform .12s, box-shadow .12s; }
-.btn:hover, .btn:focus-visible, a.pop-card:hover, a.pop-card:focus-visible { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--ink); }
-.btn:active, a.pop-card:active { transform: translate(3px, 3px); box-shadow: 0 0 0 var(--ink); }
-.pop-card { box-shadow: 5px 5px 0 var(--ink); }
-a.pop-card:hover, a.pop-card:focus-visible { transform: translate(3px, 3px); box-shadow: 2px 2px 0 var(--ink); }
+.btn, .pop-card { --sh: 3px; --ink-sh: var(--ink); border: 2px solid var(--ink); box-shadow: var(--sh) var(--sh) 0 var(--ink-sh); transition: transform .25s ease, box-shadow .25s ease; }
+.pop-card { --sh: 5px; }
+/* one hover for everything with the accent: it eases 1px toward its shadow, with the same .25s fade timing as the menu */
+.btn:hover, .btn:focus-visible, a.pop-card:hover, a.pop-card:focus-visible { transform: translate(1px, 1px); box-shadow: calc(var(--sh) - 1px) calc(var(--sh) - 1px) 0 var(--ink-sh); }
+.btn:active, a.pop-card:active { transform: translate(2px, 2px); box-shadow: calc(var(--sh) - 2px) calc(var(--sh) - 2px) 0 var(--ink-sh); }
 /* on dark panels the outline and shadow turn white so they still read */
-.dark .btn, .site-footer .btn { border-color: #fff; box-shadow: 3px 3px 0 #fff; }
-.dark .btn:hover, .dark .btn:focus-visible, .site-footer .btn:hover, .site-footer .btn:focus-visible { box-shadow: 1px 1px 0 #fff; }
+.dark .btn, .site-footer .btn { --ink-sh: #fff; border-color: #fff; }
 @media (prefers-reduced-motion: reduce) { .btn, .pop-card { transition: none; } }
 .btn.rose { background: var(--accent); color: #fff; }
 .btn.dark { background: var(--ink); color: #fff; }

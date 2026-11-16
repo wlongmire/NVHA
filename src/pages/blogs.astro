@@ -24,8 +24,8 @@ const posts = (await getCollection('posts', (p) => !p.data.draft)).sort((a, b) =
 <style>
   .grid { display: grid; gap: 3rem 2rem; grid-template-columns: repeat(auto-fill, minmax(19rem, 1fr)); }
   article :global(.photo) { margin-bottom: 1.25rem; border: 2px solid var(--ink); box-shadow: 5px 5px 0 var(--ink); }
-  article > a { display: block; transition: transform .12s; }
-  article > a:hover :global(.photo), article > a:focus-visible :global(.photo) { box-shadow: 2px 2px 0 var(--ink); transform: translate(3px, 3px); }
-  article :global(.photo) { transition: transform .12s, box-shadow .12s; }
+  article > a { display: block; }
+  article > a:hover :global(.photo), article > a:focus-visible :global(.photo) { box-shadow: 4px 4px 0 var(--ink); transform: translate(1px, 1px); }
+  article :global(.photo) { transition: transform .25s ease, box-shadow .25s ease; }
   h2 { font-size: 1.3rem; } h2 a { text-decoration: none; }
 </style>
