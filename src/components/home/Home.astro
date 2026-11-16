@@ -10,9 +10,16 @@ const { hero, house, educators, haiku, impact, donate } = home;
 // A YouTube link on a hero button plays in a popup on the page instead of leaving the site.
 const youtubeId = (href: string) => href.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]{11})/)?.[1];
 ---
-  <dialog class="video-pop" aria-label="Video">
-    <button type="button" class="video-close" aria-label="Close video">×</button>
+  <dialog class="video-pop" aria-labelledby="video-title">
+    <div class="video-head">
+      <div>
+        <p class="tag">Watch</p>
+        <h2 id="video-title" class="video-title"></h2>
+      </div>
+      <button type="button" class="video-close" aria-label="Close video">×</button>
+    </div>
     <div class="video-frame"></div>
+    <p class="video-caption" hidden></p>
   </dialog>
   <script>
     const pop = document.querySelector<HTMLDialogElement>('.video-pop');
@@ -26,6 +33,10 @@ const youtubeId = (href: string) => href.match(/(?:youtube\.com\/watch\?v=|youtu
         f.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
         f.allowFullscreen = true;
         frame.replaceChildren(f);
+        pop.querySelector('.video-title')!.textContent = a.dataset.title ?? a.textContent ?? '';
+        const cap = pop.querySelector<HTMLElement>('.video-caption')!;
+        cap.textContent = a.dataset.caption ?? '';
+        cap.hidden = !a.dataset.caption;
         pop.showModal();
       }));
       // closing stops the video; clicking the dark area outside also closes
@@ -42,7 +53,7 @@ const youtubeId = (href: string) => href.match(/(?:youtube\.com\/watch\?v=|youtu
         <p class="lede">{hero.text}</p>
         <p class="btns">{hero.buttons.map((b) => {
           const vid = youtubeId(b.href);
-          return <a class={`btn ${b.style === 'rose' ? 'rose' : ''}`} href={b.href} data-video={vid} aria-haspopup={vid ? 'dialog' : undefined}>{b.label}</a>;
+          return <a class={`btn ${b.style === 'rose' ? 'rose' : ''}`} href={b.href} data-video={vid} data-title={vid ? (b as any).videoTitle ?? b.label : undefined} data-caption={vid ? (b as any).caption : undefined} aria-haspopup={vid ? 'dialog' : undefined}>{b.label}</a>;
         })}</p>
       </div>
       <div class="hero-art">
@@ -156,11 +167,15 @@ const youtubeId = (href: string) => href.match(/(?:youtube\.com\/watch\?v=|youtu
   </section>
 
 <style>
-  .video-pop { width: min(64rem, 92vw); padding: 0; border: 0; background: #000; border-radius: var(--radius); overflow: visible; }
-  .video-pop::backdrop { background: #1f1d1dd9; }
-  .video-frame { aspect-ratio: 16 / 9; }
-  .video-frame :global(iframe) { width: 100%; height: 100%; border: 0; display: block; border-radius: var(--radius); }
-  .video-close { position: absolute; top: -2.75rem; right: 0; width: 2.25rem; height: 2.25rem; border: 0; border-radius: 999px; background: #fff; color: var(--ink); font-size: 1.5rem; line-height: 1; cursor: pointer; }
+  .video-pop { width: min(60rem, 92vw); max-height: 92vh; padding: clamp(1.25rem, 3vw, 2rem); border: 0; border-top: 6px solid var(--periwinkle); border-radius: var(--radius); background: var(--paper); color: var(--ink); box-shadow: 0 24px 60px #1f1d1d55; }
+  .video-pop::backdrop { background: #1f1d1dcc; }
+  .video-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: 1.25rem; }
+  .video-title { font-style: italic; font-weight: 400; font-size: clamp(1.5rem, 3vw, 2.25rem); line-height: 1.1; margin: .75rem 0 0; }
+  .video-frame { aspect-ratio: 16 / 9; background: #000; border-radius: var(--radius); overflow: hidden; }
+  .video-frame :global(iframe) { width: 100%; height: 100%; border: 0; display: block; }
+  .video-caption { margin: 1.1rem 0 0; color: var(--muted); max-width: 46rem; }
+  .video-close { flex: none; width: 2.5rem; height: 2.5rem; border: 1px solid #1f1d1d40; border-radius: 999px; background: var(--paper); color: var(--ink); font-size: 1.5rem; line-height: 1; cursor: pointer; }
+  .video-close:hover, .video-close:focus-visible { background: var(--periwinkle); }
   /* hero */
   .hero { background: var(--periwinkle); padding-block: clamp(3rem, 8vw, 7rem) 0; }
   .hero-grid { display: grid; gap: 3rem; align-items: center; }
