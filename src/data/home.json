@@ -26,32 +26,88 @@
   },
   "actions": [
     {
-      "kicker": "Write",
-      "title": "Poets and Haikuists",
-      "text": "Engage with a global haiku community through our press and online programming.",
-      "link": "Poets & Haikuists",
-      "href": "#poets"
+      "link": "Write with us",
+      "href": "#poets",
+      "title": "For poets & haikuists",
+      "text": "Join a worldwide community of short-form poets. Answer the weekly Haiku in Action prompt, learn the form in our recorded workshops, and encourage young writers through our annual youth contest.",
+      "links": [
+        {
+          "label": "Haiku in Action weekly prompt",
+          "href": "/haiku-in-action/"
+        },
+        {
+          "label": "How to Haiku workshops",
+          "href": "/online-workshops/"
+        },
+        {
+          "label": "Youth haiku contest",
+          "href": "/scholarship-contest/"
+        }
+      ]
     },
     {
-      "kicker": "Visit",
-      "title": "Visit Us In Camden",
-      "text": "Attend a reading, visit our archive or check out our work live at Writers House.",
-      "link": "See what's happening",
-      "href": "#house"
+      "link": "Visit the House",
+      "href": "#house",
+      "title": "Life at the Writers House",
+      "text": "The Virgilio Writers House in Waterfront South, Camden hosts readings, open mics, ginko walks and the monthly Midnight Notes series. Stop by for an event, visit by appointment, or book the space for your own gathering.",
+      "links": [
+        {
+          "label": "Upcoming events",
+          "href": "/house-events/"
+        },
+        {
+          "label": "The Midnight Notes Live",
+          "href": "/the-midnight-notes-live-series/"
+        },
+        {
+          "label": "About the Writers House",
+          "href": "/writers-house/"
+        }
+      ]
     },
     {
-      "kicker": "Learn",
-      "title": "For Educators",
-      "text": "Bring the power and mindful focus of short-form poetry to your school.",
-      "link": "Educator programs",
-      "href": "#educators"
+      "link": "Bring haiku to class",
+      "href": "#educators",
+      "title": "For teachers & schools",
+      "text": "The Tiny Truth Project brings mindfulness and literacy into the classroom through short-form creative writing. Now in its third year, it has reached 123 students across three Camden schools, with teachers trained to keep it going.",
+      "links": [
+        {
+          "label": "The Tiny Truth Project",
+          "href": "/poetry-teaching-for-camden-schools/"
+        },
+        {
+          "label": "Workshops you can use in class",
+          "href": "/online-workshops/"
+        },
+        {
+          "label": "Bring it to your school",
+          "href": "/contact-us/"
+        }
+      ]
     },
     {
-      "kicker": "Engage",
-      "title": "Support our Work",
-      "text": "Donate as an organization, volunteer opportunities and ways to support our future.",
-      "link": "Ways to give",
-      "href": "#support"
+      "link": "Support the House",
+      "href": "#support",
+      "title": "Keep poetry free in Camden",
+      "text": "Every gift keeps our workshops, youth programs and readings free. Give once or monthly, shop books and gifts by and about Nick Virgilio, or book the house or a poet for your next event.",
+      "links": [
+        {
+          "label": "Donate",
+          "href": "/donate-now/"
+        },
+        {
+          "label": "Shop books & gifts",
+          "href": "/store/"
+        },
+        {
+          "label": "Rent the space or hire a poet",
+          "href": "/contact-us/"
+        },
+        {
+          "label": "Get the newsletter",
+          "href": "/newsletter/"
+        }
+      ]
     }
   ],
   "programs": [

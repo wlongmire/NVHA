@@ -72,8 +72,34 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
         cap.hidden = !caption;
         pop.showModal();
       }));
+      // the four audience links open a short overview with links, instead of jumping straight down
+      document.querySelectorAll<HTMLAnchorElement>('a[data-info]').forEach((a) => a.addEventListener('click', (e) => {
+        const tpl = document.getElementById(`info-${a.dataset.info}`) as HTMLTemplateElement | null;
+        if (!tpl) return;
+        e.preventDefault();
+        frame.className = 'media-frame is-info';
+        frame.replaceChildren(tpl.content.cloneNode(true));
+        pop.querySelector('.media-title')!.textContent = a.dataset.title ?? a.textContent ?? '';
+        pop.querySelector<HTMLElement>('.media-caption')!.hidden = true;
+        pop.classList.add('is-info');
+        pop.showModal();
+      }));
+      // following a link inside the popup closes it first, so in-page jumps land where they should
+      frame.addEventListener('click', (e) => {
+        const link = (e.target as HTMLElement).closest('a');
+        if (!link) return;
+        const hash = link.getAttribute('href') ?? '';
+        if (!hash.startsWith('#')) { pop.close(); return; }
+        // closing hands focus back to the button that opened it, so jump to the section after that
+        e.preventDefault();
+        pop.close();
+        setTimeout(() => {
+          document.querySelector(hash)?.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+          history.replaceState(null, '', hash);
+        }, 0);
+      });
       // closing stops playback; clicking the dark area outside also closes
-      const stop = () => { frame.querySelector('audio')?.pause(); frame.replaceChildren(); };
+      const stop = () => { frame.querySelector('audio')?.pause(); frame.replaceChildren(); pop.classList.remove('is-info'); };
       const shut = () => { stop(); pop.close(); };
       pop.addEventListener('cancel', stop);   // Escape key
       pop.addEventListener('close', stop);
@@ -100,12 +126,19 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
       </div>
     </div>
     <nav class="wrap actions" aria-label="Jump to a section">
-      {home.actions.map((a) => (
-        <a class="action pop-card" href={a.href} title={a.text}>
+      {home.actions.map((a, i) => (
+        <a class="action pop-card" href={a.href} data-info={i} data-title={a.title} aria-haspopup="dialog">
           <span>{a.link}</span><span class="arrow" aria-hidden="true">↓</span>
         </a>
       ))}
     </nav>
+    {home.actions.map((a, i) => (
+      <template id={`info-${i}`}>
+        <p class="info-text">{a.text}</p>
+        <ul class="info-links">{a.links.map((l) => <li><a class="arrow-link" href={l.href}>{l.label}</a></li>)}</ul>
+        <a class="btn rose info-jump" href={a.href}>See it on this page ↓</a>
+      </template>
+    ))}
   </section>
 
   <section class="haiku" aria-label="Haiku of the week">
@@ -222,6 +255,12 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   .media-frame :global(.track input::-moz-range-thumb) { width: 12px; height: 12px; border-radius: 999px; background: var(--ink); border: 3px solid var(--paper); }
   .media-frame :global(.times) { display: flex; justify-content: space-between; margin-top: .5rem; font-family: var(--font-label); font-size: .8rem; color: var(--muted); }
   @media (max-width: 40rem) { .media-frame.is-audio { flex-direction: column; align-items: stretch; } .media-frame.is-audio :global(img) { width: 100%; aspect-ratio: 16 / 9; } }
+  .media-pop.is-info { width: min(38rem, 92vw); }
+  .media-frame.is-info :global(.info-text) { margin: 0 0 1.25rem; font-size: 1.05rem; line-height: 1.6; }
+  .media-frame.is-info :global(.info-links) { list-style: none; margin: 0 0 1.75rem; padding: 0; border-top: 1px solid #1f1d1d26; }
+  .media-frame.is-info :global(.info-links li) { border-bottom: 1px solid #1f1d1d26; }
+  .media-frame.is-info :global(.info-links a) { display: block; padding: .8rem 0; }
+  .media-frame.is-info :global(.info-links a:hover) { text-decoration: underline; text-underline-offset: 3px; }
   .media-frame :global(iframe) { width: 100%; height: 100%; border: 0; display: block; }
   .media-caption { margin: 1.1rem 0 0; color: var(--muted); max-width: 46rem; }
   .media-close { flex: none; width: 2.5rem; height: 2.5rem; border: 2px solid var(--ink); box-shadow: 2px 2px 0 var(--ink); border-radius: 999px; background: var(--paper); color: var(--ink); font-size: 1.5rem; line-height: 1; cursor: pointer; }
