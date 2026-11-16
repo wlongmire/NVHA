@@ -259,7 +259,9 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   @media (prefers-reduced-motion: reduce) { .action .arrow { transition: none; } }
   /* wide screens: full hero width, sitting half over the bottom edge of the mural */
   @media (min-width: 56rem) {
-    .actions { max-width: none; padding-inline: clamp(1.5rem, 3vw, 3rem); grid-template-columns: repeat(4, 1fr); gap: clamp(1rem, 2vw, 1.75rem); margin-top: -2rem; }
+    /* sit under the mural only, from its left edge to the page margin, quieter than the hero buttons */
+    .actions { width: auto; max-width: none; margin: -1.6rem 0 0 46vw; padding: 0 clamp(1.5rem, 3vw, 3rem) 0 1.25rem; grid-template-columns: repeat(4, auto); justify-content: end; gap: .6rem; }
+    .action { --sh: 2px; gap: .5rem; padding: .65rem .8rem; font-size: .85rem; white-space: nowrap; border-width: 1.5px; background: #fffffff0; }
   }
 
   .supporters { padding-block: 3.5rem 1rem; }
