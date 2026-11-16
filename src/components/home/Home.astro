@@ -101,16 +101,17 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
     </div>
     <nav class="wrap actions" aria-label="Jump to a section">
       {home.actions.map((a, i) => (
-        <div class="action-wrap">
-          <a class="action pop-card" href={a.href} aria-describedby={`more-${i}`}>
-            <span>{a.link}</span><span class="arrow" aria-hidden="true">↓</span>
-          </a>
-          <div class="action-more" id={`more-${i}`}>
-            <div class="more-card">
-              <strong>{a.title}</strong>
-              <p>{a.text}</p>
-              <ul>{a.links.map((l) => <li><a class="arrow-link" href={l.href}>{l.label}</a></li>)}</ul>
+        <div class="action-slot">
+          {/* invisible copy of the label that holds the slot's size, so the box can grow without moving anything */}
+          <span class="action-label sizer" aria-hidden="true"><span>{a.link}</span><span class="arrow">↓</span></span>
+          <div class="action-box">
+            <div class="action-more" id={`more-${i}`}>
+              <div>
+                <p>{a.blurb}</p>
+                <ul>{a.links.map((l) => <li><a href={l.href}>{l.label}</a></li>)}</ul>
+              </div>
             </div>
+            <a class="action-label action-link" href={a.href} aria-describedby={`more-${i}`}><span>{a.link}</span><span class="arrow" aria-hidden="true">↓</span></a>
           </div>
         </div>
       ))}
@@ -260,43 +261,45 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   /* the four audience cards sit inside the hero, light, and jump to their sections */
   .hero { padding-bottom: clamp(2rem, 4vw, 3rem); }
   /* the four audience links: one row of equal boxes along the bottom of the hero */
+  /* the four audience links */
   .actions { position: relative; z-index: 2; display: grid; gap: 1rem; grid-template-columns: repeat(2, 1fr); margin-top: 2rem; }
   @media (max-width: 32rem) { .actions { grid-template-columns: 1fr; } }
-  .action { --sh: 3px; display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1.1rem 1.35rem; background: var(--paper); color: var(--ink); border-radius: var(--radius); text-decoration: none; font-weight: 700; font-size: 1.1rem; line-height: 1.2; }
-  .action-wrap { position: relative; display: grid; }
-  /* the extra context for each link: hidden on phones and touch screens, where the link simply jumps to its section */
+  .action-slot { position: relative; display: grid; }
+  .action-label { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1.1rem 1.35rem; font-weight: 700; font-size: 1.1rem; line-height: 1.2; color: var(--ink); text-decoration: none; }
+  .sizer { display: none; }
+  .action-box { border: 2px solid var(--ink); border-radius: var(--radius); background: var(--paper); box-shadow: 3px 3px 0 var(--ink); }
   .action-more { display: none; }
-  @media (min-width: 56rem) and (hover: hover), (min-width: 56rem) and (pointer: fine) {
-    /* grows up out of the box on hover or keyboard focus; the bottom padding bridges the gap so the pointer can reach the links */
-    .action-more { display: block; position: absolute; z-index: 3; bottom: 100%; left: 0; width: 21rem; padding-bottom: .65rem;
-      opacity: 0; visibility: hidden; transform: translateY(8px); transform-origin: bottom left;
-      transition: opacity .25s ease, transform .25s ease, visibility 0s linear .25s; }
-    .action-wrap:nth-child(n+3) .action-more { left: auto; right: 0; transform-origin: bottom right; }
-    .action-wrap:hover .action-more, .action-wrap:focus-within .action-more { opacity: 1; visibility: visible; transform: none; transition: opacity .25s ease, transform .25s ease, visibility 0s; }
-    .more-card { padding: 1.1rem 1.25rem 1rem; background: var(--paper); color: var(--ink); border: 2px solid var(--ink); border-radius: var(--radius); box-shadow: 5px 5px 0 var(--ink); white-space: normal; }
-    .more-card strong { display: block; font-family: var(--font-display); font-style: italic; font-weight: 400; font-size: 1.35rem; line-height: 1.15; }
-    .more-card p { margin: .5rem 0 .8rem; font-size: .88rem; line-height: 1.5; color: var(--muted); }
-    .more-card ul { list-style: none; margin: 0; padding: 0; border-top: 1px solid #1f1d1d22; }
-    .more-card li { border-bottom: 1px solid #1f1d1d22; }
-    .more-card a { display: block; padding: .5rem 0; font-size: .85rem; }
-    .more-card a:hover { text-decoration: underline; text-underline-offset: 3px; }
-  }
-  @media (prefers-reduced-motion: reduce) { .action-more { transition: none !important; transform: none !important; } }
-  .action .arrow { flex: none; transition: transform .25s ease; }
-  .action:hover .arrow, .action:focus-visible .arrow { transform: translateY(2px); }
-  @media (prefers-reduced-motion: reduce) { .action .arrow { transition: none; } }
-  /* wide screens: full hero width, sitting half over the bottom edge of the mural */
+  .action-link .arrow { flex: none; transition: transform .25s ease; }
+  .action-slot:hover .arrow, .action-link:focus-visible .arrow { transform: translateY(2px); }
+
   @media (min-width: 56rem) {
-    /* sit under the mural only, from its left edge to the page margin, quieter than the hero buttons */
-    .actions { width: auto; max-width: none; margin: -1.6rem 0 0 46vw; padding: 0 clamp(1.5rem, 3vw, 3rem) 0 .75rem; grid-template-columns: repeat(4, auto); justify-content: end; gap: .5rem; }
-    .action { --sh: 2px; --ink-sh: #1f1d1d55; gap: .45rem; padding: .75rem .85rem; font-size: .9rem; white-space: nowrap; border-width: 1.5px; border-color: #1f1d1d66; background: #ffffff99; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
-    .action:hover, .action:focus-visible { background: #ffffffd9; }
+    /* under the mural only, aligned right, quieter than the hero buttons */
+    .actions { width: auto; max-width: none; margin: -1.6rem 0 0 46vw; padding: 0 clamp(1.5rem, 3vw, 3rem) 0 .75rem; grid-template-columns: repeat(4, auto); justify-content: end; align-items: end; gap: .5rem; }
+    .action-label { gap: .45rem; padding: .75rem .85rem; font-size: .9rem; white-space: nowrap; }
+    .sizer { display: flex; visibility: hidden; border: 1.5px solid transparent; }
+    /* the box sits on the slot's bottom edge, so when it grows it grows upward over the mural */
+    .action-box { position: absolute; bottom: 0; left: 0; width: 100%; overflow: hidden; border: 1.5px solid #1f1d1d66; background: #ffffff99; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); box-shadow: 2px 2px 0 #1f1d1d55; transition: width .25s ease, background-color .25s ease; }
+    .action-slot:nth-child(n+3) .action-box { left: auto; right: 0; }
   }
+  /* only where there is a mouse: hovering or tabbing to a box widens it and reveals a short line and links inside it */
+  @media (min-width: 56rem) and (hover: hover), (min-width: 56rem) and (pointer: fine) {
+    .action-more { display: grid; grid-template-rows: 0fr; opacity: 0; transition: grid-template-rows .25s ease, opacity .2s ease; }
+    .action-more > div { min-height: 0; overflow: hidden; padding: 0 .85rem; }
+    .action-more p { margin: .75rem 0 .45rem; font-size: .78rem; line-height: 1.45; color: var(--muted); }
+    .action-more ul { list-style: none; margin: 0; padding: 0 0 .1rem; }
+    .action-more a { display: inline-block; padding: .12rem 0; font-size: .76rem; font-weight: 700; color: var(--ink); text-decoration: none; }
+    .action-more a:hover, .action-more a:focus-visible { text-decoration: underline; text-underline-offset: 3px; }
+    .action-slot:hover, .action-slot:focus-within { z-index: 2; }
+    .action-slot:hover .action-box, .action-slot:focus-within .action-box { width: 15rem; background-color: #ffffffe6; }
+    .action-slot:hover .action-more, .action-slot:focus-within .action-more { grid-template-rows: 1fr; opacity: 1; }
+  }
+  @media (prefers-reduced-motion: reduce) { .action-box, .action-more, .action-link .arrow { transition: none; } }
+  /* smaller laptops: a little more compact so the row still fits under the mural */
   @media (min-width: 56rem) and (max-width: 88rem) {
-    .action { padding: .6rem .7rem; font-size: .8rem; gap: .35rem; }
+    .action-label { padding: .6rem .7rem; font-size: .8rem; gap: .35rem; }
     .actions { gap: .4rem; }
   }
-  /* narrow desktops: two rows of two so the links stay under the mural */
+  /* narrow desktops: two rows of two */
   @media (min-width: 56rem) and (max-width: 76rem) {
     .actions { grid-template-columns: repeat(2, auto); }
   }

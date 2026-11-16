@@ -27,6 +27,7 @@
   "actions": [
     {
       "link": "Write with us",
+      "blurb": "A weekly prompt, recorded workshops and a youth contest for short-form poets everywhere.",
       "href": "#poets",
       "title": "For poets & haikuists",
       "text": "Join a worldwide community of short-form poets. Answer the weekly Haiku in Action prompt, learn the form in our recorded workshops, and encourage young writers through our annual youth contest.",
@@ -47,6 +48,7 @@
     },
     {
       "link": "Visit the House",
+      "blurb": "Readings, open mics and the monthly Midnight Notes in Waterfront South.",
       "href": "#house",
       "title": "Life at the Writers House",
       "text": "The Virgilio Writers House in Waterfront South, Camden hosts readings, open mics, ginko walks and the monthly Midnight Notes series. Stop by for an event, visit by appointment, or book the space for your own gathering.",
@@ -67,6 +69,7 @@
     },
     {
       "link": "Bring haiku to class",
+      "blurb": "The Tiny Truth Project brings mindful short-form writing into Camden classrooms.",
       "href": "#educators",
       "title": "For teachers & schools",
       "text": "The Tiny Truth Project brings mindfulness and literacy into the classroom through short-form creative writing. Now in its third year, it has reached 123 students across three Camden schools, with teachers trained to keep it going.",
@@ -87,6 +90,7 @@
     },
     {
       "link": "Support the House",
+      "blurb": "Gifts, shop purchases and space rentals keep our programs free.",
       "href": "#support",
       "title": "Keep poetry free in Camden",
       "text": "Every gift keeps our workshops, youth programs and readings free. Give once or monthly, shop books and gifts by and about Nick Virgilio, or book the house or a poet for your next event.",
