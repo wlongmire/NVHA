@@ -105,7 +105,6 @@ export function validate(type: DocType, data: Record<string, any>, body: string,
         if (!(k in data)) errors.push(`The homepage is missing "${k}".`);
         else if (Array.isArray(original[k]) !== Array.isArray(data[k]) || typeof original[k] !== typeof data[k]) errors.push(`"${k}" has the wrong kind of value.`);
       }
-      if (!webLink(getPath(data, 'featured.href'))) errors.push('The featured button must go to a page on this site (starting with /) or a full web address.');
       const amounts = getPath(data, 'donate.amounts');
       if (!Array.isArray(amounts) || amounts.length > 5 || amounts.some((a) => typeof a !== 'number' || a < 1 || a > 100000)) errors.push('Give today amounts must be up to five whole numbers.');
       break;

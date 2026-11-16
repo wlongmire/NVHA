@@ -100,13 +100,6 @@ export const TYPES: DocType[] = [
       { key: 'hero.text', label: 'Intro text', type: 'textarea', max: 400 },
       { key: 'hero.image', label: 'Hero picture', type: 'image' },
       { key: 'hero.imageAlt', label: 'Describe the hero picture', type: 'text', max: 200 },
-      { key: 'featured.kind', label: 'Featured: short description above the title', type: 'text', max: 80, placeholder: 'Monthly reading series' },
-      { key: 'featured.title', label: 'Featured: title', type: 'text', required: true, max: 100 },
-      { key: 'featured.text', label: 'Featured: a few sentences about it', type: 'textarea', max: 400 },
-      { key: 'featured.image', label: 'Featured: picture', type: 'image' },
-      { key: 'featured.imageAlt', label: 'Featured: describe the picture', type: 'text', max: 200 },
-      { key: 'featured.link', label: 'Featured: button text', type: 'text', max: 40, placeholder: 'Learn more' },
-      { key: 'featured.href', label: 'Featured: where the button goes', type: 'text', max: 300, placeholder: '/the-midnight-notes-live-series/' },
       { key: 'impact', label: 'Impact numbers', type: 'repeater', addLabel: 'Add a number', fields: [
         { key: 'n', label: 'Number', type: 'text', max: 12 }, { key: 'label', label: 'What it counts', type: 'text', max: 60 },
       ] },
