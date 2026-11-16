@@ -39,6 +39,7 @@ const jsonLd = kind === 'post' ? {
     <header class="phead">
       <div class="wrap phead-grid">
         <div>
+          {entry.id === 'writers-house' && <img class="phead-logo" src="/brand/nvwh-horizontal.png" alt="The Nick Virgilio Writers House of Camden" width="1909" height="1000" />}
           {d.eyebrow && <p class="tag">{d.eyebrow}</p>}
           <h1>{d.title}</h1>
           {d.lede && <p class="lede">{d.lede}</p>}
@@ -56,6 +57,7 @@ const jsonLd = kind === 'post' ? {
 
 <style>
   .phead { background: var(--periwinkle); padding-block: clamp(3rem, 7vw, 6rem); }
+  .phead-logo { display: block; width: min(15rem, 70%); height: auto; margin-bottom: 1.5rem; }
   .phead-grid { display: grid; gap: 3rem; align-items: center; }
   @media (min-width: 52rem) { .phead-grid:has(.photo) { grid-template-columns: 1.2fr 1fr; gap: 5rem; } }
   .phead h1 { font-style: italic; font-weight: 400; font-size: clamp(2.5rem, 6vw, 4.5rem); line-height: 1.05; margin: 1rem 0; }
