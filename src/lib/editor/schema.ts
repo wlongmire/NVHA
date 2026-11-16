@@ -100,9 +100,6 @@ export const TYPES: DocType[] = [
       { key: 'hero.text', label: 'Intro text', type: 'textarea', max: 400 },
       { key: 'hero.image', label: 'Hero picture', type: 'image' },
       { key: 'hero.imageAlt', label: 'Describe the hero picture', type: 'text', max: 200 },
-      { key: 'impact', label: 'Impact numbers', type: 'repeater', addLabel: 'Add a number', fields: [
-        { key: 'n', label: 'Number', type: 'text', max: 12 }, { key: 'label', label: 'What it counts', type: 'text', max: 60 },
-      ] },
       { key: 'donate.amounts', label: 'Give today amounts (dollars, separated by commas)', type: 'numbers', help: 'Qgiv offers its own amounts too. Keep these to three or four.' },
       ...SEO,
     ],

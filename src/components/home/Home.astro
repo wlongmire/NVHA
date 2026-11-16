@@ -11,7 +11,7 @@ const { hasNext, upcoming, products } = await loadHome();
 const nextEvent = hasNext ? upcoming[0] : undefined;
 const describe = (a: { href: string; blurb: string }) =>
   a.href === '#house' && nextEvent ? `Next up: ${nextEvent.data.title}, ${fmtDay(nextEvent.data.start)}.` : a.blurb;
-const { hero, house, educators, impact, donate } = home;
+const { hero, house, educators, donate } = home;
 // A hero button that links to a YouTube video or an audio file opens it in a popup on the page instead of leaving the site.
 const youtubeId = (href: string) => href.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]{11})/)?.[1];
 const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
@@ -121,14 +121,10 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   </section>
 
 
-  <section class="impact" aria-label="Our impact">
-    <div class="wrap">{impact.map((i) => <div><b>{i.n}</b><span>{i.label}</span></div>)}</div>
-  </section>
-
   <section class="supporters" aria-label="Our supporters">
     <div class="wrap">
       <span class="label">Our supporters</span>
-      <ul>{home.supporters.map((s) => <li>{s}</li>)}</ul>
+      <ul>{home.supporters.map((s) => <li><img src={s.logo} alt={s.name} loading="lazy" /></li>)}</ul>
     </div>
   </section>
 
@@ -325,8 +321,10 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
 
 
   .supporters { padding-block: 3.5rem 1rem; }
-  .supporters .wrap { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 2.5rem; }
-  .supporters ul { display: flex; flex-wrap: wrap; gap: 1rem 2.5rem; list-style: none; margin: 0; padding: 0; font-family: var(--font-display); font-weight: 700; color: var(--muted); }
+  .supporters .wrap { display: flex; flex-direction: column; align-items: center; gap: 1.5rem; }
+  .supporters ul { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 1.5rem 3rem; list-style: none; margin: 0; padding: 0; }
+  .supporters li { display: flex; }
+  .supporters img { height: clamp(3rem, 6vw, 5rem); width: auto; mix-blend-mode: multiply; }
 
   /* numbered bands */
   .band { padding-block: clamp(4rem, 8vw, 7rem); }
@@ -353,8 +351,4 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   .shop { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; margin-block: 1.5rem 2rem; } .shop a { font-size: .8rem; text-decoration: none; } .shop :global(.photo) { margin-bottom: .6rem; }
 
   /* donation row (from version B) */
-  /* impact numbers (from version B) */
-  .impact { padding-block: clamp(3rem, 6vw, 4.5rem); }
-  .impact .wrap { display: grid; gap: 2rem; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); text-align: center; }
-  .impact div { display: flex; flex-direction: column; } .impact b { font-family: var(--font-display); font-size: clamp(2.75rem, 6vw, 4.5rem); line-height: 1; color: var(--brick); font-weight: 500; } .impact span { margin-top: .5rem; font-size: .9rem; }
 </style>

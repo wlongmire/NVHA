@@ -175,28 +175,29 @@
     "nickCaption": "Nick Virgilio (1928–1989) was a Camden poet who, after finding haiku in 1962, gave his life to the form and helped shape American haiku."
   },
   "supporters": [
-    "Red Moon Press",
-    "Poets & Writers",
-    "Mighty Writers",
-    "Holman",
-    "Rutgers–Camden Writers House"
-  ],
-  "impact": [
     {
-      "n": "123",
-      "label": "students this year"
+      "name": "Red Moon Press",
+      "logo": "/brand/supporters/red-moon-press.png"
     },
     {
-      "n": "3",
-      "label": "partner schools"
+      "name": "The Free Books Project",
+      "logo": "/brand/supporters/free-books-project.png"
     },
     {
-      "n": "3",
-      "label": "trained teachers"
+      "name": "Camden County Cultural & Heritage Commission, a partner of the New Jersey State Council on the Arts",
+      "logo": "/brand/supporters/nj-state-council-arts.png"
     },
     {
-      "n": "20+",
-      "label": "years in Camden"
+      "name": "Mighty Writers",
+      "logo": "/brand/supporters/mighty-writers.png"
+    },
+    {
+      "name": "The Salvation Army Ray & Joan Kroc Corps Community Center",
+      "logo": "/brand/supporters/salvation-army-kroc.png"
+    },
+    {
+      "name": "Rutgers–Camden Writers House",
+      "logo": "/brand/supporters/rutgers-camden-writers-house.png"
     }
   ],
   "donate": {
