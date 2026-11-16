@@ -72,34 +72,8 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
         cap.hidden = !caption;
         pop.showModal();
       }));
-      // the four audience links open a short overview with links, instead of jumping straight down
-      document.querySelectorAll<HTMLAnchorElement>('a[data-info]').forEach((a) => a.addEventListener('click', (e) => {
-        const tpl = document.getElementById(`info-${a.dataset.info}`) as HTMLTemplateElement | null;
-        if (!tpl) return;
-        e.preventDefault();
-        frame.className = 'media-frame is-info';
-        frame.replaceChildren(tpl.content.cloneNode(true));
-        pop.querySelector('.media-title')!.textContent = a.dataset.title ?? a.textContent ?? '';
-        pop.querySelector<HTMLElement>('.media-caption')!.hidden = true;
-        pop.classList.add('is-info');
-        pop.showModal();
-      }));
-      // following a link inside the popup closes it first, so in-page jumps land where they should
-      frame.addEventListener('click', (e) => {
-        const link = (e.target as HTMLElement).closest('a');
-        if (!link) return;
-        const hash = link.getAttribute('href') ?? '';
-        if (!hash.startsWith('#')) { pop.close(); return; }
-        // closing hands focus back to the button that opened it, so jump to the section after that
-        e.preventDefault();
-        pop.close();
-        setTimeout(() => {
-          document.querySelector(hash)?.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
-          history.replaceState(null, '', hash);
-        }, 0);
-      });
       // closing stops playback; clicking the dark area outside also closes
-      const stop = () => { frame.querySelector('audio')?.pause(); frame.replaceChildren(); pop.classList.remove('is-info'); };
+      const stop = () => { frame.querySelector('audio')?.pause(); frame.replaceChildren(); };
       const shut = () => { stop(); pop.close(); };
       pop.addEventListener('cancel', stop);   // Escape key
       pop.addEventListener('close', stop);
@@ -127,18 +101,20 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
     </div>
     <nav class="wrap actions" aria-label="Jump to a section">
       {home.actions.map((a, i) => (
-        <a class="action pop-card" href={a.href} data-info={i} data-title={a.title} aria-haspopup="dialog">
-          <span>{a.link}</span><span class="arrow" aria-hidden="true">↓</span>
-        </a>
+        <div class="action-wrap">
+          <a class="action pop-card" href={a.href} aria-describedby={`more-${i}`}>
+            <span>{a.link}</span><span class="arrow" aria-hidden="true">↓</span>
+          </a>
+          <div class="action-more" id={`more-${i}`}>
+            <div class="more-card">
+              <strong>{a.title}</strong>
+              <p>{a.text}</p>
+              <ul>{a.links.map((l) => <li><a class="arrow-link" href={l.href}>{l.label}</a></li>)}</ul>
+            </div>
+          </div>
+        </div>
       ))}
     </nav>
-    {home.actions.map((a, i) => (
-      <template id={`info-${i}`}>
-        <p class="info-text">{a.text}</p>
-        <ul class="info-links">{a.links.map((l) => <li><a class="arrow-link" href={l.href}>{l.label}</a></li>)}</ul>
-        <a class="btn rose info-jump" href={a.href}>See it on this page ↓</a>
-      </template>
-    ))}
   </section>
 
   <section class="haiku" aria-label="Haiku of the week">
@@ -255,12 +231,6 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   .media-frame :global(.track input::-moz-range-thumb) { width: 12px; height: 12px; border-radius: 999px; background: var(--ink); border: 3px solid var(--paper); }
   .media-frame :global(.times) { display: flex; justify-content: space-between; margin-top: .5rem; font-family: var(--font-label); font-size: .8rem; color: var(--muted); }
   @media (max-width: 40rem) { .media-frame.is-audio { flex-direction: column; align-items: stretch; } .media-frame.is-audio :global(img) { width: 100%; aspect-ratio: 16 / 9; } }
-  .media-pop.is-info { width: min(38rem, 92vw); }
-  .media-frame.is-info :global(.info-text) { margin: 0 0 1.25rem; font-size: 1.05rem; line-height: 1.6; }
-  .media-frame.is-info :global(.info-links) { list-style: none; margin: 0 0 1.75rem; padding: 0; border-top: 1px solid #1f1d1d26; }
-  .media-frame.is-info :global(.info-links li) { border-bottom: 1px solid #1f1d1d26; }
-  .media-frame.is-info :global(.info-links a) { display: block; padding: .8rem 0; }
-  .media-frame.is-info :global(.info-links a:hover) { text-decoration: underline; text-underline-offset: 3px; }
   .media-frame :global(iframe) { width: 100%; height: 100%; border: 0; display: block; }
   .media-caption { margin: 1.1rem 0 0; color: var(--muted); max-width: 46rem; }
   .media-close { flex: none; width: 2.5rem; height: 2.5rem; border: 2px solid var(--ink); box-shadow: 2px 2px 0 var(--ink); border-radius: 999px; background: var(--paper); color: var(--ink); font-size: 1.5rem; line-height: 1; cursor: pointer; }
@@ -293,6 +263,25 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   .actions { position: relative; z-index: 2; display: grid; gap: 1rem; grid-template-columns: repeat(2, 1fr); margin-top: 2rem; }
   @media (max-width: 32rem) { .actions { grid-template-columns: 1fr; } }
   .action { --sh: 3px; display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1.1rem 1.35rem; background: var(--paper); color: var(--ink); border-radius: var(--radius); text-decoration: none; font-weight: 700; font-size: 1.1rem; line-height: 1.2; }
+  .action-wrap { position: relative; display: grid; }
+  /* the extra context for each link: hidden on phones and touch screens, where the link simply jumps to its section */
+  .action-more { display: none; }
+  @media (min-width: 56rem) and (hover: hover), (min-width: 56rem) and (pointer: fine) {
+    /* grows up out of the box on hover or keyboard focus; the bottom padding bridges the gap so the pointer can reach the links */
+    .action-more { display: block; position: absolute; z-index: 3; bottom: 100%; left: 0; width: 21rem; padding-bottom: .65rem;
+      opacity: 0; visibility: hidden; transform: translateY(8px); transform-origin: bottom left;
+      transition: opacity .25s ease, transform .25s ease, visibility 0s linear .25s; }
+    .action-wrap:nth-child(n+3) .action-more { left: auto; right: 0; transform-origin: bottom right; }
+    .action-wrap:hover .action-more, .action-wrap:focus-within .action-more { opacity: 1; visibility: visible; transform: none; transition: opacity .25s ease, transform .25s ease, visibility 0s; }
+    .more-card { padding: 1.1rem 1.25rem 1rem; background: var(--paper); color: var(--ink); border: 2px solid var(--ink); border-radius: var(--radius); box-shadow: 5px 5px 0 var(--ink); white-space: normal; }
+    .more-card strong { display: block; font-family: var(--font-display); font-style: italic; font-weight: 400; font-size: 1.35rem; line-height: 1.15; }
+    .more-card p { margin: .5rem 0 .8rem; font-size: .88rem; line-height: 1.5; color: var(--muted); }
+    .more-card ul { list-style: none; margin: 0; padding: 0; border-top: 1px solid #1f1d1d22; }
+    .more-card li { border-bottom: 1px solid #1f1d1d22; }
+    .more-card a { display: block; padding: .5rem 0; font-size: .85rem; }
+    .more-card a:hover { text-decoration: underline; text-underline-offset: 3px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .action-more { transition: none !important; transform: none !important; } }
   .action .arrow { flex: none; transition: transform .25s ease; }
   .action:hover .arrow, .action:focus-visible .arrow { transform: translateY(2px); }
   @media (prefers-reduced-motion: reduce) { .action .arrow { transition: none; } }
