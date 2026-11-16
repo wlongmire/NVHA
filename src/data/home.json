@@ -26,27 +26,6 @@
   },
   "actions": [
     {
-      "link": "Write with us",
-      "blurb": "A weekly prompt, recorded workshops and a youth contest for short-form poets everywhere.",
-      "href": "#poets",
-      "title": "For poets & haikuists",
-      "text": "Join a worldwide community of short-form poets. Answer the weekly Haiku in Action prompt, learn the form in our recorded workshops, and encourage young writers through our annual youth contest.",
-      "links": [
-        {
-          "label": "Haiku in Action weekly prompt",
-          "href": "/haiku-in-action/"
-        },
-        {
-          "label": "How to Haiku workshops",
-          "href": "/online-workshops/"
-        },
-        {
-          "label": "Youth haiku contest",
-          "href": "/scholarship-contest/"
-        }
-      ]
-    },
-    {
       "link": "Visit the House",
       "blurb": "Readings, open mics and the monthly Midnight Notes in Waterfront South.",
       "href": "#house",
@@ -64,6 +43,27 @@
         {
           "label": "About the Writers House",
           "href": "/writers-house/"
+        }
+      ]
+    },
+    {
+      "link": "Write with us",
+      "blurb": "A weekly prompt, recorded workshops and a youth contest for short-form poets everywhere.",
+      "href": "#poets",
+      "title": "For poets & haikuists",
+      "text": "Join a worldwide community of short-form poets. Answer the weekly Haiku in Action prompt, learn the form in our recorded workshops, and encourage young writers through our annual youth contest.",
+      "links": [
+        {
+          "label": "Haiku in Action weekly prompt",
+          "href": "/haiku-in-action/"
+        },
+        {
+          "label": "How to Haiku workshops",
+          "href": "/online-workshops/"
+        },
+        {
+          "label": "Youth haiku contest",
+          "href": "/scholarship-contest/"
         }
       ]
     },
