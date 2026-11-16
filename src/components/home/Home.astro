@@ -89,7 +89,10 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   <section class="hero">
     <div class="wrap hero-grid">
       <div class="hero-copy">
-        <h1>{hero.headline}</h1>
+        <div class="hero-head">
+          <img class="hero-logo" src="/brand/nvha-vertical.png" alt="The Nick Virgilio Haiku Association" width="1164" height="1775" />
+          <h1>{hero.headline}</h1>
+        </div>
         <p class="lede">{hero.text}</p>
         <p class="btns">{hero.buttons.map((b) => {
           const vid = youtubeId(b.href);
@@ -243,11 +246,15 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   .hero-copy .btn { --sh: 4px; padding: .8rem 1.5rem; font-size: 1.05rem; }
   .hero-art { position: relative; width: 100%; }
   .hero-art :global(.photo) { position: relative; }
+  .hero-logo { display: none; }
   /* phones and tablets: headline, then a short mural banner, then the intro and buttons */
   @media (max-width: 55.99rem) {
     .hero-grid { gap: 0; }
     .hero-copy { display: contents; }
-    .hero h1 { order: 1; margin-block: 0 1.5rem; }
+    .hero-logo { display: block; }
+    .hero-head { order: 1; display: flex; align-items: center; gap: 1.1rem; margin-bottom: 1.5rem; }
+    .hero-logo { flex: none; width: clamp(6.5rem, 30vw, 9rem); height: auto; display: block; }
+    .hero h1 { margin: 0; font-size: clamp(1.8rem, 7.2vw, 3rem); }
     .hero-art { order: 2; margin-bottom: 1.75rem; }
     .hero-art :global(.photo) { height: clamp(10rem, 46vw, 15rem); aspect-ratio: auto !important; border: 3px solid var(--ink); border-radius: 0; }
     .hero .lede { order: 3; }

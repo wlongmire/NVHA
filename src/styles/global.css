@@ -99,6 +99,9 @@ main:has(> .band:last-child) + .site-footer { margin-top: 0; }
   html { scroll-padding-top: 5.5rem; }
   .brand-logo { height: 3.5rem; }
   .bar { min-height: 4.5rem; }
+  /* on the homepage the logo moves down beside the headline, so the phone header holds only the menu */
+  .site-header[data-home] .brand { display: none; }
+  .site-header[data-home] .bar { justify-content: flex-end; min-height: 3.5rem; }
   .site-top { display: contents; }
   .site-header { position: sticky; top: 0; z-index: 30; }
 }
