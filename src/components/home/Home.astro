@@ -243,6 +243,16 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   .hero-copy .btn { --sh: 4px; padding: .8rem 1.5rem; font-size: 1.05rem; }
   .hero-art { position: relative; width: 100%; }
   .hero-art :global(.photo) { position: relative; }
+  /* phones and tablets: headline, then a short mural banner, then the intro and buttons */
+  @media (max-width: 55.99rem) {
+    .hero-grid { gap: 0; }
+    .hero-copy { display: contents; }
+    .hero h1 { order: 1; margin-block: 0 1.5rem; }
+    .hero-art { order: 2; margin-bottom: 1.75rem; }
+    .hero-art :global(.photo) { height: clamp(10rem, 46vw, 15rem); aspect-ratio: auto !important; border: 3px solid var(--ink); border-radius: 0; }
+    .hero .lede { order: 3; }
+    .hero .btns { order: 4; }
+  }
   /* on wide screens the mural and the texture run the full height of the hero, top to bottom, edge to edge */
   @media (min-width: 56rem) {
     .hero { position: relative; isolation: isolate; overflow: hidden; padding-top: 0; }
