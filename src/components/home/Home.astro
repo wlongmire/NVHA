@@ -124,7 +124,12 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   <section class="supporters" aria-label="Our supporters">
     <div class="wrap">
       <span class="label">Our supporters</span>
-      <ul>{home.supporters.map((s) => <li><img src={s.logo} alt={s.name} loading="lazy" /></li>)}</ul>
+    </div>
+    <div class="marquee">
+      <ul class="track">
+        {home.supporters.map((s) => <li><img src={s.logo} alt={s.name} loading="lazy" /></li>)}
+        {[1, 2, 3].map(() => home.supporters.map((s) => <li aria-hidden="true"><img src={s.logo} alt="" loading="lazy" /></li>))}
+      </ul>
     </div>
   </section>
 
@@ -320,11 +325,20 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   }
 
 
-  .supporters { padding-block: 3.5rem 1rem; }
-  .supporters .wrap { display: flex; flex-direction: column; align-items: center; gap: 1.5rem; }
-  .supporters ul { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 1.5rem 3rem; list-style: none; margin: 0; padding: 0; }
-  .supporters li { display: flex; }
-  .supporters img { height: clamp(3rem, 6vw, 5rem); width: auto; mix-blend-mode: multiply; }
+  .supporters { padding-block: 1.5rem .5rem; }
+  .supporters .wrap { display: flex; justify-content: center; margin-bottom: .75rem; }
+  /* the logos glide past one after another; hover pauses, reduced motion shows them still */
+  .marquee { overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent); }
+  .supporters .track { display: flex; align-items: center; width: max-content; list-style: none; margin: 0; padding: 0; animation: glide 40s linear infinite; }
+  .supporters .marquee:hover .track { animation-play-state: paused; }
+  .supporters li { display: flex; flex: none; margin-right: clamp(2.5rem, 5vw, 4.5rem); }
+  .supporters img { height: clamp(4rem, 7.5vw, 6.5rem); width: auto; mix-blend-mode: multiply; }
+  @keyframes glide { to { transform: translateX(-50%); } }
+  @media (prefers-reduced-motion: reduce) {
+    .supporters .track { animation: none; width: auto; flex-wrap: wrap; justify-content: center; row-gap: 1rem; padding-inline: var(--gutter); }
+    .supporters li[aria-hidden] { display: none; }
+    .marquee { -webkit-mask-image: none; mask-image: none; }
+  }
 
   /* numbered bands */
   .band { padding-block: clamp(4rem, 8vw, 7rem); }
