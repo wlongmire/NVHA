@@ -26,6 +26,19 @@
   },
   "actions": [
     {
+      "link": "Featured",
+      "blurb": "This season's highlight: The Midnight Notes Live, late-night workshops for young Camden writers.",
+      "href": "#featured",
+      "title": "Featured",
+      "text": "",
+      "links": [
+        {
+          "label": "Learn more",
+          "href": "/the-midnight-notes-live-series/"
+        }
+      ]
+    },
+    {
       "link": "Write with us",
       "blurb": "A weekly prompt, recorded workshops and a youth contest for short-form poets everywhere.",
       "href": "#poets",
@@ -181,15 +194,14 @@
     "Holman",
     "Rutgers–Camden Writers House"
   ],
-  "haiku": {
-    "lines": [
-      "snowy field",
-      "a crow scribbling",
-      "the sunset"
-    ],
-    "credit": "Luca Bobeica, Grade 8, Atlanta, Georgia",
-    "note": "2026 Youth Haiku Contest winner",
-    "href": "/blogs/"
+  "featured": {
+    "kind": "Late-night workshops for young writers",
+    "title": "The Midnight Notes Live",
+    "text": "Launched in 2023, The Midnight Notes gives young, emerging Camden writers and poets a place to learn with and from each other, with workshops and readings at the Writers House and partners around the city.",
+    "image": "/uploads/2025/01/Midnight-Notes.png",
+    "imageAlt": "The Midnight Notes Live series poster",
+    "link": "Learn more",
+    "href": "/the-midnight-notes-live-series/"
   },
   "impact": [
     {
