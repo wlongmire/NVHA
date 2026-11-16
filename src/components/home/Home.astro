@@ -239,13 +239,13 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   .hero-art :global(.photo) { position: relative; }
   /* on wide screens the mural fills the right side of the hero edge to edge, fading into the periwinkle behind the words */
   @media (min-width: 56rem) {
-    .hero { position: relative; overflow: hidden; }
-    .hero-grid { max-width: none; padding-inline: clamp(1.5rem, 3vw, 3rem); position: relative; z-index: 1; min-height: max(34rem, 39vw); grid-template-columns: minmax(0, calc(46vw - clamp(1.5rem, 3vw, 3rem))) minmax(0, 1fr); }
-    .hero-art { position: absolute; z-index: 0; top: calc(-1 * clamp(3rem, 8vw, 7rem)); right: calc(50% - 50vw); bottom: 0; width: 54vw; }
+    .hero { position: relative; overflow: hidden; padding-top: 0; }
+    .hero-grid { max-width: none; padding-inline: clamp(1.5rem, 3vw, 3rem); position: relative; z-index: 1; min-height: clamp(26rem, calc(100svh - 11.5rem), 46vw); grid-template-columns: minmax(0, calc(46vw - clamp(1.5rem, 3vw, 3rem))) minmax(0, 1fr); }
+    .hero-art { position: absolute; z-index: 0; top: 0; right: calc(50% - 50vw); bottom: 0; width: 54vw; }
     .hero-art :global(.photo) { height: 100%; aspect-ratio: auto !important; border-radius: 0; }
-    .hero-grid::before { content: ''; position: absolute; z-index: -1; left: 0; right: 0; bottom: 0; top: calc(-1 * clamp(3rem, 8vw, 7rem)); background: url('/brand/hero-texture.svg') left center / cover no-repeat; pointer-events: none; }
+    .hero-grid::before { content: ''; position: absolute; z-index: -1; left: 0; right: 0; bottom: 0; top: 0; background: url('/brand/hero-texture.svg') left center / cover no-repeat; pointer-events: none; }
     .hero h1 { font-size: clamp(2.6rem, 4.4vw, 4.5rem); }
-    .hero-copy { position: relative; z-index: 2; padding-right: clamp(1.5rem, 3vw, 3rem); padding-bottom: clamp(3rem, 6vw, 5rem); }
+    .hero-copy { position: relative; z-index: 2; padding-block: 1.75rem 2.75rem; padding-right: clamp(1.5rem, 3vw, 3rem); }
   }
 
   /* the four audience cards sit inside the hero, light, and jump to their sections */
