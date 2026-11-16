@@ -1,0 +1,79 @@
+{
+  "redirects": [
+    {
+      "source": "/sitemap_index.xml",
+      "destination": "/sitemap-index.xml",
+      "permanent": true
+    },
+    {
+      "source": "/sitemap.xml",
+      "destination": "/sitemap-index.xml",
+      "permanent": true
+    },
+    {
+      "source": "/wp-sitemap.xml",
+      "destination": "/sitemap-index.xml",
+      "permanent": true
+    },
+    {
+      "source": "/event/nick-virgilio-annual-memorial-celebration/",
+      "destination": "/event/graveside-celebration/",
+      "permanent": true
+    },
+    {
+      "source": "/cart/",
+      "destination": "/store/",
+      "permanent": true
+    },
+    {
+      "source": "/checkout/",
+      "destination": "/store/",
+      "permanent": true
+    },
+    {
+      "source": "/my-account/",
+      "destination": "/store/",
+      "permanent": true
+    },
+    {
+      "source": "/donor-dashboard/",
+      "destination": "/donate-now/",
+      "permanent": true
+    },
+    {
+      "source": "/nick-virgilio-writers-house/",
+      "destination": "/writers-house/",
+      "permanent": true
+    },
+    {
+      "source": "/waterfront-south-writers-house/",
+      "destination": "/writers-house/",
+      "permanent": true
+    },
+    {
+      "source": "/recent-social-blogs-newsletters/",
+      "destination": "/newsletter/",
+      "permanent": true
+    },
+    {
+      "source": "/events/",
+      "destination": "/house-events/",
+      "permanent": true
+    },
+    {
+      "source": "/product/:slug",
+      "destination": "/store/",
+      "permanent": true
+    },
+    {
+      "source": "/blog-post/",
+      "destination": "/blogs/",
+      "permanent": true
+    },
+    {
+      "source": "/section/",
+      "destination": "/",
+      "permanent": true
+    }
+  ]
+}
