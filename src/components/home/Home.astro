@@ -272,6 +272,8 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   /* the four audience links */
   .actions { position: relative; z-index: 2; display: grid; gap: 1rem; grid-template-columns: repeat(2, 1fr); margin-top: 2rem; }
   @media (max-width: 32rem) { .actions { grid-template-columns: 1fr; } }
+  /* the audience links are a desktop feature; phones and tablets go without them */
+  @media (max-width: 55.99rem) { .actions { display: none; } }
   .action-slot { position: relative; display: grid; }
   .action-label { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1.1rem 1.35rem; font-weight: 700; font-size: 1.1rem; line-height: 1.2; color: var(--ink); text-decoration: none; }
   .sizer { display: none; }
