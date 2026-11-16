@@ -1,0 +1,17 @@
+---
+// The three homepage versions under review, at /design/a/, /design/b/ and /design/c/.
+import Base from '../../layouts/Base.astro';
+import HomeA from '../../components/home/HomeA.astro';
+import HomeB from '../../components/home/HomeB.astro';
+import HomeC from '../../components/home/HomeC.astro';
+
+export function getStaticPaths() {
+  return ['a', 'b', 'c'].map((v) => ({ params: { v } }));
+}
+const { v } = Astro.params as { v: 'a' | 'b' | 'c' };
+---
+<Base seoKey="home" theme={v}>
+  {v === 'a' && <HomeA />}
+  {v === 'b' && <HomeB />}
+  {v === 'c' && <HomeC />}
+</Base>

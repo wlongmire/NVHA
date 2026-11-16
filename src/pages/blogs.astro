@@ -1,0 +1,28 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import Photo from '../components/Photo.astro';
+import { fmtPostDate } from '../lib/dates';
+
+const posts = (await getCollection('posts', (p) => !p.data.draft)).sort((a, b) => b.data.date.localeCompare(a.data.date));
+---
+<Base seoKey="blogs" title="Latest Posts">
+  <div class="wrap">
+    <div class="page-head"><h1>Latest Posts</h1></div>
+    <div class="grid">
+      {posts.map((p) => (
+        <article>
+          <a href={`/${p.id}/`}><Photo src={p.data.image} alt="" ratio="3 / 2" label="Post image" /></a>
+          <p class="label">{fmtPostDate(p.data.date)}</p>
+          <h2><a href={`/${p.id}/`}>{p.data.title}</a></h2>
+          <p>{p.data.excerpt.replace(/\s*\[&hellip;\]$/, '…')}</p>
+        </article>
+      ))}
+    </div>
+  </div>
+</Base>
+<style>
+  .grid { display: grid; gap: 3rem 2rem; grid-template-columns: repeat(auto-fill, minmax(19rem, 1fr)); }
+  article :global(.photo) { margin-bottom: 1rem; }
+  h2 { font-size: 1.3rem; } h2 a { text-decoration: none; }
+</style>

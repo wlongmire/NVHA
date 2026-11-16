@@ -1,0 +1,196 @@
+---
+import EventCard from '../EventCard.astro';
+import Photo from '../Photo.astro';
+import site from '../../data/site.json';
+import home from '../../data/home.json';
+import { loadHome } from '../../lib/homeData';
+
+const { hasNext, upcoming, products } = await loadHome();
+const { hero, house, educators, haiku, impact, donate } = home;
+---
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <p class="tag">{hero.eyebrow}</p>
+        <h1>{hero.headline}</h1>
+        <p class="lede">{hero.text}</p>
+        <p class="btns">{hero.buttons.map((b) => <a class={`btn ${b.style === 'rose' ? 'rose' : ''}`} href={b.href}>{b.label}</a>)}</p>
+        <div class="give" role="group" aria-label="Donate">
+          <span class="label">Give today</span>
+          {donate.amounts.map((a) => <a class="btn" href={`${donate.href}?amount=${a}`}>${a}</a>)}
+          <a class="btn ghost" href={donate.href}>Other</a>
+        </div>
+      </div>
+      <div class="hero-art">
+        <Photo src={hero.image} alt={hero.imageAlt} ratio="4 / 5" position={hero.imagePosition} label="Hero image" loading="eager" />
+      </div>
+    </div>
+    <nav class="wrap actions" aria-label="Jump to a section">
+      {home.actions.map((a) => (
+        <a class="action" href={a.href}>
+          <span class="label">{a.kicker}</span>
+          <strong>{a.title}</strong>
+          <span>{a.text}</span>
+          <span class="more">{a.link} ↓</span>
+        </a>
+      ))}
+    </nav>
+  </section>
+
+  <section class="haiku" aria-label="Haiku of the week">
+    <div class="wrap">
+      <p class="label">Haiku of the week</p>
+      <blockquote>{haiku.lines.map((l) => <span>{l}</span>)}</blockquote>
+      <p class="credit">{haiku.credit} · {haiku.note} · <a class="arrow-link" href={haiku.href}>Read more poems</a></p>
+    </div>
+  </section>
+
+  <section class="impact" aria-label="Our impact">
+    <div class="wrap">{impact.map((i) => <div><b>{i.n}</b><span>{i.label}</span></div>)}</div>
+  </section>
+
+  <section class="supporters" aria-label="Our supporters">
+    <div class="wrap">
+      <span class="label">Our supporters</span>
+      <ul>{home.supporters.map((s) => <li>{s}</li>)}</ul>
+    </div>
+  </section>
+
+  <section class="band yellow" id="poets">
+    <div class="wrap">
+      <header class="band-head"><span class="num">01</span><h2>Poets &amp; Haikuists</h2></header>
+      <div class="three">
+        {home.programs.map((p) => (
+          <article class="card">
+            <Photo src={p.image} alt="" ratio="4 / 3" />
+            <h3>{p.title}</h3>
+            <p>{p.text}</p>
+            {p.note && <p class="note">{p.note}</p>}
+            <a class="arrow-link" href={p.href}>{p.link}</a>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="band cream" id="house">
+    <div class="wrap">
+      <header class="band-head"><span class="num">02</span><h2>At the Writers House</h2></header>
+      <div class="house">
+        <figure>
+          <Photo src={house.houseImage} alt="" ratio="4 / 3" />
+          <figcaption><strong>{house.houseCaption}</strong><br />{site.address}<br /><a class="arrow-link" href="/writers-house/">About the House</a></figcaption>
+        </figure>
+        <figure>
+          <Photo src={house.nickImage} alt="Nick Virgilio at his typewriter" ratio="4 / 5" />
+          <figcaption>{house.nickCaption}<br /><a class="arrow-link" href="/nick-virgilio-poet/">About Nick</a></figcaption>
+        </figure>
+        <div class="events">
+          <h3>{hasNext ? 'Upcoming events' : 'Recent events'}</h3>
+          {!hasNext && <p>Nothing new is scheduled yet. Here is what we've been up to.</p>}
+          {upcoming.map((e) => <EventCard event={e} />)}
+          <a class="arrow-link" href="/house-events/">More events</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band rose" id="educators">
+    <div class="wrap">
+      <header class="band-head"><span class="num">03</span><h2>For Educators</h2></header>
+      <div class="split">
+        <Photo src={educators.image} alt={educators.imageAlt} ratio="4 / 3" />
+        <div>
+          <h3 class="big">{educators.title}</h3>
+          <p class="sub">{educators.subtitle}</p>
+          <p>{educators.text}</p>
+          <p class="stats">{educators.stats.map((s) => <span><b>{s.n}</b>{s.label}</span>)}</p>
+          <a class="btn" href={educators.href}>{educators.link}</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band blue" id="support">
+    <div class="wrap">
+      <header class="band-head"><span class="num">04</span><h2>Support Our Work</h2></header>
+      <div class="support">
+        <div class="panel dark">
+          <h3 class="label">Books and merchandise</h3>
+          <div class="shop">{products.map((p) => (
+            <a href="/store/"><Photo src={p.data.image} alt="" ratio="3 / 4" /><span>{p.data.title}</span></a>
+          ))}</div>
+          <a class="btn rose" href="/store/">See more</a>
+        </div>
+        <div class="panel dark">
+          <h3>{home.support.rentTitle}</h3>
+          <p>The Writers House is available for readings, workshops and community events, and our poets are available to hire. Rentals and bookings help fund our free programs.</p>
+          <p class="btns"><a class="btn rose" href={home.support.rentHref}>{home.support.rentLink}</a><a class="btn" href={site.donateHref}>Donate here</a></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+<style>
+  /* hero */
+  .hero { background: var(--periwinkle); padding-block: clamp(3rem, 8vw, 7rem) 0; }
+  .hero-grid { display: grid; gap: 3rem; align-items: center; }
+  .hero h1 { font-style: italic; font-weight: 400; font-size: clamp(3rem, 8vw, 6rem); line-height: 1; margin-block: 1.25rem 1.5rem; }
+  .tag { display: inline-block; background: var(--ink); color: #fff; font-family: var(--font-label); font-size: .7rem; letter-spacing: .06em; padding: .35rem .6rem; text-transform: uppercase; margin: 0; }
+  .lede { max-width: 34rem; font-size: 1.2rem; margin-bottom: 2rem; }
+  .btns { display: flex; flex-wrap: wrap; gap: .75rem; margin: 0; }
+  .hero-art { position: relative; max-width: 28rem; justify-self: center; width: 100%; }
+  .hero-art::before { content: ''; position: absolute; inset: .75rem -.75rem -.75rem .75rem; background: var(--mustard); border-radius: var(--radius); }
+  .hero-art :global(.photo) { position: relative; }
+  @media (min-width: 56rem) { .hero-grid { grid-template-columns: 1.15fr 1fr; gap: 5rem; } }
+
+  /* the four audience cards sit inside the hero, light, and jump to their sections */
+  .hero { padding-bottom: clamp(2.5rem, 5vw, 4rem); }
+  .actions { display: grid; gap: 1rem; grid-template-columns: repeat(2, 1fr); margin-top: clamp(3rem, 6vw, 5rem); }
+  @media (min-width: 60rem) { .actions { grid-template-columns: repeat(4, 1fr); } }
+  @media (max-width: 32rem) { .actions { grid-template-columns: 1fr; } }
+  .action { background: #ffffff59; color: var(--ink); border: 1px solid #1f1d1d40; padding: 1.5rem; border-radius: var(--radius); text-decoration: none; display: flex; flex-direction: column; gap: .6rem; font-size: .95rem; transition: background .15s; }
+  .action:hover, .action:focus-visible { background: #ffffffa6; }
+  .action strong { font-family: var(--font-display); font-size: 1.3rem; line-height: 1.15; } .more { font-weight: 700; margin-top: auto; padding-top: .5rem; }
+
+  .supporters { padding-block: 3.5rem 1rem; }
+  .supporters .wrap { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 2.5rem; }
+  .supporters ul { display: flex; flex-wrap: wrap; gap: 1rem 2.5rem; list-style: none; margin: 0; padding: 0; font-family: var(--font-display); font-weight: 700; color: var(--muted); }
+
+  /* numbered bands */
+  .band { padding-block: clamp(4rem, 8vw, 7rem); }
+  .supporters + .band { margin-top: clamp(2rem, 4vw, 3rem); }
+  .band-head { display: flex; align-items: baseline; gap: 1rem; border-bottom: 2px solid currentColor; padding-bottom: 1rem; margin-bottom: 3rem; }
+  .band-head h2 { margin: 0; font-size: clamp(1.75rem, 4vw, 2.75rem); }
+  .num { font-family: var(--font-label); font-size: .9rem; }
+  .yellow { background: var(--mustard); } .cream { background: var(--cream); } .rose { background: var(--brick); color: #fff; } .blue { background: var(--periwinkle); }
+  .three { display: grid; gap: 3rem; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); }
+  .card :global(.photo) { margin-bottom: 1.5rem; } .card h3 { font-size: 1.75rem; text-transform: uppercase; letter-spacing: .01em; }
+  .note { font-weight: 700; }
+  .house { display: grid; gap: 3rem; grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr)); }
+  @media (min-width: 64rem) { .house { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.5fr); } }
+  figure { margin: 0; } figcaption { margin-top: 1rem; font-size: .95rem; } figcaption .arrow-link { display: inline-block; margin-top: .5rem; }
+  .events h3 { font-size: 1.5rem; }
+  .split { display: grid; gap: 3rem; align-items: center; }
+  @media (min-width: 52rem) { .split { grid-template-columns: 1fr 1fr; gap: 5rem; } }
+  .big { font-size: clamp(2rem, 4vw, 3rem); } .sub { font-weight: 700; font-size: 1.1rem; }
+  .stats { display: flex; gap: 2rem; flex-wrap: wrap; margin-block: 2rem; } .stats span { display: flex; flex-direction: column; font-size: .8rem; text-transform: uppercase; letter-spacing: .06em; }
+  .stats b { font-size: 3rem; font-family: var(--font-display); line-height: 1; letter-spacing: 0; }
+  .support { display: grid; gap: 2rem; grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr)); }
+  .panel { padding: clamp(1.5rem, 3vw, 2.5rem); border-radius: var(--radius); display: flex; flex-direction: column; align-items: flex-start; gap: 1.25rem; }
+  .panel h3 { margin: 0; } .panel .btns { margin-top: auto; } .dark { background: var(--ink); color: #fff; }
+  .shop { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; margin-block: 1.5rem 2rem; } .shop a { font-size: .8rem; text-decoration: none; } .shop :global(.photo) { margin-bottom: .6rem; }
+
+  /* donation row (from version B) */
+  .give { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem; margin-top: 1.5rem; }
+  .give .label { margin: 0 .5rem 0 0; } .give .btn { min-width: 4.5rem; text-align: center; }
+  .give .ghost { background: transparent; border-color: var(--ink); }
+  /* haiku of the week (from version A) */
+  .haiku { background: var(--cream); text-align: center; padding-block: clamp(3.5rem, 7vw, 5.5rem); }
+  .haiku blockquote { margin: 1rem 0; font-family: var(--font-display); font-style: italic; font-size: clamp(1.75rem, 4.5vw, 3rem); line-height: 1.25; }
+  .haiku blockquote span { display: block; } .credit { font-size: .9rem; color: var(--muted); margin: 0; }
+  /* impact numbers (from version B) */
+  .impact { padding-block: clamp(3rem, 6vw, 4.5rem); }
+  .impact .wrap { display: grid; gap: 2rem; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); text-align: center; }
+  .impact div { display: flex; flex-direction: column; } .impact b { font-family: var(--font-display); font-size: clamp(2.75rem, 6vw, 4.5rem); line-height: 1; color: var(--brick); font-weight: 500; } .impact span { margin-top: .5rem; font-size: .9rem; }
+</style>

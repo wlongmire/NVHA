@@ -1,0 +1,104 @@
+---
+// Version A: quiet editorial. The poem is the hero; paper tones, one serif, lots of air.
+import EventCard from '../EventCard.astro';
+import Photo from '../Photo.astro';
+import site from '../../data/site.json';
+import home from '../../data/home.json';
+import { loadHome } from '../../lib/homeData';
+
+const { hasNext, upcoming, products } = await loadHome();
+const { haiku, house, educators } = home;
+---
+<section class="poem">
+  <div class="wrap">
+    <p class="label">Haiku of the week</p>
+    <blockquote>
+      {haiku.lines.map((l) => <span>{l}</span>)}
+    </blockquote>
+    <p class="credit">{haiku.credit}<br /><span>{haiku.note}</span></p>
+    <p class="lede">{home.hero.text}</p>
+    <p class="btns"><a class="btn" href="/house-events/">See what's on</a><a class="btn" href="/donate-now/">Give</a></p>
+  </div>
+</section>
+
+<nav class="wrap jump" aria-label="Jump to a section">
+  {home.actions.map((a) => <a href={a.href}><span class="label">{a.kicker}</span> {a.title}</a>)}
+</nav>
+
+<section class="wrap sec" id="poets">
+  <h2>Poets &amp; Haikuists</h2>
+  <div class="rows">
+    {home.programs.map((p) => (
+      <article>
+        <Photo src={p.image} alt="" ratio="1 / 1" />
+        <div>
+          <h3>{p.title}</h3>
+          <p>{p.text}</p>
+          {p.note && <p class="note">{p.note}</p>}
+          <a class="arrow-link" href={p.href}>{p.link}</a>
+        </div>
+      </article>
+    ))}
+  </div>
+</section>
+
+<section class="wrap sec" id="house">
+  <h2>At the Writers House</h2>
+  <div class="house">
+    <figure><Photo src={house.houseImage} alt="" ratio="4 / 3" /><figcaption><strong>{house.houseCaption}</strong><br />{site.address}</figcaption></figure>
+    <figure><Photo src={house.nickImage} alt="Nick Virgilio at his typewriter" ratio="4 / 5" /><figcaption>{house.nickCaption}</figcaption></figure>
+    <div>
+      <h3>{hasNext ? 'Upcoming events' : 'Recent events'}</h3>
+      {!hasNext && <p>Nothing new is scheduled yet. Here is what we've been up to.</p>}
+      {upcoming.map((e) => <EventCard event={e} />)}
+      <a class="arrow-link" href="/house-events/">All events</a>
+    </div>
+  </div>
+</section>
+
+<section class="wrap sec split" id="educators">
+  <Photo src={educators.image} alt={educators.imageAlt} ratio="4 / 3" />
+  <div>
+    <p class="label">For educators</p>
+    <h2>{educators.title}</h2>
+    <p><em>{educators.subtitle}</em></p>
+    <p>{educators.text}</p>
+    <a class="arrow-link" href={educators.href}>{educators.link}</a>
+  </div>
+</section>
+
+<section class="wrap sec" id="support">
+  <h2>Support our work</h2>
+  <div class="shop">
+    {products.map((p) => <a href="/store/"><Photo src={p.data.image} alt="" ratio="3 / 4" /><span>{p.data.title}</span></a>)}
+    <div class="ask">
+      <p>{home.support.rentTitle}</p>
+      <p><a class="arrow-link" href={home.support.rentHref}>{home.support.rentLink}</a></p>
+      <p><a class="btn" href="/donate-now/">Give</a></p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .poem { text-align: center; padding-block: clamp(4rem, 10vw, 9rem) clamp(3rem, 6vw, 5rem); }
+  blockquote { margin: 1.5rem 0; font-family: var(--font-display); font-style: italic; font-size: clamp(2.5rem, 7vw, 5rem); line-height: 1.2; }
+  blockquote span { display: block; }
+  .credit { font-size: .95rem; color: var(--muted); } .credit span { font-size: .8rem; }
+  .lede { max-width: 34rem; margin: 3rem auto 1.5rem; font-size: 1.15rem; }
+  .btns { display: flex; gap: .75rem; justify-content: center; }
+  .jump { display: flex; flex-wrap: wrap; justify-content: center; gap: .75rem 2rem; padding-block: 1.25rem; border-block: 1px solid #1f1d1d33; }
+  .jump a { text-decoration: none; font-family: var(--font-display); } .jump a:hover { text-decoration: underline; } .jump .label { margin: 0; color: var(--muted); }
+  .sec { padding-block: clamp(4rem, 8vw, 7rem) 0; }
+  .sec h2 { font-size: clamp(2rem, 4vw, 3rem); margin-bottom: 2.5rem; }
+  .rows { display: grid; gap: 3rem; max-width: 56rem; }
+  .rows article { display: grid; grid-template-columns: 11rem 1fr; gap: 2rem; align-items: start; }
+  .rows h3 { font-size: 1.6rem; } .note { font-style: italic; }
+  .house { display: grid; gap: 3rem; grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr)); }
+  figure { margin: 0; } figcaption { margin-top: .75rem; font-size: .95rem; }
+  .split { display: grid; gap: 3rem; align-items: center; }
+  @media (min-width: 52rem) { .split { grid-template-columns: 1fr 1fr; gap: 5rem; } }
+  .shop { display: grid; gap: 2rem; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); align-items: start; }
+  .shop a { text-decoration: none; font-size: .9rem; } .shop :global(.photo) { margin-bottom: .6rem; }
+  .ask { border-top: 2px solid var(--ink); padding-top: 1rem; }
+  @media (max-width: 36rem) { .rows article { grid-template-columns: 1fr; gap: 1rem; } }
+</style>

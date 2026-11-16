@@ -1,0 +1,31 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import Photo from '../components/Photo.astro';
+
+const products = (await getCollection('products', (p) => !p.data.draft));
+const money = (n: number) => n.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+---
+<Base seoKey="store" title="Store">
+  <div class="wrap">
+    <div class="page-head"><h1>Books &amp; merchandise</h1><p>Every purchase supports free poetry programs in Camden.</p></div>
+    <div class="grid">
+      {products.map((p) => (
+        <article>
+          <Photo src={p.data.image} alt="" ratio="3 / 4" label="Product photo" />
+          <h2>{p.data.title}</h2>
+          {p.data.variations.length > 0 && <p class="opts">{p.data.variations.map((v) => v.attributes).join(' · ')}</p>}
+          <p class="price">{money(p.data.price)}</p>
+          {!p.data.inStock ? <span class="sold">Sold out</span>
+            : p.data.buyLink ? <a class="btn rose" href={p.data.buyLink} rel="noopener">Buy now</a>
+            : <span class="sold">Checkout coming soon</span>}
+        </article>
+      ))}
+    </div>
+  </div>
+</Base>
+<style>
+  .grid { display: grid; gap: 3rem 2rem; grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr)); }
+  article :global(.photo) { margin-bottom: 1rem; }
+  h2 { font-size: 1.15rem; margin-bottom: .25rem; } .price { font-weight: 700; margin-bottom: .5rem; } .opts, .sold { color: var(--muted); font-size: .9rem; }
+</style>

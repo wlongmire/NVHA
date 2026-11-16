@@ -1,0 +1,20 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import EventCard from '../components/EventCard.astro';
+import { isUpcoming } from '../lib/dates';
+
+const all = (await getCollection('events', (e) => !e.data.draft));
+const upcoming = all.filter((e) => isUpcoming(e.data)).sort((a, b) => a.data.start.localeCompare(b.data.start));
+const past = all.filter((e) => !isUpcoming(e.data)).sort((a, b) => b.data.start.localeCompare(a.data.start)).slice(0, 12);
+---
+<Base seoKey="house-events" title="Events">
+  <div class="wrap">
+    <div class="page-head"><h1>Events</h1></div>
+    <h2>Upcoming</h2>
+    {upcoming.length ? upcoming.map((e) => <EventCard event={e} />) : <p>No events are scheduled right now. Check back soon, or <a href="/newsletter/">join our newsletter</a>.</p>}
+    <h2 class="past">Recent events</h2>
+    {past.map((e) => <EventCard event={e} />)}
+  </div>
+</Base>
+<style>.past { margin-top: 3rem; }</style>

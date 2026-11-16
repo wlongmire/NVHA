@@ -1,0 +1,120 @@
+---
+// Version B: community, story-led. A big photo, a donation row above the fold, and impact numbers.
+import EventCard from '../EventCard.astro';
+import Photo from '../Photo.astro';
+import site from '../../data/site.json';
+import home from '../../data/home.json';
+import { loadHome } from '../../lib/homeData';
+
+const { hasNext, upcoming, products } = await loadHome();
+const { storyHero, donate, impact, house, educators } = home;
+---
+<section class="hero" style={`background-image: linear-gradient(#1f1d1dc4, #1f1d1d99), url(${storyHero.image})`}>
+  <div class="wrap hero-in">
+    <h1>{storyHero.headline}</h1>
+    <p class="lede">{storyHero.text}</p>
+    <form class="give" action={donate.href} aria-label="Donate">
+      <span class="label">Give today</span>
+      {donate.amounts.map((a) => <a class="btn" href={`${donate.href}?amount=${a}`}>${a}</a>)}
+      <a class="btn ghost" href={donate.href}>Other</a>
+    </form>
+  </div>
+</section>
+
+<section class="impact" aria-label="Our impact">
+  <div class="wrap">
+    {impact.map((i) => <div><b>{i.n}</b><span>{i.label}</span></div>)}
+  </div>
+</section>
+
+<nav class="wrap jump" aria-label="Jump to a section">
+  {home.actions.map((a) => <a href={a.href}>{a.kicker}: {a.title} ↓</a>)}
+</nav>
+
+<section class="wrap sec split" id="educators">
+  <Photo src={educators.image} alt={educators.imageAlt} ratio="4 / 3" />
+  <div>
+    <p class="label">For educators</p>
+    <h2>{educators.title}</h2>
+    <p class="sub">{educators.subtitle}</p>
+    <p>{educators.text}</p>
+    <a class="btn rose" href={educators.href}>{educators.link}</a>
+  </div>
+</section>
+
+<section class="sec tint" id="poets">
+  <div class="wrap">
+    <h2>Poets &amp; haikuists</h2>
+    <div class="three">
+      {home.programs.map((p) => (
+        <article class="card">
+          <Photo src={p.image} alt="" ratio="4 / 3" />
+          <div class="in">
+            <h3>{p.title}</h3>
+            <p>{p.text}</p>
+            <a class="arrow-link" href={p.href}>{p.link}</a>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<section class="wrap sec" id="house">
+  <h2>At the Writers House</h2>
+  <div class="house">
+    <div>
+      <Photo src={house.houseImage} alt="" ratio="16 / 10" />
+      <p class="cap"><strong>{house.houseCaption}</strong><br />{site.address}</p>
+      <a class="arrow-link" href="/writers-house/">About the House</a>
+    </div>
+    <div>
+      <h3>{hasNext ? 'Upcoming events' : 'Recent events'}</h3>
+      {!hasNext && <p>Nothing new is scheduled yet. Here is what we've been up to.</p>}
+      {upcoming.map((e) => <EventCard event={e} />)}
+      <a class="arrow-link" href="/house-events/">All events</a>
+    </div>
+  </div>
+</section>
+
+<section class="sec dark" id="support">
+  <div class="wrap">
+    <h2>Support our work</h2>
+    <div class="support">
+      <div class="shop">
+        {products.map((p) => <a href="/store/"><Photo src={p.data.image} alt="" ratio="3 / 4" /><span>{p.data.title}</span></a>)}
+      </div>
+      <div>
+        <h3>{home.support.rentTitle}</h3>
+        <p class="btns"><a class="btn rose" href={home.support.rentHref}>{home.support.rentLink}</a><a class="btn" href={donate.href}>Donate</a></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero { background-size: cover; background-position: center; color: #fff; padding-block: clamp(5rem, 14vw, 11rem); }
+  .hero-in { max-width: 80rem; }
+  .hero h1 { font-size: clamp(2.75rem, 8vw, 6rem); font-weight: 700; letter-spacing: -.02em; max-width: 14ch; }
+  .lede { max-width: 36rem; font-size: 1.2rem; margin-bottom: 2rem; }
+  .give { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; }
+  .give .label { margin: 0 .5rem 0 0; } .give .btn { min-width: 5rem; text-align: center; font-size: 1.1rem; }
+  .give .ghost { color: #fff; border-color: #fff; background: transparent; }
+  .impact { background: var(--cream); padding-block: 3rem; }
+  .impact .wrap { display: grid; gap: 2rem; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); }
+  .impact div { display: flex; flex-direction: column; } .impact b { font-family: var(--font-display); font-size: clamp(2.5rem, 5vw, 4rem); line-height: 1; color: var(--accent); }
+  .impact span { font-size: .9rem; margin-top: .5rem; }
+  .jump { display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; padding-block: 1.25rem; font-size: .9rem; } .jump a { font-weight: 700; text-decoration: none; } .jump a:hover { text-decoration: underline; }
+  .sec { padding-block: clamp(4rem, 8vw, 7rem) 0; } .sec h2 { font-size: clamp(2rem, 4vw, 3rem); margin-bottom: 2.5rem; }
+  .split { display: grid; gap: 3rem; align-items: center; }
+  @media (min-width: 52rem) { .split { grid-template-columns: 1fr 1fr; gap: 5rem; } }
+  .sub { font-weight: 700; font-size: 1.1rem; }
+  .tint { background: var(--cream); padding-block: clamp(4rem, 8vw, 7rem); margin-top: clamp(4rem, 8vw, 7rem); }
+  .three { display: grid; gap: 2rem; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); }
+  .card { background: #fff; border-radius: var(--radius); overflow: hidden; } .card :global(.photo) { border-radius: 0; } .in { padding: 1.5rem; } .in h3 { font-size: 1.4rem; }
+  .house { display: grid; gap: 3rem; grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr)); } .cap { margin: 1rem 0 .5rem; }
+  .dark { background: var(--ink); color: #fff; padding-block: clamp(4rem, 8vw, 7rem); margin-top: clamp(4rem, 8vw, 7rem); }
+  .support { display: grid; gap: 3rem; grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr)); align-items: center; }
+  .shop { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; } .shop a { font-size: .8rem; text-decoration: none; } .shop :global(.photo) { margin-bottom: .6rem; }
+  .btns { display: flex; flex-wrap: wrap; gap: .75rem; }
+</style>

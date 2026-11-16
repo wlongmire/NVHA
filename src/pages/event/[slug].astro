@@ -1,0 +1,32 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { fmtDay, fmtTime, hasTime } from '../../lib/dates';
+import { clip, plain } from '../../lib/markdown';
+
+export async function getStaticPaths() {
+  const events = await getCollection('events', (e) => !e.data.draft);
+  return events.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+const { entry } = Astro.props;
+const d = entry.data;
+const { Content } = await render(entry);
+const jsonLd = {
+  '@context': 'https://schema.org', '@type': 'Event', name: d.title, startDate: d.start, ...(d.end ? { endDate: d.end } : {}),
+  eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+  ...(d.venue ? { location: { '@type': 'Place', name: d.venue, address: d.address || undefined } } : {}),
+  ...(d.image ? { image: new URL(d.image, Astro.site).href } : {}),
+};
+---
+<Base title={d.title} description={clip(plain(entry.body ?? ''))} image={d.image} jsonLd={jsonLd}>
+  <div class="wrap prose">
+    <p class="label">{fmtDay(d.start)}{hasTime(d.start) && ` · ${fmtTime(d.start)}`}</p>
+    <h1>{d.title}</h1>
+    {d.venue && <p><strong>{d.venue}</strong>{d.address && <><br />{d.address}</>}</p>}
+    {d.cost && <p>Cost: {d.cost}</p>}
+    {d.image && <img src={d.image} alt="" />}
+    <Content />
+    {d.link && <p><a class="btn rose" href={d.link} rel="noopener">RSVP / more info</a></p>}
+    <p><a class="arrow-link" href="/house-events/">All events</a></p>
+  </div>
+</Base>
