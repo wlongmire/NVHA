@@ -24,19 +24,3 @@
   --btn-border: transparent;
   --topbar: block;
 }
-/* A: quiet editorial */
-[data-theme='a'] {
-  --bg: #f6f2ea;
-  --accent: #1f1d1d;
-  --btn-bg: transparent;
-  --btn-border: #1f1d1d;
-  --topbar: none;
-  --font-body: 'Source Serif 4', Georgia, serif;
-}
-/* B: community, story-led */
-[data-theme='b'] {
-  --bg: #ffffff;
-  --accent: #9a4a49;
-  --btn-bg: var(--mustard);
-  --font-display: 'DM Sans', system-ui, sans-serif;
-}

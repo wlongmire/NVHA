@@ -16,9 +16,8 @@ interface Props {
   type?: 'website' | 'article';
   published?: string;
   jsonLd?: Record<string, unknown>;
-  theme?: 'a' | 'b' | 'c';   // set by the /design/ pages; other pages follow the visitor's choice
 }
-const { title, description, image, seoKey, seo = {}, type = 'website', published, jsonLd, theme } = Astro.props;
+const { title, description, image, seoKey, seo = {}, type = 'website', published, jsonLd } = Astro.props;
 const saved = (seoKey ? (seoData as Record<string, any>)[seoKey] : undefined) ?? {};
 const pick = <T,>(...v: (T | undefined)[]) => v.find((x) => x);
 
@@ -39,11 +38,10 @@ const org = {
 };
 ---
 <!doctype html>
-<html lang="en" data-theme={theme ?? 'c'} data-fixed={theme ? '' : undefined}>
+<html lang="en" data-theme="c">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <script is:inline>try { var t = localStorage.getItem('nvha-design'); if (t && !document.documentElement.hasAttribute('data-fixed')) document.documentElement.dataset.theme = t; } catch (e) {}</script>
   <title>{pageTitle}</title>
   <meta name="description" content={pageDesc} />
   <meta name="robots" content={robots ? 'noindex, nofollow' : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'} />
@@ -105,25 +103,5 @@ const org = {
     </div>
     <div class="wrap legal">© {new Date().getFullYear()} Nick Virgilio Haiku Association &amp; Writers House. All rights reserved.</div>
   </footer>
-  <div class="switcher" role="group" aria-label="Design version">
-    Design
-    <button type="button" data-v="blend">Blend</button>
-    <button type="button" data-v="a">A<span class="long"> · Editorial</span></button>
-    <button type="button" data-v="b">B<span class="long"> · Story</span></button>
-  </div>
-  <script is:inline>
-    (function () {
-      var root = document.documentElement, btns = document.querySelectorAll('.switcher button');
-      var cur = function () { var t = root.dataset.theme; return t === 'c' ? 'blend' : t; };
-      function mark() { btns.forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.v === cur())); }); }
-      mark();
-      btns.forEach(function (b) { b.addEventListener('click', function () {
-        var theme = b.dataset.v === 'blend' ? 'c' : b.dataset.v;
-        try { localStorage.setItem('nvha-design', theme); } catch (e) {}
-        var home = location.pathname === '/' || location.pathname.indexOf('/design/') === 0;
-        if (home) location.href = b.dataset.v === 'blend' ? '/' : '/design/' + theme + '/'; else { root.dataset.theme = theme; mark(); }
-      }); });
-    })();
-  </script>
 </body>
 </html>

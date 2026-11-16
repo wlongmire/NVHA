@@ -56,11 +56,6 @@ p { margin: 0 0 1em; }
 .prose h2 { margin-top: 1.5em; } .prose img { margin-block: 1.5rem; border-radius: var(--radius); }
 .page-head { padding-block: 2.5rem 1rem; } .page-head h1 { font-size: clamp(2rem, 5vw, 3.25rem); }
 
-/* design switcher (for reviewing the three versions; remove before launch) */
-.switcher { position: fixed; left: 50%; bottom: 1rem; transform: translateX(-50%); z-index: 20; display: flex; align-items: center; gap: .25rem; background: var(--ink); color: #fff; padding: .35rem .5rem .35rem .9rem; border-radius: 999px; font-size: .8rem; box-shadow: 0 4px 16px #0004; }
-.switcher button { font: inherit; font-weight: 700; color: #fff; background: transparent; border: 0; border-radius: 999px; padding: .35rem .8rem; cursor: pointer; }
-.switcher button[aria-pressed='true'] { background: #fff; color: var(--ink); }
-
 /* pages that end in a full-width color band run straight into the footer */
 main:has(> .band:last-child) + .site-footer { margin-top: 0; }
 
@@ -69,7 +64,4 @@ main:has(> .band:last-child) + .site-footer { margin-top: 0; }
   html { scroll-padding-top: 5rem; }
   .site-top { display: contents; }
   .site-header { position: sticky; top: 0; z-index: 30; }
-  .switcher { font-size: .75rem; padding: .25rem .4rem .25rem .7rem; }
-  .switcher button { padding: .3rem .6rem; }
-  .switcher .long { display: none; }
 }
