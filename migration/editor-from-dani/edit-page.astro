@@ -1,0 +1,680 @@
+---
+// The /edit page: a password-protected place to change the site's CONTENT (never layouts or code).
+// The sidebar lists every page (each is an ordered list of blocks you can edit, add, remove and reorder), every entry
+// (the cards and their popups) and the site details. Saves become commits on GitHub, which redeploy the site; on your own
+// computer, with no GitHub token, they write straight to the local files. The forms are drawn from src/lib/editor/forms.ts.
+import '../../styles/tokens.css';
+import { devBypass, isAuthed, passwordConfigured } from '../../lib/editor/auth';
+import { storageMode } from '../../lib/editor/storage';
+import { BLOCK_FORMS, CONTACT_FIELDS, ENTRY_FIELDS, SITE_FIELDS } from '../../lib/editor/forms';
+
+export const prerender = false;
+
+const authed = isAuthed(Astro.request);
+const setupNeeded = !passwordConfigured() && !devBypass(Astro.request);
+const SPEC = { blocks: BLOCK_FORMS, entry: ENTRY_FIELDS, site: SITE_FIELDS, contact: CONTACT_FIELDS };
+const MODE = storageMode();
+Astro.response.headers.set('Cache-Control', 'no-store');
+Astro.response.headers.set('X-Robots-Tag', 'noindex, nofollow');
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Edit the site</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet" />
+  <style is:global>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--text); font: 400 15px/1.5 var(--font-body); }
+    button, input, select, textarea { font: inherit; color: inherit; }
+    h1, h2, h3 { font-family: var(--font-display); margin: 0; }
+    .top { position: sticky; top: 0; z-index: 20; display: flex; align-items: center; gap: 12px; padding: 10px 20px; background: var(--card); border-bottom: 1px solid var(--rule); }
+    .top h1 { font-size: 24px; color: var(--amber); margin-right: auto; }
+    .badge { font-size: 12px; padding: 3px 10px; border: 1px solid var(--rule); border-radius: 999px; color: var(--muted); }
+    .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; min-height: 40px; border-radius: 6px; border: 1.5px solid var(--amber); background: transparent; color: var(--amber); font-weight: 600; cursor: pointer; text-decoration: none; }
+    .btn:hover { background: color-mix(in srgb, var(--amber) 10%, transparent); }
+    .btn.primary { background: var(--amber); color: var(--on-amber); }
+    .btn.primary:hover { filter: brightness(1.15); }
+    .btn.small { min-height: 32px; padding: 3px 10px; font-size: 13px; }
+    .btn.danger { border-color: #9b2c2c; color: #9b2c2c; }
+    .btn:disabled { opacity: .5; cursor: default; }
+    .btn:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible, summary:focus-visible { outline: 3px solid var(--amber); outline-offset: 2px; }
+    .shell { display: grid; grid-template-columns: 300px minmax(0, 1fr); align-items: start; gap: 20px; padding: 20px; max-width: 1400px; margin: 0 auto; }
+    .side { position: sticky; top: 70px; max-height: calc(100vh - 90px); overflow: auto; background: var(--card); border: 1px solid var(--rule); border-radius: 10px; padding: 14px; }
+    .side h2 { font-size: 20px; margin: 14px 0 6px; color: var(--amber); }
+    .side h2:first-child { margin-top: 0; }
+    .side ul { list-style: none; margin: 0; padding: 0; }
+    .row { display: flex; align-items: center; gap: 4px; border-radius: 6px; }
+    .row .open { flex: 1; min-width: 0; text-align: left; background: none; border: 0; padding: 7px 8px; border-radius: 6px; cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .row .open:hover { background: color-mix(in srgb, var(--amber) 8%, transparent); }
+    .row.on .open { background: color-mix(in srgb, var(--amber) 14%, transparent); font-weight: 600; }
+    .row .mv { visibility: hidden; border: 0; background: none; cursor: pointer; padding: 2px 5px; color: var(--muted); border-radius: 4px; }
+    .row:hover .mv, .row:focus-within .mv { visibility: visible; }
+    .row .mv:hover { background: var(--rule); }
+    .tag { font-size: 11px; color: var(--muted); border: 1px solid var(--rule); border-radius: 999px; padding: 0 7px; }
+    .filter { width: 100%; padding: 7px 10px; border: 1.5px solid var(--rule); border-radius: 6px; background: var(--bg); margin: 4px 0 6px; }
+    .main { min-width: 0; background: var(--card); border: 1px solid var(--rule); border-radius: 10px; padding: 0; }
+    .bar { position: sticky; top: 56px; z-index: 10; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 12px 20px; background: var(--card); border-bottom: 1px solid var(--rule); border-radius: 10px 10px 0 0; }
+    .bar h2 { font-size: 26px; margin-right: auto; }
+    .status { font-size: 13px; color: var(--muted); }
+    .status.bad { color: #9b2c2c; font-weight: 600; }
+    .body { padding: 20px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; }
+    .empty { padding: 60px 20px; text-align: center; color: var(--muted); }
+    .problems { margin: 0; padding: 12px 16px 12px 34px; background: #fbeaea; border: 1px solid #e3b4b4; border-radius: 8px; color: #6b1d1d; }
+    .field { display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px; }
+    .field > label, .field > .lbl { font-weight: 600; font-size: 14px; }
+    .hint { font-size: 12.5px; color: var(--muted); }
+    .demo-row { display: flex; gap: 14px; align-items: center; }
+    .demo { flex: none; width: 150px; border: 1px solid var(--rule); border-radius: 8px; background: var(--bg); padding: 6px; }
+    .demo svg { display: block; width: 100%; height: auto; }
+    .demo .ln { fill: var(--rule); }
+    .demo .hd { fill: var(--text); opacity: .75; }
+    .demo .ac { fill: var(--amber); }
+    .demo .bx { fill: none; stroke: var(--rule); stroke-width: 1.5; }
+    .demo .dk { fill: var(--text); opacity: .85; }
+    .demo .pic { fill: color-mix(in srgb, var(--amber) 22%, var(--bg)); }
+    .field input[type='text'], .field select, .field textarea { width: 100%; padding: 8px 10px; border: 1.5px solid var(--rule); border-radius: 6px; background: var(--bg); }
+    .field textarea { resize: vertical; line-height: 1.5; }
+    .field textarea.md { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13.5px; }
+    .check { display: flex; align-items: flex-start; gap: 8px; }
+    .check input { margin-top: 4px; width: 18px; height: 18px; flex: none; }
+    .checks { display: flex; flex-wrap: wrap; gap: 6px 18px; }
+    .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .grp { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; }
+    fieldset.obj { border: 1px solid var(--rule); border-radius: 8px; padding: 12px 14px; margin: 0; }
+    fieldset.obj legend { font-weight: 600; font-size: 14px; padding: 0 6px; }
+    details.card { border: 1px solid var(--rule); border-radius: 8px; background: var(--card); }
+    details.card > summary { display: flex; align-items: center; gap: 8px; padding: 9px 12px; cursor: pointer; list-style: none; font-weight: 600; }
+    details.card > summary::-webkit-details-marker { display: none; }
+    details.card > summary::before { content: '▸'; color: var(--amber); }
+    details.card[open] > summary::before { content: '▾'; }
+    details.card > summary .t { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    details.card > summary .k { font-weight: 500; font-size: 12px; color: var(--amber); border: 1px solid var(--amber); border-radius: 999px; padding: 0 8px; }
+    details.card > .in { padding: 4px 14px 14px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; border-top: 1px solid var(--rule); padding-top: 14px; }
+    details.block { border-color: var(--amber); border-width: 1.5px; }
+    .ctl { display: inline-flex; gap: 2px; }
+    .ctl button { border: 1px solid var(--rule); background: var(--bg); border-radius: 5px; min-width: 28px; height: 28px; cursor: pointer; }
+    .ctl button:hover { background: var(--rule); }
+    .adder { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .adder select { padding: 7px 10px; border: 1.5px solid var(--rule); border-radius: 6px; background: var(--bg); }
+    .pic { display: grid; grid-template-columns: 140px 1fr; gap: 12px; align-items: stretch; }
+    .pic .thumb { width: 140px; min-height: 80px; border: 1px solid var(--rule); border-radius: 6px; background: var(--bg) center / contain no-repeat; display: grid; place-items: center; font-size: 11px; color: var(--muted); text-align: center; }
+    .pic .path { font-size: 12px; color: var(--muted); word-break: break-all; }
+    .pic .acts { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 8px; align-items: center; }
+    .block-head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; }
+    .block-head .lbl { font-weight: 600; font-size: 14px; }
+    .bar-add { display: flex; align-items: stretch; margin-left: auto; max-width: 100%; }
+    .bar-add select { max-width: 230px; text-overflow: ellipsis; }
+    .bar-add .btn { white-space: nowrap; }
+    .bar-add select { min-height: 36px; padding: 0 34px 0 10px; border-radius: 6px 0 0 6px; border-right-width: 0; appearance: none; -webkit-appearance: none;
+      background: var(--bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%231b2733' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 14px center; }
+    .bar-add .btn { min-height: 36px; border-radius: 0 6px 6px 0; }
+    .bar-add select:focus-visible, .bar-add .btn:focus-visible { position: relative; z-index: 1; }
+    .toast { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); background: var(--text); color: #fff; padding: 10px 18px; border-radius: 8px; z-index: 50; max-width: 90vw; }
+    .toast[hidden] { display: none; }
+    dialog { border: 1px solid var(--rule); border-radius: 12px; padding: 22px; width: min(480px, calc(100vw - 32px)); background: var(--card); color: var(--text); }
+    dialog::backdrop { background: var(--scrim); }
+    dialog form { display: grid; gap: 14px; }
+    .login { max-width: 420px; margin: 80px auto; padding: 24px; background: var(--card); border: 1px solid var(--rule); border-radius: 12px; display: grid; gap: 14px; }
+    .login input { padding: 10px; border: 1.5px solid var(--rule); border-radius: 6px; width: 100%; }
+    .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+    @media (max-width: 900px) { .shell { grid-template-columns: 1fr; padding: 12px; } .side { position: static; max-height: 320px; } .pair { grid-template-columns: 1fr; } .bar { top: 56px; } }
+  </style>
+</head>
+<body>
+  <header class="top">
+    <h1>Edit the site</h1>
+    {authed && <span class="badge" id="mode"></span>}
+    <a class="btn small" href="/" target="_blank" rel="noopener">View site</a>
+    {authed && !devBypass(Astro.request) && <button class="btn small" id="logout" type="button">Sign out</button>}
+  </header>
+
+  {setupNeeded && (
+    <main class="login">
+      <h2>One-time setup needed</h2>
+      <p>No password has been set for this page yet. Add <code>EDIT_PASSWORD</code> (and <code>GITHUB_TOKEN</code>) in the site settings, as described in <code>EDITING.md</code>, then reload this page.</p>
+    </main>
+  )}
+
+  {!setupNeeded && !authed && (
+    <main>
+      <form class="login" id="login">
+        <h2>Sign in</h2>
+        <label for="pw">Password</label>
+        <input id="pw" type="password" autocomplete="current-password" required />
+        <p class="status bad" id="login-msg" role="alert"></p>
+        <button class="btn primary" type="submit">Sign in</button>
+      </form>
+    </main>
+  )}
+
+  {authed && (
+    <div class="shell">
+      <nav class="side" aria-label="What to edit" id="side"><p class="status">Loading…</p></nav>
+      <main class="main" id="main">
+        <div class="empty">Choose a page, a card or the site details on the left.</div>
+      </main>
+    </div>
+  )}
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <script is:inline define:vars={{ SPEC, MODE, AUTHED: authed }}>
+    const $ = (s, r = document) => r.querySelector(s);
+    const el = (tag, attrs = {}, ...kids) => {
+      const n = document.createElement(tag);
+      for (const [k, v] of Object.entries(attrs)) {
+        if (v === false || v == null) continue;
+        if (k === 'class') n.className = v; else if (k === 'text') n.textContent = v;
+        else if (k.startsWith('on')) n.addEventListener(k.slice(2), v); else n.setAttribute(k, v === true ? '' : v);
+      }
+      for (const kid of kids.flat()) if (kid != null && kid !== false) n.append(kid.nodeType ? kid : document.createTextNode(kid));
+      return n;
+    };
+    // like replaceChildren, but a missing piece (null/false) is skipped instead of being written out as the word "null"
+    const fill = (node, ...kids) => node.replaceChildren(...kids.flat().filter((k) => k != null && k !== false));
+    let toastTimer;
+    const toast = (msg) => { const t = $('#toast'); t.textContent = msg; t.hidden = false; clearTimeout(toastTimer); toastTimer = setTimeout(() => (t.hidden = true), 5000); };
+    let uid = 0; const nextId = () => 'f' + ++uid;
+    // Which list items, cards and blocks are open, so redrawing a list (after a move, add or remove) keeps each one as it was.
+    const opened = new WeakSet();
+    const track = (d, o) => { if (d.open) opened.add(o); d.addEventListener('toggle', () => (d.open ? opened.add(o) : opened.delete(o))); };
+
+    async function api(path, { method = 'GET', body, form } = {}) {
+      const res = await fetch(path, {
+        method, headers: { ...(method !== 'GET' ? { 'x-edit': '1' } : {}), ...(body ? { 'content-type': 'application/json' } : {}) },
+        body: form ?? (body ? JSON.stringify(body) : undefined),
+      });
+      const data = await res.json().catch(() => ({}));
+      return { ok: res.ok, status: res.status, data };
+    }
+
+    // ---- sign in / out ----
+    $('#login')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const r = await api('/api/edit/login', { method: 'POST', body: { password: $('#pw').value } });
+      if (r.ok) location.reload(); else $('#login-msg').textContent = r.data.error || 'Could not sign in.';
+    });
+    $('#logout')?.addEventListener('click', async () => { await api('/api/edit/logout', { method: 'POST', body: {} }); location.reload(); });
+
+    if (AUTHED) start();
+
+    // ---- state ----
+    let files = null;          // what the sidebar lists
+    let cur = null;            // the open document: { path, kind, id, data, body, sha }
+    let dirty = false;
+    const touch = () => { dirty = true; setStatus('Unsaved changes'); };
+    const setStatus = (msg, bad = false) => { const s = $('#status'); if (s) { s.textContent = msg; s.classList.toggle('bad', bad); } };
+    window.addEventListener('beforeunload', (e) => { if (dirty) { e.preventDefault(); e.returnValue = ''; } });
+    document.addEventListener('keydown', (e) => { if ((e.metaKey || e.ctrlKey) && e.key === 's' && cur) { e.preventDefault(); save(); } });
+
+    async function start() {
+      $('#mode').textContent = MODE === 'local files' ? 'Test mode: saving to local files' : 'Saving to ' + MODE;
+      await loadFiles();
+      const first = location.hash.slice(1);
+      const wantsContact = first.endsWith('~contact');
+      const want = decodeURIComponent(wantsContact ? first.slice(0, -8) : first);
+      const hit = wantsContact ? files.contact : first && [...files.pages, files.site].find((f) => f.path === want);
+      if (hit) openDoc(hit.path, wantsContact ? 'contact' : hit.kind, hit.id);
+    }
+
+    async function loadFiles() {
+      const r = await api('/api/edit/files');
+      if (!r.ok) { $('#side').replaceChildren(el('p', { class: 'status bad', text: r.data.error || 'Could not load the list.' })); return; }
+      files = r.data; drawSide();
+    }
+
+    // ---- sidebar ----
+    // The Site details and the Contact Page are two forms on the same file, so a path alone does not say which is open.
+    const isOpen = (path, kind) => !!cur && cur.path === path && (cur.kind === 'contact') === (kind === 'contact');
+    function drawSide() {
+      const side = $('#side');
+      const mk = (path, label, kind, id, extra, move) => el('li', {},
+        el('div', { class: 'row' + (isOpen(path, kind) ? ' on' : '') },
+          el('button', { class: 'open', type: 'button', onclick: () => openDoc(path, kind, id), 'aria-current': isOpen(path, kind) ? 'true' : false }, label),
+          extra,
+          move ? el('span', { class: 'ctl' }, el('button', { class: 'mv', type: 'button', 'aria-label': 'Move up', onclick: () => move(-1) }, '↑'), el('button', { class: 'mv', type: 'button', 'aria-label': 'Move down', onclick: () => move(1) }, '↓')) : null));
+      const menu = files.pages.filter((p) => p.kind === 'section');
+      side.replaceChildren(
+        el('h2', { text: 'Site' }),
+        el('ul', {}, mk(files.site.path, files.site.label, 'site', 'site'), mk(files.contact.path, files.contact.label, 'contact', 'contact')),
+        el('h2', { text: 'Pages' }),
+        el('ul', {}, files.pages.map((p) => mk(p.path, p.label, p.kind, p.id, p.draft ? el('span', { class: 'tag', text: 'hidden' }) : null,
+          p.kind === 'section' ? (d) => moveInList('sections', menu, p.id, d) : null))),
+      );
+    }
+    async function moveInList(kind, list, id, d) {
+      const i = list.findIndex((x) => x.id === id), j = i + d;
+      if (j < 0 || j >= list.length) return;
+      [list[i], list[j]] = [list[j], list[i]];
+      if (kind === 'sections') { const rest = files.pages.filter((p) => p.kind !== 'section'); files.pages = [...rest, ...list]; }
+      drawSide();
+      const r = await api('/api/edit/order', { method: 'PUT', body: { kind, ids: list.map((x) => x.id) } });
+      toast(r.ok ? 'Order saved.' : r.data.error || 'Could not save the order.');
+      if (!r.ok) loadFiles();
+    }
+
+    // ---- open a document ----
+    async function openDoc(path, kind, id) {
+      if (dirty && !confirm('You have unsaved changes. Leave without saving?')) return;
+      const r = await api('/api/edit/doc?path=' + encodeURIComponent(path));
+      if (!r.ok) { toast(r.data.error || 'Could not open that.'); return; }
+      dirty = false; cardStore.clear();
+      cur = { ...r.data, kind: r.data.kind === 'page' ? 'page:' + kind : kind === 'contact' ? 'contact' : r.data.kind, id };
+      history.replaceState(null, '', '#' + encodeURIComponent(path) + (kind === 'contact' ? '~contact' : ''));
+      drawSide(); drawEditor(); restoreView();
+    }
+
+    const viewUrl = () => {
+      if (cur.kind === 'page:home') return '/';
+      if (cur.kind === 'page:about') return '/about';
+      if (cur.kind === 'page:section') return '/projects/' + cur.id;
+      return null;
+    };
+
+    function drawEditor() {
+      const main = $('#main');
+      const titles = { 'page:home': 'Home', 'page:about': 'About', 'page:section': cur.data.navLabel, site: 'Site details', contact: 'Contact Page' };
+      const url = viewUrl();
+      const body = el('div', { class: 'body', id: 'form' });
+      if (cur.kind.startsWith('page:')) body.append(pageForm());
+      else body.append(group(cur.kind === 'contact' ? SPEC.contact : SPEC.site, cur.data, { target: 'page-image' }));
+      body.addEventListener('input', touch); body.addEventListener('change', touch);
+      main.replaceChildren(
+        el('div', { class: 'bar' },
+          el('h2', { text: titles[cur.kind] }),
+          el('span', { class: 'status', id: 'status', role: 'status' }, 'Saved version'),
+          url ? el('a', { class: 'btn small', href: url, target: '_blank', rel: 'noopener' }, 'View on site') : null,
+          el('button', { class: 'btn primary', type: 'button', id: 'save', onclick: save }, 'Save')),
+        el('div', { class: 'body', id: 'problems-box', hidden: true }),
+        body);
+    }
+
+    // ---- forms, drawn from the field descriptions in SPEC ----
+    function group(fields, obj, ctx) {
+      const box = el('div', { class: 'grp' });
+      const draw = () => {
+        box.replaceChildren();
+        for (const f of fields) {
+          if (f.showIf && obj[f.showIf.key] !== f.showIf.is) continue;
+          box.append(field(f, obj, ctx, draw));
+        }
+      };
+      draw();
+      return box;
+    }
+
+    function field(f, obj, ctx, redraw) {
+      const id = nextId();
+      const hint = f.hint ? el('div', { class: 'hint', id: id + 'h', text: f.hint }) : null;
+      const describe = f.hint ? { 'aria-describedby': id + 'h' } : {};
+      switch (f.type) {
+        case 'text':
+          return el('div', { class: 'field' }, el('label', { for: id, text: f.label }), el('input', { id, type: 'text', value: obj[f.key] ?? '', ...describe, oninput: (e) => (obj[f.key] = e.target.value) }), hint);
+        case 'textarea': case 'markdown':
+          return el('div', { class: 'field' }, el('label', { for: id, text: f.label }), el('textarea', { id, rows: f.rows || 4, class: f.type === 'markdown' ? 'md' : '', ...describe, oninput: (e) => (obj[f.key] = e.target.value) }, obj[f.key] ?? ''), hint);
+        case 'bool':
+          return el('div', { class: 'field' }, el('div', { class: 'check' }, el('input', { id, type: 'checkbox', checked: !!obj[f.key], onchange: (e) => { obj[f.key] = e.target.checked; } }), el('label', { for: id, text: f.label })), hint);
+        case 'select': {
+          const sel = el('select', { id, ...describe, onchange: (e) => { obj[f.key] = e.target.value; redraw && redraw(); } }, f.options.map(([v, l]) => el('option', { value: v, selected: (obj[f.key] ?? f.options[0][0]) === v }, l)));
+          if (obj[f.key] === undefined) obj[f.key] = f.options[0][0];
+          return el('div', { class: 'field' }, el('label', { for: id, text: f.label }), sel, hint);
+        }
+        case 'checks': {
+          const arr = obj[f.key] || (obj[f.key] = []);
+          return el('div', { class: 'field', role: 'group', 'aria-label': f.label }, el('span', { class: 'lbl', text: f.label }),
+            el('div', { class: 'checks' }, f.options.map(([v, l]) => { const cid = nextId(); return el('div', { class: 'check' }, el('input', { id: cid, type: 'checkbox', checked: arr.includes(v), onchange: (e) => { const i = arr.indexOf(v); if (e.target.checked && i < 0) arr.push(v); if (!e.target.checked && i >= 0) arr.splice(i, 1); } }), el('label', { for: cid, text: l })); })), hint);
+        }
+        case 'button': {
+          const b = obj[f.key] || {};
+          const set = (k, v) => { const cur2 = obj[f.key] || {}; cur2[k] = v; obj[f.key] = cur2; };
+          return el('div', { class: 'field', role: 'group', 'aria-label': f.label }, el('span', { class: 'lbl', text: f.label }),
+            el('div', { class: 'pair' },
+              el('input', { type: 'text', placeholder: 'Words on the button', 'aria-label': f.label + ': words', value: b.label ?? '', oninput: (e) => set('label', e.target.value) }),
+              el('input', { type: 'text', placeholder: 'Address, e.g. /about or https://…', 'aria-label': f.label + ': address', value: b.url ?? '', oninput: (e) => set('url', e.target.value) })), hint);
+        }
+        case 'object': {
+          const sub = obj[f.key] || (obj[f.key] = {});
+          return el('fieldset', { class: 'obj' }, el('legend', { text: f.label }), group(f.fields, sub, ctx));
+        }
+        case 'group':
+          return el('fieldset', { class: 'obj' }, el('legend', { text: f.label }), group(f.fields, obj, ctx));
+        case 'image': return imageField(f, obj, ctx);
+        case 'list': return listField(f, obj, ctx);
+        case 'strings': return stringsField(f, obj);
+        case 'cards': return cardList(obj[f.key] || (obj[f.key] = []));
+        case 'body':   // a card's Markdown content, kept apart from its front matter (ctx.st is the card)
+          return el('div', { class: 'field' }, el('label', { for: id, text: f.label }), el('textarea', { id, class: 'md', rows: f.rows || 18, ...describe, oninput: (e) => (ctx.st.body = e.target.value) }, ctx.st.body || ''), hint);
+      }
+      return el('div');
+    }
+
+    const refPath = (ref) => (ref.startsWith('../../assets/') ? 'src/assets/' + ref.slice('../../assets/'.length) : 'src/assets/work/' + ref);
+
+    function imageField(f, obj, ctx) {
+      const id = nextId();
+      const box = el('div', { class: 'field' });
+      const draw = () => {
+        const src = obj[f.key];
+        const thumb = el('div', { class: 'thumb' }, src ? 'Loading…' : 'No picture');
+        if (src) {
+          const probe = new Image();
+          probe.onload = () => { thumb.textContent = ''; thumb.style.backgroundImage = 'url("' + probe.src + '")'; };
+          probe.onerror = () => { thumb.textContent = 'No preview'; };
+          probe.src = '/api/edit/image?path=' + encodeURIComponent(refPath(src));
+        }
+        const file = el('input', { id, type: 'file', accept: 'image/png,image/jpeg,image/webp', class: 'sr', onchange: async (e) => {
+          const picked = e.target.files[0]; if (!picked) return;
+          toast('Uploading…');
+          try {
+            const small = await shrink(picked);
+            const form = new FormData(); form.append('file', small); form.append('target', ctx.target || 'page-image');
+            const r = await api('/api/edit/upload', { method: 'POST', form });
+            if (!r.ok) { toast(r.data.error || 'Upload failed.'); return; }
+            obj[f.key] = r.data.reference; touch(); draw(); toast('Picture added. Describe it below, then Save.');
+          } catch (err) { toast('Could not read that picture.'); }
+        } });
+        fill(box, 
+          el('span', { class: 'lbl', text: f.label }),
+          el('div', { class: 'pic' }, thumb, el('div', {},
+            el('div', { class: 'acts' },
+              el('label', { class: 'btn small', for: id }, src ? 'Replace picture' : 'Choose picture'), file,
+              src ? el('button', { class: 'btn small danger', type: 'button', onclick: () => { delete obj[f.key]; if (f.altKey) delete obj[f.altKey]; touch(); draw(); } }, 'Remove') : null),
+            src && f.altKey ? el('div', { class: 'field' }, el('label', { for: id + 'a', text: 'Alt text' }),
+              el('input', { id: id + 'a', type: 'text', value: obj[f.altKey] ?? '', oninput: (e) => (obj[f.altKey] = e.target.value) })) : null)),
+          f.hint ? el('div', { class: 'hint', text: f.hint }) : null);
+      };
+      draw();
+      return box;
+    }
+
+    // Big pictures are shrunk in the browser first (the server accepts up to 4 MB).
+    async function shrink(file) {
+      if (file.size < 1_200_000) return file;
+      const bmp = await createImageBitmap(file);
+      const scale = Math.min(1, 2400 / bmp.width);
+      const c = document.createElement('canvas'); c.width = Math.round(bmp.width * scale); c.height = Math.round(bmp.height * scale);
+      c.getContext('2d').drawImage(bmp, 0, 0, c.width, c.height);
+      const asPng = file.type === 'image/png';
+      let blob = await new Promise((r) => c.toBlob(r, asPng ? 'image/png' : 'image/jpeg', 0.86));
+      let name = file.name;
+      if (blob.size > 3_800_000) { blob = await new Promise((r) => c.toBlob(r, 'image/jpeg', 0.82)); name = name.replace(/\.[^.]+$/, '') + '.jpg'; }
+      return new File([blob], name, { type: blob.type });
+    }
+
+    function listField(f, obj, ctx) {
+      const arr = obj[f.key] || (obj[f.key] = []);
+      const wrap = el('div', { class: 'field' });
+      let openIndex = -1;
+      const draw = () => {
+        fill(wrap, el('span', { class: 'lbl', text: f.label }), f.hint ? el('div', { class: 'hint', text: f.hint }) : null);
+        arr.forEach((item, i) => {
+          const name = () => (f.itemTitle && item[f.itemTitle]) || (f.itemName || 'item') + ' ' + (i + 1);
+          const t = el('span', { class: 't', text: name() });
+          const move = (d) => { const j = i + d; if (j < 0 || j >= arr.length) return; [arr[i], arr[j]] = [arr[j], arr[i]]; touch(); draw(); };
+          const d = el('details', { class: 'card', open: i === openIndex || opened.has(item) },
+            el('summary', {}, t,
+              el('span', { class: 'ctl' },
+                el('button', { type: 'button', 'aria-label': 'Move up', onclick: (e) => { e.preventDefault(); move(-1); } }, '↑'),
+                el('button', { type: 'button', 'aria-label': 'Move down', onclick: (e) => { e.preventDefault(); move(1); } }, '↓'),
+                el('button', { type: 'button', 'aria-label': 'Remove', onclick: (e) => { e.preventDefault(); if (confirm('Remove this ' + (f.itemName || 'item') + '?')) { arr.splice(i, 1); touch(); openIndex = -1; draw(); } } }, '×'))),
+            el('div', { class: 'in' }, group(f.fields, item, ctx)));
+          track(d, item);
+          d.addEventListener('input', () => { t.textContent = name(); });
+          wrap.append(d);
+        });
+        wrap.append(el('div', {}, el('button', { class: 'btn small', type: 'button', onclick: () => { arr.push(structuredClone(f.defaults || {})); touch(); openIndex = arr.length - 1; draw(); } }, '+ Add ' + (/^[aeiou]/i.test(f.itemName || '') ? 'an ' : 'a ') + (f.itemName || 'item'))));
+      };
+      draw();
+      return wrap;
+    }
+
+    function stringsField(f, obj) {
+      const arr = obj[f.key] || (obj[f.key] = []);
+      const wrap = el('div', { class: 'field' });
+      const draw = () => {
+        wrap.replaceChildren(el('span', { class: 'lbl', text: f.label }));
+        arr.forEach((s, i) => wrap.append(el('div', { class: 'adder' },
+          el('input', { type: 'text', 'aria-label': f.label + ' ' + (i + 1), value: s, style: 'flex:1;padding:8px 10px;border:1.5px solid var(--rule);border-radius:6px;background:var(--bg)', oninput: (e) => (arr[i] = e.target.value) }),
+          el('button', { class: 'btn small', type: 'button', 'aria-label': 'Remove', onclick: () => { arr.splice(i, 1); touch(); draw(); } }, '×'))));
+        wrap.append(el('div', {}, el('button', { class: 'btn small', type: 'button', onclick: () => { arr.push(''); touch(); draw(); } }, '+ Add')));
+      };
+      draw();
+      return wrap;
+    }
+
+    // ---- cards live inside the Card Grid that lists them ----
+    // A card is its own file, so one card can be listed in several grids (and changes show everywhere), but it is added,
+    // opened, edited and reordered right here in the grid. Save writes the changed cards first, then the page.
+    const cardStore = new Map();   // card id -> { id, path, data, body, sha, loaded, isNew, dirty, title }
+    let newCardCount = 0;
+    const slugify = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 80);
+    function cardState(id) {
+      let st = cardStore.get(id);
+      if (!st) {
+        const info = files.entries.find((e) => e.id === id);
+        st = { id, path: 'src/content/work/' + id + '.md', title: info ? info.title : id, loaded: false, isNew: false, dirty: false, data: null, body: '', sha: null };
+        cardStore.set(id, st);
+      }
+      return st;
+    }
+    const thisPageLabel = () => (files.pages.find((p) => p.path === cur.path) || {}).label;
+
+    function cardBody(st) {
+      const others = ((files.entries.find((e) => e.id === st.id) || {}).usedOn || []).filter((l) => l !== thisPageLabel());
+      return el('div', { class: 'grp' },
+        others.length ? el('p', { class: 'hint', text: 'This card is also shown on ' + others.join(' and ') + ', so changes here appear there too.' }) : null,
+        group(SPEC.entry, st.data, { target: 'work-image', st }));
+    }
+
+    // A Card Grid's cards: ordered, each opening in place.
+    function cardList(arr) {
+      const taken = () => arr;
+      const wrap = el('div', { class: 'field' });
+      let openId = null;
+      const draw = () => {
+        const sel = el('select', { 'aria-label': 'Add an existing card' });
+        // Rebuilt whenever it is opened, so a card just added to another group is not offered again.
+        const options = () => sel.replaceChildren(el('option', { value: '' }, 'Add an existing card…'),
+          ...files.entries.filter((e) => !taken().includes(e.id)).map((e) => el('option', { value: e.id }, e.title)));
+        options();
+        sel.addEventListener('mousedown', options); sel.addEventListener('focus', options);
+        sel.addEventListener('change', () => { if (sel.value) { arr.push(sel.value); openId = null; touch(); draw(); } });
+        const head = el('div', { class: 'block-head' }, el('span', { class: 'lbl', text: 'Cards' }),
+          el('div', { class: 'bar-add' }, sel, el('button', { class: 'btn small', type: 'button', onclick: () => {
+            const id = 'new-card-' + ++newCardCount;
+            cardStore.set(id, { id, path: '', title: '', loaded: true, isNew: true, dirty: true, data: { title: '', outcome: '', role: '', org: '', dates: '' }, body: '', sha: null });
+            arr.push(id); openId = id; touch(); draw();
+          } }, '+ New card')));
+        const items = arr.map((id, i) => {
+          const st = cardState(id);
+          const name = () => ((st.data ? st.data.title : st.title) || '').trim() || 'New card';
+          const t = el('span', { class: 't', text: name() });
+          const move = (d) => { const j = i + d; if (j < 0 || j >= arr.length) return; [arr[i], arr[j]] = [arr[j], arr[i]]; touch(); draw(); };
+          const remove = () => {
+            if (!confirm('Take "' + name() + '" out of this grid? The card itself is kept, and you can add it again from the menu.')) return;
+            arr.splice(i, 1); if (st.isNew) cardStore.delete(id); touch(); openId = null; draw();
+          };
+          const inner = el('div', { class: 'in' });
+          const d = el('details', { class: 'card', open: id === openId || opened.has(st) },
+            el('summary', {}, t,
+              el('span', { class: 'ctl' },
+                el('button', { type: 'button', 'aria-label': 'Move card up', onclick: (e) => { e.preventDefault(); move(-1); } }, '↑'),
+                el('button', { type: 'button', 'aria-label': 'Move card down', onclick: (e) => { e.preventDefault(); move(1); } }, '↓'),
+                el('button', { type: 'button', 'aria-label': 'Take card out of this grid', onclick: (e) => { e.preventDefault(); remove(); } }, '×'))),
+            inner);
+          track(d, st);
+          const show = async () => {
+            if (inner.firstChild) return;
+            if (!st.loaded) {
+              inner.textContent = 'Loading…';
+              const r = await api('/api/edit/doc?path=' + encodeURIComponent(st.path));
+              if (!r.ok) { inner.textContent = r.data.error || 'Could not open this card.'; return; }
+              st.data = r.data.data; st.body = r.data.body; st.sha = r.data.sha; st.loaded = true;
+            }
+            inner.replaceChildren(cardBody(st));
+            t.textContent = name();
+          };
+          d.addEventListener('toggle', () => { if (d.open) show(); });
+          if (d.open) show();
+          const mark = () => { st.dirty = true; t.textContent = name(); };
+          inner.addEventListener('input', mark); inner.addEventListener('change', mark);
+          return d;
+        });
+        fill(wrap, head, items.length ? items : el('p', { class: 'hint', text: 'No cards yet. Add an existing card or make a new one.' }));
+      };
+      draw();
+      return wrap;
+    }
+
+    // A small drawing of each kind of block, shown at the top of its form (decorative: the words beside it say the same).
+    const DEMOS = {
+      hero: '<rect class="pic" x="92" y="12" width="52" height="64" rx="4"/><rect class="hd" x="12" y="14" width="64" height="8" rx="2"/><rect class="ln" x="12" y="32" width="68" height="4" rx="2"/><rect class="ln" x="12" y="42" width="60" height="4" rx="2"/><rect class="ln" x="12" y="52" width="66" height="4" rx="2"/><rect class="ac" x="12" y="64" width="34" height="12" rx="6"/><rect class="bx" x="50" y="64" width="30" height="12" rx="6"/>',
+      title: '<rect class="hd" x="12" y="30" width="96" height="12" rx="2"/><rect class="ac" x="12" y="48" width="30" height="3" rx="1.5"/>',
+      overview: '<rect class="hd" x="12" y="8" width="70" height="8" rx="2"/><rect class="bx" x="12" y="24" width="120" height="14" rx="3"/><rect class="ln" x="20" y="29" width="54" height="4" rx="2"/><path class="bx" d="M120 29l4 4 4-4"/><rect class="bx" x="12" y="42" width="120" height="30" rx="3"/><rect class="ln" x="20" y="47" width="54" height="4" rx="2"/><path class="bx" d="M120 51l4-4 4 4"/><rect class="ln" x="20" y="57" width="100" height="3" rx="1.5"/><rect class="ln" x="20" y="63" width="86" height="3" rx="1.5"/><rect class="bx" x="12" y="76" width="120" height="14" rx="3"/><rect class="ln" x="20" y="81" width="54" height="4" rx="2"/><path class="bx" d="M120 81l4 4 4-4"/>',
+      cards: '<rect class="hd" x="12" y="8" width="70" height="8" rx="2"/><g><rect class="bx" x="12" y="24" width="38" height="58" rx="4"/><rect class="hd" x="17" y="30" width="26" height="4" rx="2"/><rect class="ln" x="17" y="40" width="28" height="3" rx="1.5"/><rect class="ln" x="17" y="46" width="22" height="3" rx="1.5"/><rect class="ac" x="17" y="68" width="20" height="8" rx="4"/></g><g><rect class="bx" x="56" y="24" width="38" height="58" rx="4"/><rect class="hd" x="61" y="30" width="26" height="4" rx="2"/><rect class="ln" x="61" y="40" width="28" height="3" rx="1.5"/><rect class="ln" x="61" y="46" width="22" height="3" rx="1.5"/><rect class="ac" x="61" y="68" width="20" height="8" rx="4"/></g><g><rect class="bx" x="100" y="24" width="38" height="58" rx="4"/><rect class="hd" x="105" y="30" width="26" height="4" rx="2"/><rect class="ln" x="105" y="40" width="28" height="3" rx="1.5"/><rect class="ln" x="105" y="46" width="22" height="3" rx="1.5"/><rect class="ac" x="105" y="68" width="20" height="8" rx="4"/></g>',
+      text: '<rect class="hd" x="12" y="10" width="60" height="8" rx="2"/><rect class="ln" x="12" y="26" width="76" height="4" rx="2"/><rect class="ln" x="12" y="35" width="70" height="4" rx="2"/><rect class="ln" x="12" y="44" width="76" height="4" rx="2"/><rect class="ln" x="12" y="53" width="64" height="4" rx="2"/><rect class="ln" x="12" y="62" width="72" height="4" rx="2"/><rect class="pic" x="100" y="26" width="40" height="52" rx="4"/>',
+    };
+    const demo = (type) => {
+      const box = el('div', { class: 'demo', 'aria-hidden': 'true' });
+      box.innerHTML = '<svg viewBox="0 0 150 94" xmlns="http://www.w3.org/2000/svg">' + (DEMOS[type] || '') + '</svg>';
+      return box;
+    };
+
+    // ---- a page: its details, then its blocks in order ----
+    function pageForm() {
+      const isSection = cur.kind === 'page:section';
+      const top = [
+        { key: isSection ? 'navLabel' : 'title', label: isSection ? 'Page Title (also the menu name)' : 'Page Title', type: 'text' },
+      ];
+      const wrap = el('div', { class: 'grp' }, group(top, cur.data, {}));
+      const list = el('div', { class: 'grp' });
+      const blocks = cur.data.blocks || (cur.data.blocks = []);
+      let openIndex = -1;
+      const drawBlocks = () => {
+        list.replaceChildren();
+        if (!blocks.length) list.append(el('p', { class: 'hint', text: 'This page has no blocks yet. Add one with the menu beside Block List.' }));
+        blocks.forEach((b, i) => {
+          const spec = SPEC.blocks[b.type]; if (!spec) return;
+          const t = el('span', { class: 't', text: b.headline || b.title || spec.label });
+          const move = (d) => { const j = i + d; if (j < 0 || j >= blocks.length) return; [blocks[i], blocks[j]] = [blocks[j], blocks[i]]; touch(); drawBlocks(); };
+          const d = el('details', { class: 'card block', open: i === openIndex || blocks.length === 1 || opened.has(b) },
+            el('summary', {}, el('span', { class: 'k', text: spec.label }), t,
+              el('span', { class: 'ctl' },
+                el('button', { type: 'button', 'aria-label': 'Move block up', onclick: (e) => { e.preventDefault(); move(-1); } }, '↑'),
+                el('button', { type: 'button', 'aria-label': 'Move block down', onclick: (e) => { e.preventDefault(); move(1); } }, '↓'),
+                el('button', { type: 'button', 'aria-label': 'Remove block', onclick: (e) => { e.preventDefault(); if (confirm('Remove this ' + spec.label + ' block from the page?')) { blocks.splice(i, 1); touch(); openIndex = -1; drawBlocks(); } } }, '×'))),
+            el('div', { class: 'in' }, el('div', { class: 'demo-row' }, demo(b.type), el('p', { class: 'hint', text: spec.hint })), group(spec.fields, b, { target: 'page-image' })));
+          track(d, b);
+          d.addEventListener('input', () => { t.textContent = b.headline || b.title || spec.label; });
+          list.append(d);
+        });
+      };
+      drawBlocks();
+      const typeSel = el('select', { id: 'new-block-type', 'aria-label': 'Kind of block to add' }, Object.entries(SPEC.blocks).map(([k, v]) => el('option', { value: k }, v.label)));
+      // The heading looks like the other field labels; the add-a-block controls sit beside it.
+      const head = el('div', { class: 'block-head' }, el('span', { class: 'lbl', text: 'Block List' }),
+        el('div', { class: 'bar-add' }, typeSel,
+          el('button', { class: 'btn small', type: 'button', onclick: () => { blocks.push(structuredClone(SPEC.blocks[typeSel.value].defaults)); touch(); openIndex = blocks.length - 1; drawBlocks(); } }, '+ Add block')));
+      wrap.append(head, list);
+      return wrap;
+    }
+
+    // On the dev server the page reloads after a save. Remember which blocks were open and how far down you were, so you land
+    // back in the same place (and still see the "Saved" message).
+    const VIEW = 'edit-view';
+    function rememberView() {
+      try {
+        const open = [...document.querySelectorAll('#form details')].map((d, i) => (d.open ? i : -1)).filter((i) => i >= 0);
+        sessionStorage.setItem(VIEW, JSON.stringify({ path: cur.path, open, y: window.scrollY, at: Date.now(), msg: $('#toast').textContent }));
+      } catch {}
+    }
+    function restoreView() {
+      try {
+        const v = JSON.parse(sessionStorage.getItem(VIEW) || 'null'); sessionStorage.removeItem(VIEW);
+        if (!v || v.path !== cur.path || Date.now() - v.at > 20000) return;
+        const all = document.querySelectorAll('#form details'); v.open.forEach((i) => { if (all[i]) all[i].open = true; });
+        window.scrollTo(0, v.y); setStatus('Saved'); if (v.msg) toast(v.msg);
+      } catch {}
+    }
+
+    // ---- save ----
+    // Empty optional values are dropped so files stay tidy; the few that the site needs even when empty are kept.
+    const KEEP = new Set(['role', 'org', 'dates', 'text']);
+    const KEEP_LISTS = new Set(['blocks', 'items']);
+    function prune(v, key) {
+      if (Array.isArray(v)) { const out = v.map((x) => prune(x)).filter((x) => x !== undefined); return out.length || KEEP_LISTS.has(key) ? out : undefined; }
+      if (v && typeof v === 'object') {
+        const out = {};
+        for (const [k, x] of Object.entries(v)) { const p = prune(x, k); if (p !== undefined) out[k] = p; }
+        return Object.keys(out).length ? out : undefined;
+      }
+      if (v === '' || v === null || v === undefined || v === false) return KEEP.has(key) && v === '' ? '' : undefined;
+      return v;
+    }
+
+    const showProblems = (list) => {
+      const box = $('#problems-box');
+      setStatus('Not saved.', true);
+      box.hidden = false;
+      box.replaceChildren(el('ul', { class: 'problems', role: 'alert' }, list.map((p) => el('li', { text: p }))));
+      box.scrollIntoView({ block: 'nearest' });
+    };
+
+    // Writes the cards that were added or changed inside this page's Card Grids. Returns a list of problems (empty = all saved).
+    async function saveCards() {
+      const problems = [];
+      const blocks = (cur.data.blocks || []).filter((b) => b.type === 'cards');
+      const ids = [...new Set(blocks.flatMap((b) => b.entries || []))];
+      for (const id of ids) {
+        const st = cardStore.get(id);
+        if (!st || !st.loaded || !(st.dirty || st.isNew)) continue;
+        const name = (st.data.title || '').trim() || 'New card';
+        const data = prune(st.data) || {};
+        let r, real = id;
+        if (st.isNew) {
+          const slug = slugify(st.data.title || '');
+          if (!slug) { problems.push('A new card needs a title.'); continue; }
+          real = slug; for (let n = 2; files.entries.some((e) => e.id === real) || (cardStore.has(real) && real !== id); n++) real = slug + '-' + n;
+          r = await api('/api/edit/doc', { method: 'POST', body: { path: 'src/content/work/' + real + '.md', data, body: st.body || '' } });
+        } else {
+          r = await api('/api/edit/doc', { method: 'PUT', body: { path: st.path, data, body: st.body || '', sha: st.sha } });
+        }
+        if (!r.ok) { problems.push(...[r.data.error, ...(r.data.problems || [])].filter(Boolean).map((p) => 'Card "' + name + '": ' + p)); continue; }
+        st.sha = r.data.sha; st.dirty = false;
+        if (st.isNew) {
+          cardStore.delete(id); st.isNew = false; st.id = real; st.path = 'src/content/work/' + real + '.md'; cardStore.set(real, st);
+          for (const b of blocks) (b.entries || []).forEach((x, i) => { if (x === id) b.entries[i] = real; });
+        }
+      }
+      return problems;
+    }
+
+    async function save() {
+      if (!cur) return;
+      const btn = $('#save'); btn.disabled = true; setStatus('Saving…');
+      const cardProblems = cur.kind.startsWith('page:') ? await saveCards() : [];
+      if (cardProblems.length) { btn.disabled = false; showProblems(cardProblems); return; }
+      const data = prune(cur.data) || {};
+      if (cur.kind.startsWith('page:')) data.blocks = data.blocks || [];
+      const r = await api('/api/edit/doc', { method: 'PUT', body: { path: cur.path, data, body: cur.body || '', sha: cur.sha } });
+      btn.disabled = false;
+      const box = $('#problems-box');
+      if (r.ok) {
+        cur.sha = r.data.sha; dirty = false; box.hidden = true; box.replaceChildren();
+        setStatus('Saved');
+        toast(MODE === 'local files' ? 'Saved to your local files.' : 'Saved. The live site updates in about a minute.');
+        rememberView();
+        await loadFiles();
+      } else {
+        showProblems([r.data.error, ...(r.data.problems || [])].filter(Boolean));
+      }
+    }
+
+  </script>
+</body>
+</html>

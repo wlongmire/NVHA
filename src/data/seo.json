@@ -1,0 +1,131 @@
+{
+  "section": {
+    "oldUrl": "/section/",
+    "title": "section - Nick Virgilio Haiku Association",
+    "robots": "noindex"
+  },
+  "newsletter": {
+    "oldUrl": "/newsletter/",
+    "title": "Newsletter - Nick Virgilio Haiku Association",
+    "canonical": "https://nickvirgiliohaiku.org/newsletter/"
+  },
+  "blog-post": {
+    "oldUrl": "/blog-post/",
+    "title": "Haiku Articles & Poetry Insights | NVHA Blog",
+    "description": "Read articles on haiku history, writing tips, Nick Virgilio's legacy and the role of poetry in communities. Fresh posts for poets of every level.",
+    "canonical": "https://nickvirgiliohaiku.org/blog-post/"
+  },
+  "writers-house": {
+    "oldUrl": "/writers-house/",
+    "title": "Writers House - Nick Virgilio Haiku Association",
+    "description": "Visit the Nick Virgilio Writers House—a creative hub for poets, students, and artists dedicated to preserving the spirit of haiku.",
+    "canonical": "https://nickvirgiliohaiku.org/writers-house/",
+    "ogImage": "/uploads/2024/12/NVHAHouseAfter.png"
+  },
+  "waterfront-south-writers-house": {
+    "oldUrl": "/waterfront-south-writers-house/",
+    "title": "Waterfront South Writers House | Camden NJ",
+    "description": "Visit the Nick Virgilio Writers House in Waterfront South, a creative space for poetry workshops, readings and community building through the art of haiku.",
+    "canonical": "https://nickvirgiliohaiku.org/waterfront-south-writers-house/"
+  },
+  "nick-virgilio-writers-house": {
+    "oldUrl": "/nick-virgilio-writers-house/",
+    "title": "Nick Virgilio Writers House - Nick Virgilio Haiku Association",
+    "canonical": "https://nickvirgiliohaiku.org/nick-virgilio-writers-house/",
+    "ogImage": "/uploads/2024/11/NVHAHouseAfter.png"
+  },
+  "recent-social-blogs-newsletters": {
+    "oldUrl": "/recent-social-blogs-newsletters/",
+    "title": "Newsletter - Nick Virgilio Haiku Association",
+    "description": "Catch up on haiku news, events, and stories from our community. Read newsletters and blogs that inspire and inform.",
+    "canonical": "https://nickvirgiliohaiku.org/recent-social-blogs-newsletters/",
+    "ogImage": "/uploads/2025/01/sd.jpg"
+  },
+  "nick-virgilio-poet": {
+    "oldUrl": "/nick-virgilio-poet/",
+    "title": "Nick Virgilio, poet - Nick Virgilio Haiku Association",
+    "description": "Learn about Nick Virgilio, one of America’s most beloved haiku poets, whose legacy continues to shape and inspire generations.",
+    "canonical": "https://nickvirgiliohaiku.org/nick-virgilio-poet/",
+    "ogImage": "/uploads/2024/12/33.jpg"
+  },
+  "donor-dashboard": {
+    "oldUrl": "/donor-dashboard/",
+    "title": "Donor Dashboard - Nick Virgilio Haiku Association",
+    "canonical": "https://nickvirgiliohaiku.org/donor-dashboard/"
+  },
+  "donation-failed": {
+    "oldUrl": "/donation-failed/",
+    "title": "Donation Failed - Nick Virgilio Haiku Association",
+    "canonical": "https://nickvirgiliohaiku.org/donation-failed/"
+  },
+  "donation-confirmation": {
+    "oldUrl": "/donation-confirmation/",
+    "title": "Donation Confirmation - Nick Virgilio Haiku Association",
+    "canonical": "https://nickvirgiliohaiku.org/donation-confirmation/"
+  },
+  "donate-now": {
+    "oldUrl": "/donate-now/",
+    "title": "Donate Now - Nick Virgilio Haiku Association",
+    "description": "Support haiku, healing, and community growth. Your donation helps us bring poetry workshops, events, and education to Camden and beyond.",
+    "canonical": "https://nickvirgiliohaiku.org/donate-now/",
+    "ogImage": "/uploads/2024/11/Picture6.png"
+  },
+  "blogs": {
+    "oldUrl": "/blogs/",
+    "title": "Latest Posts from the Nick Virgilio Writers House",
+    "description": "Stay updated with the latest news, poetry programs and stories from the Nick Virgilio Haiku Association and Writers House community in Camden, NJ.",
+    "canonical": "https://nickvirgiliohaiku.org/blogs/",
+    "ogImage": "/uploads/2024/06/1.png"
+  },
+  "about-us": {
+    "oldUrl": "/about-us/",
+    "title": "About NVHA | Nick Virgilio Haiku Association",
+    "description": "Learn about the Nick Virgilio Haiku Association, a 20+ year nonprofit celebrating poetry, community and the enduring legacy of haiku in Camden, NJ.",
+    "canonical": "https://nickvirgiliohaiku.org/about-us/",
+    "ogImage": "/uploads/2024/12/NVHAHouseAfter.png"
+  },
+  "house-events": {
+    "oldUrl": "/house-events/",
+    "title": "Haiku Workshops and Poetry Events at NVHA",
+    "description": "Explore upcoming haiku workshops, readings and community poetry events hosted by the Nick Virgilio Writers House in Camden, NJ. All are welcome",
+    "canonical": "https://nickvirgiliohaiku.org/house-events/",
+    "ogImage": "https://nickvirgiliohaiku.org/wp-content/plugins/events-widgets-for-elementor-and-the-events-calendar/assets/images/ectbe-preloader.gif"
+  },
+  "contact-us": {
+    "oldUrl": "/contact-us/",
+    "title": "Contact the Nick Virgilio Writers House",
+    "description": "Have a question or want to get involved? Reach out to the Nick Virgilio Haiku Association for events, workshops, donations and community programs.",
+    "canonical": "https://nickvirgiliohaiku.org/contact-us/",
+    "ogImage": "https://digitalasset.intuit.com/render/content/dam/intuit/mc-fe/en_us/images/intuit-mc-rewards-text-dark.svg"
+  },
+  "my-account": {
+    "oldUrl": "/my-account/",
+    "title": "My account - Nick Virgilio Haiku Association",
+    "canonical": "https://nickvirgiliohaiku.org/my-account/"
+  },
+  "checkout": {
+    "oldUrl": "/checkout/",
+    "title": "Checkout - Nick Virgilio Haiku Association",
+    "canonical": "https://nickvirgiliohaiku.org/checkout/",
+    "ogImage": "https://nickvirgiliohaiku.org/wp-content/plugins/woocommerce-paypal-payments/modules/ppcp-wc-gateway/assets/images/paypal.svg"
+  },
+  "cart": {
+    "oldUrl": "/cart/",
+    "title": "Cart - Nick Virgilio Haiku Association",
+    "canonical": "https://nickvirgiliohaiku.org/cart/",
+    "ogImage": "/uploads/2024/06/SelectedHaikuCove.jpg"
+  },
+  "store": {
+    "oldUrl": "/store/",
+    "title": "Haiku Books & Poetry Gifts | NVHA Store",
+    "description": "Shop haiku poetry books, anthologies and unique gifts from the Nick Virgilio Haiku Association. Support a nonprofit that keeps poetry alive in communities.",
+    "canonical": "https://nickvirgiliohaiku.org/store/"
+  },
+  "home": {
+    "oldUrl": "/",
+    "title": "Nick Virgilio Haiku Association & Writers House",
+    "description": "A nonprofit poetry community in Camden, NJ offering haiku workshops, youth contests, readings and events inspired by Nick Virgilio's lasting legacy.",
+    "canonical": "https://nickvirgiliohaiku.org/",
+    "ogImage": "/uploads/2024/07/l2.jpg"
+  }
+}
