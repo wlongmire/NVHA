@@ -101,10 +101,8 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
     </div>
     <nav class="wrap actions" aria-label="Jump to a section">
       {home.actions.map((a) => (
-        <a class="action pop-card" href={a.href}>
-          <strong>{a.title}</strong>
-          <span>{a.text}</span>
-          <span class="more">{a.link} ↓</span>
+        <a class="action pop-card" href={a.href} title={a.text}>
+          <span>{a.link}</span><span class="arrow" aria-hidden="true">↓</span>
         </a>
       ))}
     </nav>
@@ -251,13 +249,18 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   }
 
   /* the four audience cards sit inside the hero, light, and jump to their sections */
-  .hero { padding-bottom: clamp(2.5rem, 5vw, 4rem); }
-  .actions { display: grid; gap: 1rem; grid-template-columns: repeat(2, 1fr); margin-top: clamp(3rem, 6vw, 5rem); }
-  @media (min-width: 60rem) { .actions { grid-template-columns: repeat(4, 1fr); } }
+  .hero { padding-bottom: clamp(2rem, 4vw, 3rem); }
+  /* the four audience links: one row of equal boxes along the bottom of the hero */
+  .actions { position: relative; z-index: 2; display: grid; gap: 1rem; grid-template-columns: repeat(2, 1fr); margin-top: 2rem; }
   @media (max-width: 32rem) { .actions { grid-template-columns: 1fr; } }
-  .action { background: #ffffffb3; color: var(--ink); padding: 1.5rem; border-radius: var(--radius); text-decoration: none; display: flex; flex-direction: column; gap: .6rem; font-size: .95rem; transition: background .25s ease, transform .25s ease, box-shadow .25s ease; }
-  .action:hover, .action:focus-visible { background: #fff; }
-  .action strong { font-family: var(--font-display); font-size: 1.3rem; line-height: 1.15; } .more { font-weight: 700; margin-top: auto; padding-top: .5rem; }
+  .action { --sh: 3px; display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1.1rem 1.35rem; background: var(--paper); color: var(--ink); border-radius: var(--radius); text-decoration: none; font-weight: 700; font-size: 1.1rem; line-height: 1.2; }
+  .action .arrow { flex: none; transition: transform .25s ease; }
+  .action:hover .arrow, .action:focus-visible .arrow { transform: translateY(2px); }
+  @media (prefers-reduced-motion: reduce) { .action .arrow { transition: none; } }
+  /* wide screens: full hero width, sitting half over the bottom edge of the mural */
+  @media (min-width: 56rem) {
+    .actions { max-width: none; padding-inline: clamp(1.5rem, 3vw, 3rem); grid-template-columns: repeat(4, 1fr); gap: clamp(1rem, 2vw, 1.75rem); margin-top: -2rem; }
+  }
 
   .supporters { padding-block: 3.5rem 1rem; }
   .supporters .wrap { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 2.5rem; }
