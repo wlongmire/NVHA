@@ -140,9 +140,9 @@ const { hero, house, educators, haiku, impact, donate } = home;
   @media (min-width: 56rem) {
     .hero { position: relative; overflow: hidden; }
     .hero-grid { position: relative; z-index: 1; min-height: 34rem; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
-    .hero-art { position: absolute; z-index: 0; top: calc(-1 * clamp(3rem, 8vw, 7rem)); right: calc(50% - 50vw); bottom: 0; width: 56vw; }
-    .hero-art :global(.photo) { height: 100%; aspect-ratio: auto !important; border-radius: 0; opacity: .78; }
-    .hero-art::after { content: ''; position: absolute; inset: 0 0 0 -2px; background: linear-gradient(90deg, var(--periwinkle) 0%, var(--periwinkle) 12%, #9a9df700 85%); pointer-events: none; }
+    .hero-art { position: absolute; z-index: 0; top: calc(-1 * clamp(3rem, 8vw, 7rem)); right: calc(50% - 50vw); bottom: 0; width: 50vw; }
+    .hero-art :global(.photo) { height: 100%; aspect-ratio: auto !important; border-radius: 0; }
+    .hero-art::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, #9a9df7b3 0%, #9a9df700 40%); pointer-events: none; }
     .hero-copy { position: relative; z-index: 2; padding-bottom: clamp(3rem, 6vw, 5rem); }
   }
 
