@@ -26,6 +26,6 @@ const money = (n: number) => n.toLocaleString('en-US', { style: 'currency', curr
 </Base>
 <style>
   .grid { display: grid; gap: 3rem 2rem; grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr)); }
-  article :global(.photo) { margin-bottom: 1rem; }
+  article :global(.photo) { margin-bottom: 1.25rem; border: 2px solid var(--ink); box-shadow: 5px 5px 0 var(--ink); }
   h2 { font-size: 1.15rem; margin-bottom: .25rem; } .price { font-weight: 700; margin-bottom: .5rem; } .opts, .sold { color: var(--muted); font-size: .9rem; }
 </style>

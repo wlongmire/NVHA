@@ -101,7 +101,7 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
     </div>
     <nav class="wrap actions" aria-label="Jump to a section">
       {home.actions.map((a) => (
-        <a class="action" href={a.href}>
+        <a class="action pop-card" href={a.href}>
           <strong>{a.title}</strong>
           <span>{a.text}</span>
           <span class="more">{a.link} ↓</span>
@@ -204,7 +204,7 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   </section>
 
 <style>
-  .media-pop { width: min(60rem, 92vw); max-height: 92vh; padding: clamp(1.25rem, 3vw, 2rem); border: 0; border-top: 6px solid var(--periwinkle); border-radius: var(--radius); background: var(--paper); color: var(--ink); box-shadow: 0 24px 60px #1f1d1d55; }
+  .media-pop { width: min(60rem, 92vw); max-height: 92vh; padding: clamp(1.25rem, 3vw, 2rem); border: 2px solid var(--ink); border-radius: var(--radius); background: var(--paper); color: var(--ink); box-shadow: 8px 8px 0 var(--ink); }
   .media-pop::backdrop { background: #1f1d1dcc; }
   .media-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: 1.25rem; }
   .media-title { font-style: italic; font-weight: 400; font-size: clamp(1.5rem, 3vw, 2.25rem); line-height: 1.1; margin: .25rem 0 0; }
@@ -213,7 +213,7 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   .media-frame.is-audio :global(img) { width: 9rem; aspect-ratio: 1; object-fit: cover; border-radius: var(--radius); flex: none; filter: grayscale(1); }
   .media-frame.is-audio :global(audio) { display: none; }
   .media-frame :global(.player) { flex: 1; min-width: 0; display: flex; align-items: center; gap: 1.25rem; }
-  .media-frame :global(.play) { flex: none; width: 3.75rem; height: 3.75rem; border: 0; border-radius: 999px; background: var(--accent); cursor: pointer; display: grid; place-items: center; }
+  .media-frame :global(.play) { flex: none; width: 3.75rem; height: 3.75rem; border: 2px solid var(--ink); box-shadow: 3px 3px 0 var(--ink); border-radius: 999px; background: var(--accent); cursor: pointer; display: grid; place-items: center; }
   .media-frame :global(.play:hover), .media-frame :global(.play:focus-visible) { filter: brightness(1.08); outline-offset: 3px; }
   /* triangle for play; two bars for pause */
   .media-frame :global(.play span) { width: 0; height: 0; margin-left: 4px; border-style: solid; border-width: 10px 0 10px 16px; border-color: transparent transparent transparent #fff; }
@@ -226,7 +226,7 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   @media (max-width: 40rem) { .media-frame.is-audio { flex-direction: column; align-items: stretch; } .media-frame.is-audio :global(img) { width: 100%; aspect-ratio: 16 / 9; } }
   .media-frame :global(iframe) { width: 100%; height: 100%; border: 0; display: block; }
   .media-caption { margin: 1.1rem 0 0; color: var(--muted); max-width: 46rem; }
-  .media-close { flex: none; width: 2.5rem; height: 2.5rem; border: 1px solid #1f1d1d40; border-radius: 999px; background: var(--paper); color: var(--ink); font-size: 1.5rem; line-height: 1; cursor: pointer; }
+  .media-close { flex: none; width: 2.5rem; height: 2.5rem; border: 2px solid var(--ink); box-shadow: 2px 2px 0 var(--ink); border-radius: 999px; background: var(--paper); color: var(--ink); font-size: 1.5rem; line-height: 1; cursor: pointer; }
   .media-close:hover, .media-close:focus-visible { background: var(--periwinkle); }
   /* hero */
   .hero { background: var(--periwinkle); padding-block: clamp(3rem, 8vw, 7rem) 0; }
@@ -236,9 +236,7 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   .btns { display: flex; flex-wrap: wrap; gap: .75rem; margin: 0; }
   /* hero buttons: a black outline and an offset shadow so they lift off the periwinkle; they press in on hover */
   .hero-copy .btns { gap: 1rem; }
-  .hero-copy .btn { padding: .8rem 1.5rem; font-size: 1.05rem; border: 2px solid var(--ink); box-shadow: 4px 4px 0 var(--ink); transition: transform .12s, box-shadow .12s; }
-  .hero-copy .btn:hover, .hero-copy .btn:focus-visible { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--ink); }
-  .hero-copy .btn:active { transform: translate(4px, 4px); box-shadow: 0 0 0 var(--ink); }
+  .hero-copy .btn { padding: .8rem 1.5rem; font-size: 1.05rem; box-shadow: 4px 4px 0 var(--ink); }
   .hero-art { position: relative; width: 100%; }
   .hero-art :global(.photo) { position: relative; }
   /* on wide screens the mural fills the right side of the hero edge to edge, fading into the periwinkle behind the words */
@@ -257,8 +255,8 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   .actions { display: grid; gap: 1rem; grid-template-columns: repeat(2, 1fr); margin-top: clamp(3rem, 6vw, 5rem); }
   @media (min-width: 60rem) { .actions { grid-template-columns: repeat(4, 1fr); } }
   @media (max-width: 32rem) { .actions { grid-template-columns: 1fr; } }
-  .action { background: #ffffff59; color: var(--ink); border: 1px solid #1f1d1d40; padding: 1.5rem; border-radius: var(--radius); text-decoration: none; display: flex; flex-direction: column; gap: .6rem; font-size: .95rem; transition: background .15s; }
-  .action:hover, .action:focus-visible { background: #ffffffa6; }
+  .action { background: #ffffffb3; color: var(--ink); padding: 1.5rem; border-radius: var(--radius); text-decoration: none; display: flex; flex-direction: column; gap: .6rem; font-size: .95rem; transition: background .15s; }
+  .action:hover, .action:focus-visible { background: #fff; }
   .action strong { font-family: var(--font-display); font-size: 1.3rem; line-height: 1.15; } .more { font-weight: 700; margin-top: auto; padding-top: .5rem; }
 
   .supporters { padding-block: 3.5rem 1rem; }

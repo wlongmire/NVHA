@@ -13,9 +13,19 @@ p { margin: 0 0 1em; }
 
 .label { font-family: var(--font-label); font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; margin: 0 0 .75rem; font-weight: 500; }
 .btn { display: inline-block; background: var(--btn-bg); color: var(--btn-ink); border: 2px solid var(--btn-border); font-weight: 700; text-decoration: none; padding: .55rem 1.1rem; border-radius: var(--radius); }
-.btn.rose { background: var(--accent); color: #fff; border-color: var(--accent); }
+/* the site's signature accent: a black outline with a solid offset shadow, pressing in on hover and click */
+.btn, .pop-card { border: 2px solid var(--ink); box-shadow: 3px 3px 0 var(--ink); transition: transform .12s, box-shadow .12s; }
+.btn:hover, .btn:focus-visible, a.pop-card:hover, a.pop-card:focus-visible { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--ink); }
+.btn:active, a.pop-card:active { transform: translate(3px, 3px); box-shadow: 0 0 0 var(--ink); }
+.pop-card { box-shadow: 5px 5px 0 var(--ink); }
+a.pop-card:hover, a.pop-card:focus-visible { transform: translate(3px, 3px); box-shadow: 2px 2px 0 var(--ink); }
+/* on dark panels the outline and shadow turn white so they still read */
+.dark .btn, .site-footer .btn { border-color: #fff; box-shadow: 3px 3px 0 #fff; }
+.dark .btn:hover, .dark .btn:focus-visible, .site-footer .btn:hover, .site-footer .btn:focus-visible { box-shadow: 1px 1px 0 #fff; }
+@media (prefers-reduced-motion: reduce) { .btn, .pop-card { transition: none; } }
+.btn.rose { background: var(--accent); color: #fff; }
 .btn.dark { background: var(--ink); color: #fff; }
-.btn.ghost { background: transparent; border: 2px solid currentColor; }
+.btn.ghost { background: transparent; }
 .arrow-link { font-family: var(--font-display); font-weight: 700; text-decoration: none; }
 .arrow-link::after { content: ' →'; }
 
@@ -32,7 +42,7 @@ p { margin: 0 0 1em; }
 .site-nav { display: flex; align-items: center; gap: 1.25rem; font-size: .9rem; }
 .nav-links, .nav-actions { display: flex; align-items: center; gap: 1.25rem; }
 .nav-actions { gap: .6rem; }
-.site-nav .btn.line { background: transparent; border: 1px solid var(--ink); color: var(--ink); }
+.site-nav .btn.line { background: var(--paper); color: var(--ink); }
 .brand-tag { display: none; }
 /* wide screens: the bar runs edge to edge like the hero below it; the menu spreads across the middle,
    the logo carries a short tagline, and the two buttons sit at the far right */
