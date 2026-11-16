@@ -23,10 +23,10 @@ p { margin: 0 0 1em; }
 .site-top { position: sticky; top: 0; z-index: 30; }
 .topbar { display: var(--topbar); background: var(--accent); color: #fff; font-size: .8rem; padding: .35rem 0; text-align: center; }
 .site-header { background: var(--bg); border-bottom: 1px solid #0002; position: relative; }
-.bar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 4.75rem; }
+.bar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 5.75rem; }
 .brand { display: flex; align-items: center; gap: .6rem; text-decoration: none; }
-.brand-logo { height: 3.75rem; width: auto; display: block; }
-.foot-logo { width: 11rem; height: auto; display: block; margin-bottom: 1rem; }
+.brand-logo { height: 4.75rem; width: auto; display: block; }
+.foot-logo { width: 14rem; height: auto; display: block; margin-bottom: 1rem; }
 .brand-mark { background: var(--accent); color: #fff; font-family: var(--font-label); font-weight: 500; padding: .5rem .45rem; border-radius: var(--radius); }
 .brand-name { font-family: var(--font-display); font-weight: 700; line-height: 1.05; font-size: .95rem; }
 .site-nav { display: flex; align-items: center; gap: 1.25rem; font-size: .9rem; }
@@ -63,7 +63,9 @@ main:has(> .band:last-child) + .site-footer { margin-top: 0; }
 
 /* on phones only the header stays pinned; the announcement bar scrolls away to save screen space */
 @media (max-width: 52rem) {
-  html { scroll-padding-top: 5rem; }
+  html { scroll-padding-top: 5.5rem; }
+  .brand-logo { height: 3.5rem; }
+  .bar { min-height: 4.5rem; }
   .site-top { display: contents; }
   .site-header { position: sticky; top: 0; z-index: 30; }
 }
