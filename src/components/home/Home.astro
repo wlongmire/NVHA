@@ -136,31 +136,37 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
     </div>
   </section>
   <script>
-    // supporters: the logos drift past continuously; arrows nudge by one logo; hover or focus pauses
+    // supporters: steps one logo at a time (on its own every few seconds, or with the arrows) and loops back round to the first
     document.querySelectorAll<HTMLElement>('[data-carousel]').forEach((car) => {
-      const view = car.querySelector<HTMLElement>('.car-view')!;
       const track = car.querySelector<HTMLElement>('.car-track')!;
       const originals = Array.from(track.children) as HTMLElement[];
+      const n = originals.length;
       originals.forEach((li) => { const c = li.cloneNode(true) as HTMLElement; c.setAttribute('aria-hidden', 'true'); c.querySelector('img')?.setAttribute('alt', ''); track.appendChild(c); });
       const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
-      const speed = 45; // pixels per second
-      let offset = 0, pending = 0, paused = false, last = 0;
-      const setWidth = () => track.scrollWidth / 2;
-      const draw = () => { const w = setWidth(); offset = ((offset % w) + w) % w; track.style.transform = `translate3d(${-offset}px,0,0)`; };
-      const tick = (t: number) => {
-        const dt = Math.min(0.05, (t - (last || t)) / 1000); last = t;
-        if (!paused && !still && !document.hidden) offset += speed * dt;
-        if (Math.abs(pending) > 0.5) { const d = pending * 0.12; offset += d; pending -= d; } else pending = 0;
-        draw();
-        requestAnimationFrame(tick);
+      let idx = 0, busy = false, paused = false;
+      const width = () => originals[0].offsetWidth;
+      const place = (animate: boolean) => {
+        track.style.transition = animate ? 'transform .6s ease' : 'none';
+        track.style.transform = `translate3d(${-idx * width()}px,0,0)`;
+        if (!animate) void track.offsetWidth;
       };
-      const nudge = (dir: number) => { pending += dir * (originals[0].offsetWidth); };
-      car.querySelectorAll<HTMLElement>('.car-btn').forEach((b) => b.addEventListener('click', () => nudge(Number(b.dataset.dir))));
+      const step = (dir: number) => {
+        if (busy) return;
+        if (dir < 0 && idx === 0) { idx = n; place(false); }
+        busy = true;
+        idx += dir;
+        place(!still);
+        // transitionend can be skipped (hidden tab, reduced motion), so a timer finishes the step too
+        setTimeout(done, still ? 0 : 650);
+      };
+      const done = () => { if (!busy) return; if (idx >= n) { idx -= n; place(false); } busy = false; };
+      car.querySelectorAll<HTMLElement>('.car-btn').forEach((b) => b.addEventListener('click', () => step(Number(b.dataset.dir))));
       car.addEventListener('mouseenter', () => { paused = true; });
       car.addEventListener('mouseleave', () => { paused = false; });
       car.addEventListener('focusin', () => { paused = true; });
       car.addEventListener('focusout', () => { paused = false; });
-      requestAnimationFrame(tick);
+      addEventListener('resize', () => place(false));
+      if (!still) setInterval(() => { if (!paused && !document.hidden) step(1); }, 3500);
     });
   </script>
 
@@ -358,7 +364,7 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
 
   .supporters { padding-block: 1.5rem .5rem; }
   .supporters .wrap { display: flex; justify-content: center; margin-bottom: 1rem; }
-  /* the logos drift past continuously; arrows nudge by one logo, hover pauses */
+  /* logos step along one at a time and loop round; arrows step by hand, hover pauses */
   .carousel { --per: 4; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: .75rem; max-width: 80rem; margin-inline: auto; padding-inline: var(--gutter); }
   @media (max-width: 62rem) { .carousel { --per: 3; } }
   @media (max-width: 40rem) { .carousel { --per: 2; } }
