@@ -185,7 +185,7 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
         <div class="events">
           <h3>{hasNext ? 'Upcoming events' : 'Recent events'}</h3>
           {!hasNext && <p>Nothing new is scheduled yet. Here is what we've been up to.</p>}
-          {upcoming.map((e) => <EventCard event={e} />)}
+          {upcoming.slice(0, 2).map((e) => <EventCard event={e} />)}
           <a class="arrow-link" href="/house-events/">More events</a>
         </div>
       </div>
@@ -418,6 +418,16 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   .panel .label { color: var(--ink); }
   .panel h3:not(.label) { font-size: clamp(1.4rem, 2.4vw, 1.9rem); font-weight: 800; line-height: 1.15; }
   .rose .btn { --ink-sh: var(--ink); border-color: var(--ink); }
+
+  /* on desktop each section is sized to fit one screen: the pictures scale with the window height instead of their usual ratios */
+  @media (min-width: 56rem) and (min-height: 38rem) {
+    .band :global(.photo) { aspect-ratio: auto !important; }
+    .card :global(.photo) { height: clamp(9rem, 28svh, 20rem); margin-bottom: 1rem; }
+    .house figure :global(.photo) { height: clamp(11rem, 38svh, 28rem); }
+    .split :global(.photo) { height: clamp(12rem, 44svh, 30rem); }
+    .shop :global(.photo) { height: clamp(7rem, 20svh, 13rem); }
+    .events :global(.photo) { height: auto; aspect-ratio: 1 / 1 !important; }
+  }
 
   /* donation row (from version B) */
 </style>
