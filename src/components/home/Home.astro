@@ -247,7 +247,8 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   @media (max-width: 55.99rem) {
     .hero-grid { gap: 0; }
     .hero-copy { display: contents; }
-    .hero h1 { order: 1; margin-block: 0 1.5rem; }
+    .hero { padding-top: 2rem; }
+    .hero h1 { order: 1; margin-block: 0 2rem; }
     .hero-art { order: 2; margin-bottom: 1.75rem; }
     .hero-art :global(.photo) { height: clamp(10rem, 46vw, 15rem); aspect-ratio: auto !important; border: 3px solid var(--ink); border-radius: 0; }
     .hero .lede { order: 3; }
