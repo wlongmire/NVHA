@@ -7,39 +7,78 @@ import { loadHome } from '../../lib/homeData';
 
 const { hasNext, upcoming, products } = await loadHome();
 const { hero, house, educators, haiku, impact, donate } = home;
-// A YouTube link on a hero button plays in a popup on the page instead of leaving the site.
+// A hero button that links to a YouTube video or an audio file opens it in a popup on the page instead of leaving the site.
 const youtubeId = (href: string) => href.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]{11})/)?.[1];
+const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
 ---
-  <dialog class="video-pop" aria-labelledby="video-title">
-    <div class="video-head">
-      <h2 id="video-title" class="video-title"></h2>
-      <button type="button" class="video-close" aria-label="Close video">×</button>
+  <dialog class="media-pop" aria-labelledby="media-title">
+    <div class="media-head">
+      <h2 id="media-title" class="media-title"></h2>
+      <button type="button" class="media-close" aria-label="Close">×</button>
     </div>
-    <div class="video-frame"></div>
-    <p class="video-caption" hidden></p>
+    <div class="media-frame"></div>
+    <p class="media-caption" hidden></p>
   </dialog>
   <script>
-    const pop = document.querySelector<HTMLDialogElement>('.video-pop');
-    const frame = pop?.querySelector('.video-frame');
+    const pop = document.querySelector<HTMLDialogElement>('.media-pop');
+    const frame = pop?.querySelector<HTMLElement>('.media-frame');
     if (pop && frame && typeof pop.showModal === 'function') {
-      document.querySelectorAll<HTMLAnchorElement>('a[data-video]').forEach((a) => a.addEventListener('click', (e) => {
+      document.querySelectorAll<HTMLAnchorElement>('a[data-media]').forEach((a) => a.addEventListener('click', (e) => {
         e.preventDefault();
-        const f = document.createElement('iframe');
-        f.src = `https://www.youtube-nocookie.com/embed/${a.dataset.video}?autoplay=1&rel=0`;
-        f.title = a.textContent ?? 'Video';
-        f.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
-        f.allowFullscreen = true;
-        frame.replaceChildren(f);
-        pop.querySelector('.video-title')!.textContent = a.dataset.title ?? a.textContent ?? '';
-        const cap = pop.querySelector<HTMLElement>('.video-caption')!;
-        cap.textContent = a.dataset.caption ?? '';
-        cap.hidden = !a.dataset.caption;
+        const { media, video, title, caption, cover } = a.dataset;
+        if (media === 'video') {
+          const f = document.createElement('iframe');
+          f.src = `https://www.youtube-nocookie.com/embed/${video}?autoplay=1&rel=0`;
+          f.title = title ?? 'Video';
+          f.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+          f.allowFullscreen = true;
+          frame.className = 'media-frame is-video';
+          frame.replaceChildren(f);
+        } else {
+          // a small player in the site's style: play/pause, a seek bar and the time
+          const audio = new Audio(a.href);
+          audio.preload = 'auto';
+          const player = document.createElement('div');
+          player.className = 'player';
+          player.innerHTML = `<button type="button" class="play" aria-label="Pause"><span aria-hidden="true"></span></button>
+            <div class="track"><input type="range" min="0" max="1000" value="0" aria-label="Position in recording" />
+            <div class="times"><span class="now">0:00</span><span class="total">–:––</span></div></div>`;
+          const play = player.querySelector<HTMLButtonElement>('.play')!;
+          const seek = player.querySelector<HTMLInputElement>('input')!;
+          const fmt = (t: number) => (isFinite(t) ? `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, '0')}` : '–:––');
+          const sync = () => {
+            play.classList.toggle('is-playing', !audio.paused);
+            play.setAttribute('aria-label', audio.paused ? 'Play' : 'Pause');
+          };
+          play.addEventListener('click', () => (audio.paused ? audio.play() : audio.pause()));
+          audio.addEventListener('play', sync); audio.addEventListener('pause', sync); audio.addEventListener('ended', sync);
+          audio.addEventListener('loadedmetadata', () => { player.querySelector('.total')!.textContent = fmt(audio.duration); });
+          audio.addEventListener('timeupdate', () => {
+            player.querySelector('.now')!.textContent = fmt(audio.currentTime);
+            if (audio.duration) { seek.value = String(Math.round((audio.currentTime / audio.duration) * 1000)); seek.style.setProperty('--p', `${seek.value / 10}%`); }
+          });
+          seek.addEventListener('input', () => { if (audio.duration) audio.currentTime = (Number(seek.value) / 1000) * audio.duration; });
+          const parts: Node[] = [];
+          if (cover) { const img = document.createElement('img'); img.src = cover; img.alt = ''; parts.push(img); }
+          parts.push(player, audio);
+          frame.className = 'media-frame is-audio';
+          frame.replaceChildren(...parts);
+          audio.play().catch(sync);
+          sync();
+        }
+        pop.querySelector('.media-title')!.textContent = title ?? a.textContent ?? '';
+        const cap = pop.querySelector<HTMLElement>('.media-caption')!;
+        cap.textContent = caption ?? '';
+        cap.hidden = !caption;
         pop.showModal();
       }));
-      // closing stops the video; clicking the dark area outside also closes
-      pop.addEventListener('close', () => frame.replaceChildren());
-      pop.querySelector('.video-close')?.addEventListener('click', () => pop.close());
-      pop.addEventListener('click', (e) => { if (e.target === pop) pop.close(); });
+      // closing stops playback; clicking the dark area outside also closes
+      const stop = () => { frame.querySelector('audio')?.pause(); frame.replaceChildren(); };
+      const shut = () => { stop(); pop.close(); };
+      pop.addEventListener('cancel', stop);   // Escape key
+      pop.addEventListener('close', stop);
+      pop.querySelector('.media-close')?.addEventListener('click', shut);
+      pop.addEventListener('click', (e) => { if (e.target === pop) shut(); });
     }
   </script>
   <section class="hero">
@@ -49,7 +88,11 @@ const youtubeId = (href: string) => href.match(/(?:youtube\.com\/watch\?v=|youtu
         <p class="lede">{hero.text}</p>
         <p class="btns">{hero.buttons.map((b) => {
           const vid = youtubeId(b.href);
-          return <a class={`btn ${b.style === 'rose' ? 'rose' : ''}`} href={b.href} data-video={vid} data-title={vid ? (b as any).videoTitle ?? b.label : undefined} data-caption={vid ? (b as any).caption : undefined} aria-haspopup={vid ? 'dialog' : undefined}>{b.label}</a>;
+          const media = vid ? 'video' : isAudio(b.href) ? 'audio' : undefined;
+          const x = b as { popupTitle?: string; caption?: string; cover?: string };
+          return <a class={`btn ${b.style === 'rose' ? 'rose' : ''}`} href={b.href} data-media={media} data-video={vid}
+            data-title={media ? x.popupTitle ?? b.label : undefined} data-caption={media ? x.caption : undefined} data-cover={media === 'audio' ? x.cover : undefined}
+            aria-haspopup={media ? 'dialog' : undefined}>{b.label}</a>;
         })}</p>
       </div>
       <div class="hero-art">
@@ -161,15 +204,30 @@ const youtubeId = (href: string) => href.match(/(?:youtube\.com\/watch\?v=|youtu
   </section>
 
 <style>
-  .video-pop { width: min(60rem, 92vw); max-height: 92vh; padding: clamp(1.25rem, 3vw, 2rem); border: 0; border-top: 6px solid var(--periwinkle); border-radius: var(--radius); background: var(--paper); color: var(--ink); box-shadow: 0 24px 60px #1f1d1d55; }
-  .video-pop::backdrop { background: #1f1d1dcc; }
-  .video-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: 1.25rem; }
-  .video-title { font-style: italic; font-weight: 400; font-size: clamp(1.5rem, 3vw, 2.25rem); line-height: 1.1; margin: .25rem 0 0; }
-  .video-frame { aspect-ratio: 16 / 9; background: #000; border-radius: var(--radius); overflow: hidden; }
-  .video-frame :global(iframe) { width: 100%; height: 100%; border: 0; display: block; }
-  .video-caption { margin: 1.1rem 0 0; color: var(--muted); max-width: 46rem; }
-  .video-close { flex: none; width: 2.5rem; height: 2.5rem; border: 1px solid #1f1d1d40; border-radius: 999px; background: var(--paper); color: var(--ink); font-size: 1.5rem; line-height: 1; cursor: pointer; }
-  .video-close:hover, .video-close:focus-visible { background: var(--periwinkle); }
+  .media-pop { width: min(60rem, 92vw); max-height: 92vh; padding: clamp(1.25rem, 3vw, 2rem); border: 0; border-top: 6px solid var(--periwinkle); border-radius: var(--radius); background: var(--paper); color: var(--ink); box-shadow: 0 24px 60px #1f1d1d55; }
+  .media-pop::backdrop { background: #1f1d1dcc; }
+  .media-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: 1.25rem; }
+  .media-title { font-style: italic; font-weight: 400; font-size: clamp(1.5rem, 3vw, 2.25rem); line-height: 1.1; margin: .25rem 0 0; }
+  .media-frame.is-video { aspect-ratio: 16 / 9; background: #000; border-radius: var(--radius); overflow: hidden; }
+  .media-frame.is-audio { display: flex; align-items: center; gap: 1.5rem; padding: 1.25rem; background: #9a9df726; border-radius: var(--radius); }
+  .media-frame.is-audio :global(img) { width: 9rem; aspect-ratio: 1; object-fit: cover; border-radius: var(--radius); flex: none; filter: grayscale(1); }
+  .media-frame.is-audio :global(audio) { display: none; }
+  .media-frame :global(.player) { flex: 1; min-width: 0; display: flex; align-items: center; gap: 1.25rem; }
+  .media-frame :global(.play) { flex: none; width: 3.75rem; height: 3.75rem; border: 0; border-radius: 999px; background: var(--accent); cursor: pointer; display: grid; place-items: center; }
+  .media-frame :global(.play:hover), .media-frame :global(.play:focus-visible) { filter: brightness(1.08); outline-offset: 3px; }
+  /* triangle for play; two bars for pause */
+  .media-frame :global(.play span) { width: 0; height: 0; margin-left: 4px; border-style: solid; border-width: 10px 0 10px 16px; border-color: transparent transparent transparent #fff; }
+  .media-frame :global(.play.is-playing span) { width: 14px; height: 18px; margin: 0; border: 0; border-left: 5px solid #fff; border-right: 5px solid #fff; }
+  .media-frame :global(.track) { flex: 1; min-width: 0; }
+  .media-frame :global(.track input) { width: 100%; height: 6px; margin: 0; appearance: none; border-radius: 999px; cursor: pointer; background: linear-gradient(90deg, var(--ink) var(--p, 0%), #1f1d1d26 var(--p, 0%)); }
+  .media-frame :global(.track input::-webkit-slider-thumb) { appearance: none; width: 16px; height: 16px; border-radius: 999px; background: var(--ink); border: 3px solid var(--paper); box-shadow: 0 0 0 1px #1f1d1d40; }
+  .media-frame :global(.track input::-moz-range-thumb) { width: 12px; height: 12px; border-radius: 999px; background: var(--ink); border: 3px solid var(--paper); }
+  .media-frame :global(.times) { display: flex; justify-content: space-between; margin-top: .5rem; font-family: var(--font-label); font-size: .8rem; color: var(--muted); }
+  @media (max-width: 40rem) { .media-frame.is-audio { flex-direction: column; align-items: stretch; } .media-frame.is-audio :global(img) { width: 100%; aspect-ratio: 16 / 9; } }
+  .media-frame :global(iframe) { width: 100%; height: 100%; border: 0; display: block; }
+  .media-caption { margin: 1.1rem 0 0; color: var(--muted); max-width: 46rem; }
+  .media-close { flex: none; width: 2.5rem; height: 2.5rem; border: 1px solid #1f1d1d40; border-radius: 999px; background: var(--paper); color: var(--ink); font-size: 1.5rem; line-height: 1; cursor: pointer; }
+  .media-close:hover, .media-close:focus-visible { background: var(--periwinkle); }
   /* hero */
   .hero { background: var(--periwinkle); padding-block: clamp(3rem, 8vw, 7rem) 0; }
   .hero-grid { display: grid; gap: 3rem; align-items: center; }

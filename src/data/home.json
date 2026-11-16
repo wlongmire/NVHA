@@ -7,13 +7,16 @@
     "buttons": [
       {
         "label": "Listen to Nick",
-        "href": "/nick-virgilio-poet/",
+        "href": "/uploads/audio/listen-to-nick.mp3",
+        "popupTitle": "Listen to Nick Virgilio",
+        "caption": "A recording of Nick Virgilio, the Camden haiku poet whose work this house honors.",
+        "cover": "/uploads/2024/12/33.jpg",
         "style": "rose"
       },
       {
         "label": "Watch our mission",
         "href": "https://www.youtube.com/watch?v=58Sb4AainWI",
-        "videoTitle": "The Virgilio Writers House: What We Do",
+        "popupTitle": "The Virgilio Writers House: What We Do",
         "caption": "A short look at the readings, workshops and youth programs that happen at the Writers House in Waterfront South, Camden.",
         "style": "rose"
       }
