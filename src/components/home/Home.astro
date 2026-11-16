@@ -260,8 +260,17 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   /* wide screens: full hero width, sitting half over the bottom edge of the mural */
   @media (min-width: 56rem) {
     /* sit under the mural only, from its left edge to the page margin, quieter than the hero buttons */
-    .actions { width: auto; max-width: none; margin: -1.6rem 0 0 46vw; padding: 0 clamp(1.5rem, 3vw, 3rem) 0 1.25rem; grid-template-columns: repeat(4, auto); justify-content: end; gap: .6rem; }
-    .action { --sh: 2px; gap: .5rem; padding: .65rem .8rem; font-size: .85rem; white-space: nowrap; border-width: 1.5px; background: #fffffff0; }
+    .actions { width: auto; max-width: none; margin: -1.6rem 0 0 46vw; padding: 0 clamp(1.5rem, 3vw, 3rem) 0 .75rem; grid-template-columns: repeat(4, auto); justify-content: end; gap: .5rem; }
+    .action { --sh: 2px; --ink-sh: #1f1d1d55; gap: .45rem; padding: .75rem .85rem; font-size: .9rem; white-space: nowrap; border-width: 1.5px; border-color: #1f1d1d66; background: #ffffff99; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+    .action:hover, .action:focus-visible { background: #ffffffd9; }
+  }
+  @media (min-width: 56rem) and (max-width: 88rem) {
+    .action { padding: .6rem .7rem; font-size: .8rem; gap: .35rem; }
+    .actions { gap: .4rem; }
+  }
+  /* narrow desktops: two rows of two so the links stay under the mural */
+  @media (min-width: 56rem) and (max-width: 76rem) {
+    .actions { grid-template-columns: repeat(2, auto); }
   }
 
   .supporters { padding-block: 3.5rem 1rem; }
