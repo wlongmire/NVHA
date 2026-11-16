@@ -402,5 +402,22 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   .panel h3 { margin: 0; } .panel .btns { margin-top: auto; } .dark { background: var(--ink); color: #fff; }
   .shop { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; margin-block: 1.5rem 2rem; } .shop a { font-size: .8rem; text-decoration: none; } .shop :global(.photo) { margin-bottom: .6rem; }
 
+  /* the same bold look all the way down: black rules under every section, outlined pictures with an offset shadow, white outlined cards */
+  .supporters, .band { border-bottom: 4px solid var(--ink); }
+  .band-head { border-bottom: 4px solid var(--ink); align-items: center; }
+  .band-head .num { display: grid; place-items: center; min-width: 2.4rem; height: 2.4rem; padding-inline: .4rem; font-weight: 700; color: var(--ink); background: var(--paper); border: 2px solid var(--ink); }
+  .band :global(.photo) { border: 3px solid var(--ink); border-radius: 0; box-shadow: 6px 6px 0 var(--ink); }
+  .band .card h3, .band .big, .band .events h3 { font-weight: 800; }
+  .events :global(.photo) { border-width: 2px; box-shadow: 3px 3px 0 var(--ink); }
+  .event { border-bottom: 2px solid var(--ink); }
+  .band figcaption { margin-top: 1.4rem; }
+  .panel.dark { background: var(--paper); color: var(--ink); border: 3px solid var(--ink); border-radius: 0; box-shadow: 8px 8px 0 var(--ink); }
+  .panel .btn { --ink-sh: var(--ink); border-color: var(--ink); }
+  .panel .btn.rose { color: #fff; }
+  .panel :global(.photo) { box-shadow: 4px 4px 0 var(--ink); }
+  .panel .label { color: var(--ink); }
+  .panel h3:not(.label) { font-size: clamp(1.4rem, 2.4vw, 1.9rem); font-weight: 800; line-height: 1.15; }
+  .rose .btn { --ink-sh: var(--ink); border-color: var(--ink); }
+
   /* donation row (from version B) */
 </style>
