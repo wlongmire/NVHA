@@ -57,11 +57,10 @@ a.pop-card:hover, a.pop-card:focus-visible { transform: translate(3px, 3px); box
   .brand-tag { display: block; white-space: nowrap; padding-left: 1rem; border-left: 1px solid #1f1d1d33; font-size: .85rem; line-height: 1.3; font-weight: 700; color: var(--ink); }
 }
 .site-nav a { text-decoration: none; padding: .25rem 0; }
-/* menu links: bold, with a periwinkle highlighter stroke that sweeps in under the word on hover
-   and stays put on the current page */
-.nav-links a { font-weight: 700; padding: .3rem .35rem; border-radius: 3px; background: linear-gradient(transparent 40%, var(--periwinkle) 40%, var(--periwinkle) 90%, transparent 90%) no-repeat left / 0% 100%; transition: background-size .22s ease-out; }
-.nav-links a:hover, .nav-links a:focus-visible { background-size: 100% 100%; }
-.nav-links a[aria-current] { background-size: 100% 100%; background-image: linear-gradient(var(--periwinkle), var(--periwinkle)); box-shadow: 2px 2px 0 var(--ink); outline: 2px solid var(--ink); outline-offset: -2px; }
+/* menu links: bold, with an underline that sweeps in on hover (periwinkle) and stays dark under the current page */
+.nav-links a { font-weight: 700; padding: .3rem 0; background: linear-gradient(var(--periwinkle), var(--periwinkle)) no-repeat left bottom / 0% 3px; transition: background-size .2s ease-out; }
+.nav-links a:hover, .nav-links a:focus-visible { background-size: 100% 3px; }
+.nav-links a[aria-current] { background-image: linear-gradient(var(--ink), var(--ink)); background-size: 100% 3px; }
 @media (prefers-reduced-motion: reduce) { .nav-links a { transition: none; } }
 .site-nav .btn { padding: .4rem .9rem; }
 .nav-toggle, .nav-burger { display: none; }
