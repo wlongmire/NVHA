@@ -247,10 +247,10 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   @media (max-width: 55.99rem) {
     .hero-grid { gap: 0; }
     .hero-copy { display: contents; }
-    .hero { padding-top: 2rem; border-bottom: 3px solid var(--ink); }
+    .hero { padding-top: 0; border-bottom: 3px solid var(--ink); }
     .hero h1 { order: 1; margin-block: 0 2rem; }
-    .hero-art { order: 2; margin-bottom: 1.75rem; }
-    .hero-art :global(.photo) { height: clamp(10rem, 46vw, 15rem); aspect-ratio: auto !important; border: 3px solid var(--ink); border-radius: 0; }
+    .hero-art { order: 0; margin: 0 calc(-1 * var(--gutter)) 2rem; width: auto; }
+    .hero-art :global(.photo) { height: clamp(14rem, 68vw, 24rem); aspect-ratio: auto !important; border: 0; border-bottom: 3px solid var(--ink); border-radius: 0; object-position: 30% 50% !important; }
     .hero .lede { order: 3; }
     .hero .btns { order: 4; }
   }
