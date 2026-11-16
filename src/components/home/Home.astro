@@ -234,6 +234,11 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   .hero h1 { font-style: italic; font-weight: 400; font-size: clamp(2.6rem, 5vw, 4.5rem); line-height: 1.05; margin-block: 1.25rem 1.5rem; }
   .lede { max-width: 34rem; font-size: 1.2rem; margin-bottom: 2rem; }
   .btns { display: flex; flex-wrap: wrap; gap: .75rem; margin: 0; }
+  /* hero buttons: a black outline and an offset shadow so they lift off the periwinkle; they press in on hover */
+  .hero-copy .btns { gap: 1rem; }
+  .hero-copy .btn { padding: .8rem 1.5rem; font-size: 1.05rem; border: 2px solid var(--ink); box-shadow: 4px 4px 0 var(--ink); transition: transform .12s, box-shadow .12s; }
+  .hero-copy .btn:hover, .hero-copy .btn:focus-visible { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--ink); }
+  .hero-copy .btn:active { transform: translate(4px, 4px); box-shadow: 0 0 0 var(--ink); }
   .hero-art { position: relative; width: 100%; }
   .hero-art :global(.photo) { position: relative; }
   /* on wide screens the mural fills the right side of the hero edge to edge, fading into the periwinkle behind the words */
