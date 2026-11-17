@@ -204,7 +204,7 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
             <h3>{p.title}</h3>
             <p>{p.text}</p>
             {p.note && <p class="note">{p.note}</p>}
-            <a class="arrow-link" href={p.href}>{p.link}</a>
+            <a class="btn rose" href={p.href}>{p.link}</a>
           </article>
         ))}
       </div>
@@ -463,6 +463,8 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   .band-head h2 { margin: 0; font-size: clamp(1.75rem, 4vw, 2.75rem); }
   .yellow { background: var(--mustard); } .cream { background: var(--cream); } .rose { background: var(--brick); color: #fff; } .blue { background: var(--periwinkle); }
   .three { display: grid; gap: 3rem; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); }
+  .card { display: flex; flex-direction: column; align-items: flex-start; } .card :global(.photo) { align-self: stretch; }
+  .card .btn { margin-top: auto; }
   .card :global(.photo) { margin-bottom: 1.5rem; } .card { container-type: inline-size; }
   /* titles stay on one line: the type size follows the card width */
   .card h3 { font-size: min(1.75rem, 6.6cqw); text-transform: uppercase; letter-spacing: .01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
