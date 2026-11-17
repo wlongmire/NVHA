@@ -441,11 +441,11 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   .hero { padding-bottom: clamp(2rem, 4vw, 3rem); }
   /* the four audience links: one row of equal boxes along the bottom of the hero */
   /* the four audience links */
-  h1 mark { background: #fdd876b0; display: inline-block; line-height: 1; border-radius: .04em; color: inherit; padding: .06em .14em 0; margin: 0 -.14em; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+  h1 mark { background: linear-gradient(#fdd876b0, #fdd876b0) 0 0 / 100% 100% no-repeat; display: inline-block; line-height: 1; border-radius: .04em; color: inherit; padding: .06em .14em 0; margin: 0 -.14em; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
   /* the highlights fade in first, Camden then world, just ahead of the audience buttons */
-  @keyframes mark-in { from { background-color: #fdd87600; } }
-  h1 mark { animation: mark-in .7s ease-out backwards; animation-delay: .15s; }
-  h1 mark + mark, h1 mark ~ mark { animation-delay: .45s; }
+  @keyframes mark-in { from { background-size: 0% 100%; } }
+  h1 mark { animation: mark-in .8s cubic-bezier(.4,.1,.2,1) backwards; animation-delay: .8s; }
+  h1 mark + mark, h1 mark ~ mark { animation-delay: 1.3s; }
   @media (prefers-reduced-motion: reduce) { h1 mark { animation: none; } }
   .actions { position: relative; z-index: 2; display: grid; gap: 1rem; grid-template-columns: repeat(2, 1fr); margin-top: 2rem; }
   @media (max-width: 32rem) { .actions { grid-template-columns: 1fr; } }
@@ -491,10 +491,10 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   /* slow reveal on first load */
   @keyframes slot-reveal { from { opacity: 0; transform: translateY(-14px); } to { opacity: 1; transform: none; } }
   .action-box { animation: slot-reveal 1.4s cubic-bezier(.25,.7,.25,1) backwards; }
-  .action-slot:nth-child(1) .action-box { animation-delay: 2.35s; }
-  .action-slot:nth-child(2) .action-box { animation-delay: 1.9s; }
-  .action-slot:nth-child(3) .action-box { animation-delay: 1.45s; }
-  .action-slot:nth-child(4) .action-box { animation-delay: 1s; }
+  .action-slot:nth-child(1) .action-box { animation-delay: 3.65s; }
+  .action-slot:nth-child(2) .action-box { animation-delay: 3.2s; }
+  .action-slot:nth-child(3) .action-box { animation-delay: 2.75s; }
+  .action-slot:nth-child(4) .action-box { animation-delay: 2.3s; }
   @media (prefers-reduced-motion: reduce) { .action-box { animation: none; } }
   @media (prefers-reduced-motion: reduce) { .actions { transition: none; } .action-box, .action-more, .action-link .arrow { transition: none; } }
   /* smaller laptops: a little more compact so the row still fits under the mural */
