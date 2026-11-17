@@ -63,7 +63,7 @@ p { margin: 0 0 1em; }
 .nav-links > a:hover::after, .nav-links > a:focus-visible::after, .nav-item > a:hover::after, .nav-item > a:focus-visible::after, .nav-item:focus-within > a::after, .nav-item:hover > a::after { opacity: 1; }
 .nav-links > a[aria-current]::after, .nav-item > a[aria-current]::after { height: 3px; opacity: 1; }
 /* drop-down menus (wide screens): the open heading becomes a folder tab that runs straight into its panel */
-.nav-item { position: relative; --menu-bg: #feeab0; }
+.nav-item { position: relative; --menu-bg: var(--mustard); }
 .sub { list-style: none; margin: 0; padding: 0; display: none; }
 .nav-item:hover > .sub, .nav-item:focus-within > .sub { display: block; }
 @media (min-width: 52.01rem) {
