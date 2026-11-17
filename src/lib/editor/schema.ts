@@ -12,6 +12,7 @@ export type Field = {
   fields?: Field[];                  // repeater: the fields of each row
   addLabel?: string;                 // repeater: text of the "add" button
   options?: string[];                // select: the choices
+  group?: string;                    // a heading shown above this field (and the ones after it) in the form
   virtual?: boolean;                 // shown in the form but turned into other keys when saving (see toFile)
 };
 
@@ -30,8 +31,9 @@ export type DocType = {
   empty: () => Record<string, unknown>;
 };
 
+const SEO_GROUP = 'Search and sharing';
 const SEO: Field[] = [
-  { key: 'seo.title', label: 'Search result title', type: 'text', max: 120, help: 'Shown on Google. Leave empty to use the page title. Around 60 characters works best.' },
+  { key: 'seo.title', group: SEO_GROUP, label: 'Search result title', type: 'text', max: 120, help: 'Shown on Google. Leave empty to use the page title. Around 60 characters works best.' },
   { key: 'seo.description', label: 'Search result description', type: 'textarea', max: 320, help: 'One or two sentences shown under the title on Google. Around 150 characters works best.' },
   { key: 'seo.ogImage', label: 'Picture for sharing', type: 'image', help: 'Shown when the page is shared on Facebook, Instagram or by text. Leave empty to use the main picture.' },
 ];
@@ -52,34 +54,34 @@ export const TYPES: DocType[] = [
   {
     id: 'home', label: 'Homepage', singular: 'homepage', format: 'json', file: 'src/data/home.json', listLabel: 'Edit the homepage', titleKey: 'hero.headline', creatable: false,
     fields: [
-      { key: 'hero.headline', label: 'Headline', type: 'text', required: true, max: 120 },
+      { key: 'hero.headline', group: 'Top of the page', label: 'Headline', type: 'text', required: true, max: 120 },
       { key: 'hero.text', label: 'Intro text', type: 'textarea', max: 400 },
-      { key: 'hero.image', label: 'Hero picture', type: 'image' },
-      { key: 'hero.imageAlt', label: 'Describe the hero picture', type: 'text', max: 200 },
-      { key: 'kickers.house', label: 'Line above the "At the Writers House" heading', type: 'text', max: 80 },
-      { key: 'kickers.poets', label: 'Line above the "Poets & Haikuists" heading', type: 'text', max: 80 },
-      { key: 'kickers.educators', label: 'Line above the "For Educators" heading', type: 'text', max: 80 },
-      { key: 'kickers.support', label: 'Line above the "Support Our Work" heading', type: 'text', max: 80 },
-      { key: 'kickers.supporters', label: 'Line above the "Our Supporters" heading', type: 'text', max: 80 },
-      { key: 'featured.kind', label: 'Featured panel: short line above the title', type: 'text', max: 80, placeholder: 'Presenting our newest publication:' },
-      { key: 'featured.title', label: 'Featured panel: title', type: 'text', required: true, max: 100 },
-      { key: 'featured.text', label: 'Featured panel: description (leave a blank line between paragraphs)', type: 'textarea', max: 900 },
-      { key: 'featured.image', label: 'Featured panel: picture', type: 'image' },
-      { key: 'featured.imageAlt', label: 'Featured panel: describe the picture', type: 'text', max: 200 },
-      { key: 'featured.link', label: 'Featured panel: button text', type: 'text', max: 40, placeholder: 'Learn more' },
-      { key: 'featured.href', label: 'Featured panel: where the button goes', type: 'text', max: 300, placeholder: '/store/' },
-      { key: 'educators.title', label: 'For Educators: program title', type: 'text', max: 80 },
-      { key: 'educators.subtitle', label: 'For Educators: subtitle', type: 'text', max: 160 },
-      { key: 'educators.text', label: 'For Educators: description', type: 'textarea', max: 500 },
-      { key: 'educators.stats', label: 'For Educators: numbers in the boxes', type: 'repeater', addLabel: 'Add a number', help: 'Four fit best. Each box has a number and a short label.', fields: [
+      { key: 'hero.image', label: 'Picture', type: 'image' },
+      { key: 'hero.imageAlt', label: 'Describe the picture', type: 'text', max: 200 },
+      { key: 'featured.kind', group: 'Featured panel (the dark panel under the top)', label: 'Short line above the title', type: 'text', max: 80, placeholder: 'Presenting our newest publication:' },
+      { key: 'featured.title', label: 'Title', type: 'text', required: true, max: 100 },
+      { key: 'featured.text', label: 'Description (leave a blank line between paragraphs)', type: 'textarea', max: 900 },
+      { key: 'featured.image', label: 'Picture', type: 'image' },
+      { key: 'featured.imageAlt', label: 'Describe the picture', type: 'text', max: 200 },
+      { key: 'featured.link', label: 'Button text', type: 'text', max: 40, placeholder: 'Learn more' },
+      { key: 'featured.href', label: 'Where the button goes', type: 'text', max: 300, placeholder: '/store/' },
+      { key: 'kickers.house', group: 'At the Writers House', label: 'Line above the heading', type: 'text', max: 80 },
+      { key: 'kickers.poets', group: 'Poets & Haikuists', label: 'Line above the heading', type: 'text', max: 80 },
+      { key: 'kickers.educators', group: 'For Educators', label: 'Line above the heading', type: 'text', max: 80 },
+      { key: 'educators.title', label: 'Program title', type: 'text', max: 80 },
+      { key: 'educators.subtitle', label: 'Subtitle', type: 'text', max: 160 },
+      { key: 'educators.text', label: 'Description', type: 'textarea', max: 500 },
+      { key: 'educators.stats', label: 'Numbers in the boxes', type: 'repeater', addLabel: 'Add a number', help: 'Four fit best. Each box has a number and a short label.', fields: [
         { key: 'n', label: 'Number', type: 'text', max: 12 },
         { key: 'label', label: 'Label', type: 'text', max: 30 },
       ] },
-      { key: 'educators.link', label: 'For Educators: first button text', type: 'text', max: 60 },
-      { key: 'educators.href', label: 'For Educators: first button goes to', type: 'text', max: 300 },
-      { key: 'educators.prospectusLink', label: 'For Educators: prospectus button text', type: 'text', max: 60 },
-      { key: 'educators.prospectusHref', label: 'For Educators: prospectus button goes to', type: 'text', max: 500, help: 'A web address, for example a Google Drive link.' },
+      { key: 'educators.link', label: 'First button text', type: 'text', max: 60 },
+      { key: 'educators.href', label: 'First button goes to', type: 'text', max: 300 },
+      { key: 'educators.prospectusLink', label: 'Prospectus button text', type: 'text', max: 60 },
+      { key: 'educators.prospectusHref', label: 'Prospectus button goes to', type: 'text', max: 500, help: 'A web address, for example a Google Drive link.' },
+      { key: 'kickers.support', group: 'Support Our Work', label: 'Line above the heading', type: 'text', max: 80 },
       { key: 'donate.amounts', label: 'Give today amounts (dollars, separated by commas)', type: 'numbers', help: 'Qgiv offers its own amounts too. Keep these to three or four.' },
+      { key: 'kickers.supporters', group: 'Our Supporters', label: 'Line above the heading', type: 'text', max: 80 },
       ...SEO,
     ],
     empty: () => ({}),
