@@ -6,7 +6,7 @@ import home from '../../data/home.json';
 import { loadHome } from '../../lib/homeData';
 import { fmtDay } from '../../lib/dates';
 
-const { hasNext, upcoming, products } = await loadHome();
+const { hasNext, upcoming, products, haikuPosts } = await loadHome();
 // "Visit the House" points at what's on next, worked out when the site is built (every save in /edit rebuilds it)
 const money = (n: number) => n.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
 // a short blurb for each item: the start of its description, with markdown marks removed
@@ -208,6 +208,13 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
           </article>
         ))}
       </div>
+      {haikuPosts.length > 0 && (
+        <div class="reads">
+          <h3>Keep reading about haiku</h3>
+          <ul>{haikuPosts.map((a) => <li><a href={`/${a.id}/`}>{a.data.title}</a></li>)}</ul>
+          <a class="btn rose" href="/blogs/">All articles</a>
+        </div>
+      )}
     </div>
   </section>
 
@@ -488,6 +495,11 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   .split { display: grid; gap: 3rem; align-items: center; }
   @media (min-width: 52rem) { .split { grid-template-columns: 1fr 1fr; gap: 5rem; } }
   .big { font-size: clamp(2rem, 4vw, 3rem); } .sub { font-weight: 700; font-size: 1.1rem; }
+  .reads { display: flex; align-items: center; flex-wrap: wrap; gap: 1rem 1.5rem; margin-top: 2rem; padding-top: 1.25rem; border-top: 3px solid var(--ink); }
+  .reads h3 { margin: 0; font-size: 1.2rem; font-weight: 800; }
+  .reads ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: .6rem; flex: 1 1 24rem; }
+  .reads li a { display: block; padding: .4rem .8rem; font-weight: 700; text-decoration: none; background: var(--paper); border: 2px solid var(--ink); box-shadow: 3px 3px 0 var(--ink); transition: transform .25s ease, box-shadow .25s ease; }
+  .reads li a:hover, .reads li a:focus-visible { transform: translate(1px, 1px); box-shadow: 2px 2px 0 var(--ink); }
   .stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-block: 1.75rem; }
   .stats span { display: flex; flex-direction: column; justify-content: space-between; gap: .35rem; padding: .8rem 1rem; background: var(--paper); color: var(--ink); border: 3px solid var(--ink); box-shadow: 4px 4px 0 var(--ink); font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; line-height: 1.2; }
   .stats b { font-size: 2.6rem; font-family: var(--font-display); line-height: 1; letter-spacing: 0; }
