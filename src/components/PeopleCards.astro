@@ -1,0 +1,34 @@
+---
+// A grid of people cards (board, staff). Each person: name, role (optional), bio, photo (optional path under /uploads/).
+// Without a photo the card shows initials on a palette color. *Asterisks* in a bio set italics.
+const { people = [], fallbackRole = '' } = Astro.props;
+const tones = ['periwinkle', 'mustard', 'brick', 'cream'];
+const initials = (n: string) => n.replace(/\b(Dr|Sr|Jr)\.?/g, '').split(/\s+/).filter(Boolean).filter((w) => /^[A-Za-z]/.test(w) && !/^[A-Z]\.$/.test(w)).slice(0, 2).map((w) => w[0].toUpperCase()).join('');
+const esc = (t: string) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/\*(.+?)\*/g, '<em>$1</em>');
+---
+<ul class="people">
+  {people.map((p, i) => (
+    <li class="person">
+      <div class={`pic ${tones[i % tones.length]}`}>
+        {p.photo ? <img src={p.photo} alt={p.name} loading="lazy" /> : <span aria-hidden="true">{initials(p.name)}</span>}
+      </div>
+      <div class="info">
+        <p class="role">{p.role || fallbackRole}</p>
+        <h3>{p.name}</h3>
+        <p class="bio" set:html={esc(p.bio)} />
+      </div>
+    </li>
+  ))}
+</ul>
+<style>
+  .people { list-style: none; padding: 0 !important; margin: 1.25rem 0 0; display: grid; gap: 1.5rem; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); }
+  .person { margin: 0 !important; display: flex; flex-direction: column; background: var(--paper); border: 3px solid var(--ink); box-shadow: 5px 5px 0 var(--ink); }
+  .pic { aspect-ratio: 4 / 3; display: grid; place-items: center; border-bottom: 3px solid var(--ink); overflow: hidden; }
+  .pic.periwinkle { background: var(--periwinkle); } .pic.mustard { background: var(--mustard); } .pic.brick { background: var(--brick); color: #fff; } .pic.cream { background: var(--cream); }
+  .pic span { font-family: var(--font-display); font-weight: 800; font-size: 3rem; letter-spacing: .02em; }
+  .pic img { width: 100%; height: 100%; object-fit: cover; border: 0 !important; box-shadow: none !important; margin: 0 !important; }
+  .info { padding: 1rem 1.1rem 1.25rem; display: flex; flex-direction: column; flex: 1; }
+  .role { font-family: var(--font-label); font-size: .72rem !important; letter-spacing: .08em; text-transform: uppercase; margin: 0 0 .35rem; min-height: 2.2em; display: flex; align-items: flex-end; }
+  h3 { margin: 0 0 .5rem; font-size: 1.15rem; line-height: 1.15; }
+  .bio { margin: 0; font-size: .9rem !important; line-height: 1.5; }
+</style>

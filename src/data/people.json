@@ -1,0 +1,115 @@
+{
+  "board": [
+    {
+      "name": "Robin Palley",
+      "role": "President",
+      "bio": "Haiku poet; Senior Vice President, Healthcare Consulting, at Epsilon, a Publicis Groupe company.",
+      "photo": ""
+    },
+    {
+      "name": "Warren C. Longmire",
+      "role": "Vice-President",
+      "bio": "Poet, technologist, and educator from North Philadelphia. His second collection, *Bird/Diz [an erased history of bebop]*, was published by Bunny Presse in 2022. Graduate of the Iowa Writers' Workshop.",
+      "photo": ""
+    },
+    {
+      "name": "Bonnie Squires",
+      "role": "Co-Vice President",
+      "bio": "President of Squires Consulting, a woman-owned communications and fundraising firm.",
+      "photo": ""
+    },
+    {
+      "name": "Henry Brann",
+      "role": "Co-Vice President and Building Committee Chair",
+      "bio": "A member of the Association since its inception; published two chapbooks.",
+      "photo": ""
+    },
+    {
+      "name": "Dr. Geoffrey M. Sill",
+      "role": "Treasurer",
+      "bio": "Emeritus Professor of English at Rutgers University–Camden, where he taught British and American literature for forty years.",
+      "photo": ""
+    },
+    {
+      "name": "Erin O'Neill",
+      "role": "Secretary",
+      "bio": "Assistant Director of Communications for Rowan University's Division of Information.",
+      "photo": ""
+    },
+    {
+      "name": "Vanessa Woods",
+      "role": "Fundraising Committee Chair",
+      "bio": "MS, LPC. A mental health advocate, healer, and leader.",
+      "photo": ""
+    },
+    {
+      "name": "Reet Starwind",
+      "role": "Community Outreach Committee Chair",
+      "bio": "\"Interstellar Storyteller\"; a Camden region organizer, educator, and creative director.",
+      "photo": ""
+    },
+    {
+      "name": "Kevin Shelly",
+      "role": "",
+      "bio": "Writer and retired journalist; author of *Lynne Bogue Hunt: A Sporting Life*.",
+      "photo": ""
+    },
+    {
+      "name": "Alfred J. Dansbury, Sr.",
+      "role": "",
+      "bio": "Degrees from Rutgers University, Eastern University and Rowan University.",
+      "photo": ""
+    },
+    {
+      "name": "Tazuo Bashō Yamaguchi",
+      "role": "",
+      "bio": "Internationally recognized haiku poet, educator, filmmaker, and multidisciplinary artist; official Gyoji for the NVHA-sponsored Haiku Dojo.",
+      "photo": ""
+    },
+    {
+      "name": "Faryn Kushner",
+      "role": "",
+      "bio": "A longtime patron of the arts.",
+      "photo": ""
+    },
+    {
+      "name": "Dr. Adam Henze",
+      "role": "",
+      "bio": "Researcher, educator, and spoken word artist; Director of Literacy Programming at Flanner House and Director of Power of a Sentence, a creative writing program in Indiana prisons.",
+      "photo": ""
+    }
+  ],
+  "emeritus": "Kathleen O'Toole, Ben Hill, Rocky Wilson, Lamont Steptoe, Theresa Banford, and Fr. Michael Doyle, former pastor of Sacred Heart Church, whose vision helped create the Writers House. We hold in loving memory Nick's brother Tony Virgilio and Father Michael Doyle, who together inspired its creation.",
+  "staff": [
+    {
+      "name": "Camille Wilson",
+      "role": "Programming & communications",
+      "bio": "Handles programming, social media and communications.",
+      "photo": ""
+    },
+    {
+      "name": "Nasar Rider",
+      "role": "Website & programs",
+      "bio": "Born and raised in Camden, a web design specialist who manages the website and keeps many Writers House programs flowing.",
+      "photo": ""
+    },
+    {
+      "name": "Juwan Clayton",
+      "role": "",
+      "bio": "Born and raised in Camden, studied Criminal Justice at Rutgers University.",
+      "photo": ""
+    },
+    {
+      "name": "Sean Lynch",
+      "role": "",
+      "bio": "A writer and editor in Philadelphia; his fifth collection is *Halo Nest: Poems on Grief* (Alien Buddha Press).",
+      "photo": ""
+    },
+    {
+      "name": "Nycir Keen",
+      "role": "",
+      "bio": "A Philadelphia-based poet with roots in competitive slam poetry.",
+      "photo": ""
+    }
+  ]
+}

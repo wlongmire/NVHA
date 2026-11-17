@@ -4,6 +4,8 @@ import { getCollection, render } from 'astro:content';
 import ContentPage from '../components/ContentPage.astro';
 import PageEmbed from '../components/PageEmbed.astro';
 import PageNav from '../components/PageNav.astro';
+import PeopleCards from '../components/PeopleCards.astro';
+import people from '../data/people.json';
 import { fmtPostDate } from '../lib/dates';
 import { clip, plain } from '../lib/markdown';
 
@@ -40,6 +42,14 @@ const base = kind === 'post'
 >
   {first && <PageEmbed kind={d.embed} />}
   <Content />
+  {entry.id === 'about-us' && (<>
+    <h2 id="board-of-directors">Board of directors</h2>
+    <PeopleCards people={people.board} fallbackRole="Board member" />
+    <h3>Emeritus board and advisors</h3>
+    <p>{people.emeritus}</p>
+    <h2 id="staff">Staff</h2>
+    <PeopleCards people={people.staff} fallbackRole="Staff" />
+  </>)}
   {!first && d.embed && <PageEmbed kind={d.embed} />}
   {kind === 'post' && <p><a class="arrow-link" href="/blogs/">All posts</a></p>}
   {kind === 'post' && <PageNav slot="after" current={entry.id} />}
