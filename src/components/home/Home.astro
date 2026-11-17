@@ -484,8 +484,10 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   .split { display: grid; gap: 3rem; align-items: center; }
   @media (min-width: 52rem) { .split { grid-template-columns: 1fr 1fr; gap: 5rem; } }
   .big { font-size: clamp(2rem, 4vw, 3rem); } .sub { font-weight: 700; font-size: 1.1rem; }
-  .stats { display: flex; gap: 2rem; flex-wrap: wrap; margin-block: 2rem; } .stats span { display: flex; flex-direction: column; font-size: .8rem; text-transform: uppercase; letter-spacing: .06em; }
-  .stats b { font-size: 3rem; font-family: var(--font-display); line-height: 1; letter-spacing: 0; }
+  .stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-block: 1.75rem; }
+  .stats span { display: flex; flex-direction: column; justify-content: space-between; gap: .35rem; padding: .8rem 1rem; background: var(--paper); color: var(--ink); border: 3px solid var(--ink); box-shadow: 4px 4px 0 var(--ink); font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; line-height: 1.2; }
+  .stats b { font-size: 2.6rem; font-family: var(--font-display); line-height: 1; letter-spacing: 0; }
+  @media (min-width: 40rem) { .stats { grid-template-columns: repeat(4, 1fr); } }
   .support { display: grid; gap: 2rem; grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr)); }
   .panel { padding: clamp(1.5rem, 3vw, 2.5rem); border-radius: var(--radius); display: flex; flex-direction: column; align-items: flex-start; gap: 1.25rem; }
   .panel h3 { margin: 0; } .panel .btns { margin-top: auto; } .dark { background: var(--ink); color: #fff; }
