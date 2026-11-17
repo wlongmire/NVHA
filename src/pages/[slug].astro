@@ -1,9 +1,9 @@
 ---
 // Posts and text pages both live at the root (/haiku-lesson-plans/, /about-us/), exactly where they were on the old WordPress site.
 import { getCollection, render } from 'astro:content';
-import Base from '../layouts/Base.astro';
-import Photo from '../components/Photo.astro';
+import ContentPage from '../components/ContentPage.astro';
 import PageEmbed from '../components/PageEmbed.astro';
+import PageNav from '../components/PageNav.astro';
 import { fmtPostDate } from '../lib/dates';
 import { clip, plain } from '../lib/markdown';
 
@@ -24,44 +24,23 @@ const jsonLd = kind === 'post' ? {
   ...(d.image ? { image: new URL(d.image, Astro.site).href } : {}),
   publisher: { '@type': 'Organization', name: 'Nick Virgilio Haiku Association & Writers House' },
 } : undefined;
+const base = kind === 'post'
+  ? { description: d.excerpt ? clip(plain(d.excerpt)) : undefined, image: d.image, seo: d.seo, type: 'article', published: d.date, jsonLd }
+  : { seoKey: entry.id, description: d.lede || undefined, image: d.image, seo: { ...d.seo, ...(d.noindex ? { robots: 'noindex' } : {}) } };
 ---
-{kind === 'post' ? (
-  <Base title={d.title} description={d.excerpt ? clip(plain(d.excerpt)) : undefined} image={d.image} seo={d.seo} type="article" published={d.date} jsonLd={jsonLd}>
-    <article class="wrap prose">
-      <p class="label">{fmtPostDate(d.date)}</p>
-      <h1>{d.title}</h1>
-      <Content />
-      <p><a class="arrow-link" href="/blogs/">All posts</a></p>
-    </article>
-  </Base>
-) : (
-  <Base seoKey={entry.id} title={d.title} description={d.lede || undefined} image={d.image} seo={{ ...d.seo, ...(d.noindex ? { robots: 'noindex' } : {}) }}>
-    <header class="phead">
-      <div class="wrap phead-grid">
-        <div>
-          {entry.id === 'writers-house' && <img class="phead-logo" src="/brand/nvwh-horizontal.png" alt="The Nick Virgilio Writers House of Camden" width="1909" height="1000" />}
-          <h1>{d.title}</h1>
-          {d.lede && <p class="lede">{d.lede}</p>}
-        </div>
-        {d.image && <Photo src={d.image} alt={d.imageAlt} ratio="4 / 3" loading="eager" />}
-      </div>
-    </header>
-    <div class="wrap prose">
-      {first && <PageEmbed kind={d.embed} />}
-      <Content />
-      {!first && d.embed && <PageEmbed kind={d.embed} />}
-    </div>
-  </Base>
-)}
-
-<style>
-  .phead { background: var(--periwinkle); padding-block: clamp(3rem, 7vw, 6rem); }
-  .phead-logo { display: block; width: min(15rem, 70%); height: auto; margin-bottom: 1.5rem; }
-  .phead-grid { display: grid; gap: 3rem; align-items: center; }
-  @media (min-width: 52rem) { .phead-grid:has(.photo) { grid-template-columns: 1.2fr 1fr; gap: 5rem; } }
-  .phead h1 { font-style: italic; font-weight: 400; font-size: clamp(2.5rem, 6vw, 4.5rem); line-height: 1.05; margin: 1rem 0; }
-  .lede { max-width: 36rem; font-size: 1.2rem; margin: 0; }
-  .prose { padding-block: clamp(2.5rem, 6vw, 5rem); }
-  .prose :global(ul) { padding-left: 1.25rem; } .prose :global(li) { margin-bottom: .6rem; }
-  .prose :global(h2) { margin-top: 2.5rem; font-size: 1.75rem; }
-</style>
+<ContentPage
+  title={d.title}
+  lede={kind === 'post' ? fmtPostDate(d.date) : d.lede}
+  tone={kind === 'post' ? 'cream' : 'periwinkle'}
+  crumbs={kind === 'post' ? [{ label: 'Articles', href: '/blogs/' }] : []}
+  image={d.image}
+  imageAlt={d.imageAlt}
+  exclude={kind === 'post' ? entry.id : ''}
+  base={base}
+>
+  {first && <PageEmbed kind={d.embed} />}
+  <Content />
+  {!first && d.embed && <PageEmbed kind={d.embed} />}
+  {kind === 'post' && <p><a class="arrow-link" href="/blogs/">All posts</a></p>}
+  {kind === 'post' && <PageNav slot="after" current={entry.id} />}
+</ContentPage>

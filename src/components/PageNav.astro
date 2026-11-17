@@ -1,0 +1,23 @@
+---
+// Previous and next post at the bottom of an article.
+import { getCollection } from 'astro:content';
+const { current } = Astro.props;
+const posts = (await getCollection('posts', (p) => !p.data.draft)).sort((a, b) => b.data.date.localeCompare(a.data.date));
+const i = posts.findIndex((p) => p.id === current);
+const newer = i > 0 ? posts[i - 1] : undefined;
+const older = i >= 0 && i < posts.length - 1 ? posts[i + 1] : undefined;
+---
+{(newer || older) && (
+  <nav class="pn wrap" aria-label="More posts">
+    {older ? <a class="prev" href={`/${older.id}/`}><small>&larr; Previous</small><strong>{older.data.title}</strong></a> : <span></span>}
+    {newer ? <a class="next" href={`/${newer.id}/`}><small>Next &rarr;</small><strong>{newer.data.title}</strong></a> : <span></span>}
+  </nav>
+)}
+<style>
+  .pn { display: grid; gap: 1.25rem; grid-template-columns: 1fr 1fr; padding-block: clamp(2rem, 5vw, 3.5rem); }
+  .pn a { display: grid; gap: .25rem; padding: 1rem 1.25rem; text-decoration: none; background: var(--paper); border: 3px solid var(--ink); box-shadow: 4px 4px 0 var(--ink); transition: transform .25s ease, box-shadow .25s ease; }
+  .pn a:hover, .pn a:focus-visible { transform: translate(1px, 1px); box-shadow: 3px 3px 0 var(--ink); }
+  .pn .next { text-align: right; }
+  .pn small { font-family: var(--font-label); text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+  @media (max-width: 40rem) { .pn { grid-template-columns: 1fr; } }
+</style>

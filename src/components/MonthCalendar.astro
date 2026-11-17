@@ -1,0 +1,41 @@
+---
+// A simple one-month calendar worked out when the site is built. Days with an event are highlighted and link to it.
+// It shows the month of the next upcoming event (or this month when nothing is scheduled).
+import { getCollection } from 'astro:content';
+import { eventDate, isUpcoming } from '../lib/dates';
+const events = (await getCollection('events', (e) => !e.data.draft));
+const next = events.filter((e) => isUpcoming(e.data)).sort((a, b) => a.data.start.localeCompare(b.data.start))[0];
+const anchor = next ? eventDate(next.data.start) : new Date();
+const year = anchor.getFullYear(), month = anchor.getMonth();
+const first = new Date(year, month, 1).getDay();
+const days = new Date(year, month + 1, 0).getDate();
+const title = new Date(year, month, 1).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+const byDay = new Map<number, typeof events>();
+for (const e of events) {
+  const d = eventDate(e.data.start);
+  if (d.getFullYear() === year && d.getMonth() === month) byDay.set(d.getDate(), [...(byDay.get(d.getDate()) ?? []), e]);
+}
+const cells = [...Array(first).fill(0), ...Array.from({ length: days }, (_, i) => i + 1)];
+---
+<div class="cal">
+  <p class="cal-title">{title}</p>
+  <div class="grid" role="grid" aria-label={`Events in ${title}`}>
+    {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((d) => <span class="dow" aria-hidden="true">{d}</span>)}
+    {cells.map((n) => {
+      if (!n) return <span class="cell empty"></span>;
+      const ev = byDay.get(n);
+      return ev
+        ? <a class="cell on" href={`/event/${ev[0].id}/`} title={ev.map((e) => e.data.title).join(', ')}>{n}</a>
+        : <span class="cell">{n}</span>;
+    })}
+  </div>
+</div>
+<style>
+  .cal { background: var(--paper); border: 3px solid var(--ink); box-shadow: 5px 5px 0 var(--ink); padding: 1.1rem 1.25rem 1.25rem; }
+  .cal-title { margin: 0 0 .75rem; font-family: var(--font-display); font-weight: 800; font-size: 1.25rem; }
+  .grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: .3rem; text-align: center; }
+  .dow { font-family: var(--font-label); font-size: .7rem; color: var(--muted); padding-bottom: .25rem; }
+  .cell { display: grid; place-items: center; aspect-ratio: 1; font-size: .85rem; border: 2px solid transparent; }
+  .cell.on { background: var(--mustard); border-color: var(--ink); font-weight: 800; text-decoration: none; transition: background-color .2s ease; }
+  .cell.on:hover, .cell.on:focus-visible { background: var(--brick); color: #fff; }
+</style>

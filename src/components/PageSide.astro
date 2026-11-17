@@ -1,0 +1,48 @@
+---
+// The right-hand column on content pages: where the House is, the latest posts, and the two main ways to reach us.
+import { getCollection } from 'astro:content';
+import site from '../data/site.json';
+import { fmtPostDate } from '../lib/dates';
+const { exclude = '' } = Astro.props;
+const related = (await getCollection('posts', (p) => !p.data.draft && p.id !== exclude)).sort((a, b) => b.data.date.localeCompare(a.data.date)).slice(0, 3);
+const mapSrc = `https://www.google.com/maps?q=${encodeURIComponent(site.address)}&output=embed`;
+---
+<aside class="side">
+  <section class="side-card">
+    <h2 class="side-label">About the House</h2>
+    <iframe class="map" title="Map of the Virgilio Writers House" src={mapSrc} loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    <p class="addr"><strong>{site.address}</strong><br /><a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(site.address)}`} rel="noopener">Get directions</a></p>
+  </section>
+  {related.length > 0 && (
+    <section class="side-card">
+      <h2 class="side-label">Related posts</h2>
+      <ul class="rel">
+        {related.map((p) => (
+          <li>
+            <a href={`/${p.id}/`}>
+              {p.data.image ? <img src={p.data.image} alt="" loading="lazy" /> : <span class="thumb" aria-hidden="true"></span>}
+              <span><strong>{p.data.title}</strong><small>{fmtPostDate(p.data.date)}</small></span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+  <div class="side-btns">
+    <a class="btn rose" href="/contact-us/">Contact us</a>
+    <a class="btn" href={site.donateHref}>Donate</a>
+  </div>
+</aside>
+<style>
+  .side { display: grid; gap: 2rem; align-content: start; }
+  .side-label { font-family: var(--font-label); font-size: .75rem; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; margin: 0 0 .75rem; }
+  .map { display: block; width: 100%; aspect-ratio: 16 / 10; border: 3px solid var(--ink); box-shadow: 4px 4px 0 var(--ink); background: #0001; }
+  .addr { margin: 1rem 0 0; font-size: .9rem; }
+  .rel { list-style: none; margin: 0; padding: 0; display: grid; gap: .9rem; }
+  .rel a { display: grid; grid-template-columns: 3.25rem minmax(0, 1fr); gap: .85rem; align-items: center; text-decoration: none; font-size: .9rem; line-height: 1.3; }
+  .rel img, .thumb { width: 3.25rem; height: 3.25rem; object-fit: cover; border: 2px solid var(--ink); background: repeating-linear-gradient(135deg, #0000000d 0 8px, #00000005 8px 16px); }
+  .rel small { display: block; color: var(--muted); margin-top: .15rem; }
+  .rel a:hover strong { text-decoration: underline; }
+  .side-btns { display: grid; gap: 1rem; }
+  .side-btns .btn { text-align: center; padding-block: .75rem; font-size: .9rem; }
+</style>

@@ -1,14 +1,13 @@
 ---
 import { getCollection } from 'astro:content';
-import Base from '../layouts/Base.astro';
+import ContentPage from '../components/ContentPage.astro';
 import Photo from '../components/Photo.astro';
 import { fmtPostDate } from '../lib/dates';
 
 const posts = (await getCollection('posts', (p) => !p.data.draft)).sort((a, b) => b.data.date.localeCompare(a.data.date));
 ---
-<Base seoKey="blogs" title="Latest Posts">
-  <div class="wrap">
-    <div class="page-head"><h1>Latest Posts</h1></div>
+<ContentPage title="Latest Posts" lede="Haiku articles, program news and stories from the Writers House." tone="periwinkle" side={false} wide base={{ seoKey: 'blogs' }}>
+  <div class="wide">
     <div class="grid">
       {posts.map((p) => (
         <article>
@@ -20,8 +19,9 @@ const posts = (await getCollection('posts', (p) => !p.data.draft)).sort((a, b) =
       ))}
     </div>
   </div>
-</Base>
+</ContentPage>
 <style>
+  .wide { max-width: none; }
   .grid { display: grid; gap: 3rem 2rem; grid-template-columns: repeat(auto-fill, minmax(19rem, 1fr)); }
   article :global(.photo) { margin-bottom: 1.25rem; border: 2px solid var(--ink); box-shadow: 5px 5px 0 var(--ink); }
   article > a { display: block; }

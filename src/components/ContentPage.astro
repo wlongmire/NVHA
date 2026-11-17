@@ -1,0 +1,49 @@
+---
+// The template for every content page: a colored banner with breadcrumb, title and one-line summary; an optional
+// full-width picture; the text with a side column; and the "write your first haiku" band at the bottom.
+// Slots: default = the page text, "top" = full-width content between the banner and the text, "after" = below the band.
+import Base from '../layouts/Base.astro';
+import PageSide from './PageSide.astro';
+import PageCta from './PageCta.astro';
+const { title, lede = '', tone = 'periwinkle', crumbs = [], image = '', imageAlt = '', side = true, wide = false, exclude = '', base = {} } = Astro.props;
+const trail = [{ label: 'Home', href: '/' }, ...crumbs];
+---
+<Base title={title} {...base}>
+  <header class={`banner ${tone}`}>
+    <div class="wrap">
+      <nav class="crumbs" aria-label="Breadcrumb">
+        {trail.map((c) => <><a href={c.href}>{c.label}</a><span aria-hidden="true"> | </span></>)}<span aria-current="page">{title}</span>
+      </nav>
+      <h1>{title}</h1>
+      {lede && <p class="lede">{lede}</p>}
+    </div>
+  </header>
+  {image && <div class="hero-img"><img src={image} alt={imageAlt} loading="eager" /></div>}
+  <slot name="top" />
+  <div class:list={['wrap', 'body', { 'has-side': side, wide }]}>
+    <div class="main"><slot /></div>
+    {side && <PageSide exclude={exclude} />}
+  </div>
+  <PageCta />
+  <slot name="after" />
+</Base>
+<style>
+  .banner { border-bottom: 4px solid var(--ink); padding-block: clamp(1.75rem, 4vw, 3rem); }
+  .banner.periwinkle { background: var(--periwinkle); } .banner.mustard { background: var(--mustard); } .banner.cream { background: var(--cream); }
+  .crumbs { font-size: .85rem; margin-bottom: .75rem; } .crumbs a { text-decoration: none; font-weight: 700; } .crumbs a:hover { text-decoration: underline; }
+  .banner h1 { margin: 0 0 .5rem; font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 800; line-height: 1.05; }
+  .lede { margin: 0; max-width: 40rem; font-size: 1.05rem; }
+  .hero-img { border-bottom: 4px solid var(--ink); background: #0001; }
+  .hero-img img { width: 100%; height: clamp(14rem, 36vw, 28rem); object-fit: cover; }
+  .body { display: grid; gap: 3rem; padding-block: clamp(2rem, 5vw, 3.5rem) 0; }
+  @media (min-width: 60rem) { .body.has-side { grid-template-columns: minmax(0, 1fr) 19rem; gap: 4rem; } }
+  .main { min-width: 0; }
+  .body:not(.has-side):not(.wide) .main { max-width: 46rem; }
+  .main :global(h2) { margin: 2.25rem 0 .75rem; font-size: clamp(1.4rem, 2.6vw, 1.9rem); font-weight: 800; text-decoration: underline; text-decoration-thickness: 3px; text-underline-offset: .22em; }
+  .main :global(> :first-child) { margin-top: 0; }
+  .main :global(h3) { font-weight: 800; }
+  .main :global(p), .main :global(li) { font-size: 1rem; }
+  .main :global(ul), .main :global(ol) { padding-left: 1.25rem; } .main :global(li) { margin-bottom: .5rem; }
+  .main :global(img) { max-width: 100%; height: auto; border: 3px solid var(--ink); box-shadow: 5px 5px 0 var(--ink); margin-block: 1.25rem; }
+  .main :global(blockquote) { margin: 1.5rem 0; padding-left: 1.25rem; border-left: 4px solid var(--ink); font-style: italic; }
+</style>

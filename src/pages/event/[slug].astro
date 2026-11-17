@@ -1,6 +1,6 @@
 ---
 import { getCollection, render } from 'astro:content';
-import Base from '../../layouts/Base.astro';
+import ContentPage from '../../components/ContentPage.astro';
 import { fmtDay, fmtTime, hasTime } from '../../lib/dates';
 import { clip, plain } from '../../lib/markdown';
 
@@ -18,15 +18,17 @@ const jsonLd = {
   ...(d.image ? { image: new URL(d.image, Astro.site).href } : {}),
 };
 ---
-<Base title={d.title} description={clip(plain(entry.body ?? ''))} image={d.image} jsonLd={jsonLd}>
-  <div class="wrap prose">
-    <p class="label">{fmtDay(d.start)}{hasTime(d.start) && ` · ${fmtTime(d.start)}`}</p>
-    <h1>{d.title}</h1>
-    {d.venue && <p><strong>{d.venue}</strong>{d.address && <><br />{d.address}</>}</p>}
-    {d.cost && <p>Cost: {d.cost}</p>}
-    {d.image && <img src={d.image} alt="" />}
-    <Content />
-    {d.link && <p><a class="btn rose" href={d.link} rel="noopener">RSVP / more info</a></p>}
-    <p><a class="arrow-link" href="/house-events/">All events</a></p>
-  </div>
-</Base>
+<ContentPage
+  title={d.title}
+  lede={`${fmtDay(d.start)}${hasTime(d.start) ? ` · ${fmtTime(d.start)}` : ''}`}
+  tone="mustard"
+  crumbs={[{ label: 'Events Calendar', href: '/house-events/' }]}
+  base={{ description: clip(plain(entry.body ?? '')), image: d.image, jsonLd }}
+>
+  {d.venue && <p><strong>{d.venue}</strong>{d.address && <><br />{d.address}</>}</p>}
+  {d.cost && <p>Cost: {d.cost}</p>}
+  {d.image && <img src={d.image} alt="" />}
+  <Content />
+  {d.link && <p><a class="btn rose" href={d.link} rel="noopener">RSVP / more info</a></p>}
+  <p><a class="arrow-link" href="/house-events/">All events</a></p>
+</ContentPage>

@@ -1,20 +1,60 @@
 ---
 import { getCollection } from 'astro:content';
-import Base from '../layouts/Base.astro';
+import ContentPage from '../components/ContentPage.astro';
 import EventCard from '../components/EventCard.astro';
+import MonthCalendar from '../components/MonthCalendar.astro';
+import Photo from '../components/Photo.astro';
 import { isUpcoming } from '../lib/dates';
 
 const all = (await getCollection('events', (e) => !e.data.draft));
 const upcoming = all.filter((e) => isUpcoming(e.data)).sort((a, b) => a.data.start.localeCompare(b.data.start));
-const past = all.filter((e) => !isUpcoming(e.data)).sort((a, b) => b.data.start.localeCompare(a.data.start)).slice(0, 12);
+const past = all.filter((e) => !isUpcoming(e.data)).sort((a, b) => b.data.start.localeCompare(a.data.start)).slice(0, 6);
+const shown = upcoming.length ? upcoming.slice(0, 6) : past.slice(0, 3);
+
+// the programs that run all year, in this order
+const ongoingIds = ['the-midnight-notes-live-series', 'haiku-in-action', 'ginko-walks', 'the-virgilio-virtual-haiku-open-mic', 'online-workshops', 'scholarship-contest'];
+const posts = await getCollection('posts', (p) => !p.data.draft);
+const ongoing = ongoingIds.map((id) => posts.find((p) => p.id === id)).filter((p) => p !== undefined);
+const blurb = (s = '') => s.replace(/\s*\[&hellip;\]$/, '…');
 ---
-<Base seoKey="house-events" title="Events">
-  <div class="wrap">
-    <div class="page-head"><h1>Events</h1></div>
-    <h2>Upcoming</h2>
-    {upcoming.length ? upcoming.map((e) => <EventCard event={e} />) : <p>No events are scheduled right now. Check back soon, or <a href="/newsletter/">join our newsletter</a>.</p>}
-    <h2 class="past">Recent events</h2>
-    {past.map((e) => <EventCard event={e} />)}
+<ContentPage title="Events Calendar" lede="A comprehensive listing of our upcoming events and programming." tone="mustard" base={{ seoKey: 'house-events' }}>
+  <section slot="top" class="wrap top" aria-labelledby="up-h">
+    <div class="top-list">
+      <h2 id="up-h">{upcoming.length ? 'Upcoming events' : 'Recent events'}</h2>
+      {!upcoming.length && <p>Nothing new is scheduled yet. Here is what we've been up to. <a href="/newsletter/">Join our newsletter</a> to hear first.</p>}
+      {shown.map((e) => <EventCard event={e} />)}
+    </div>
+    <MonthCalendar />
+  </section>
+
+  <h2>Ongoing programming</h2>
+  <div class="cards">
+    {ongoing.map((p) => (
+      <article class="prog">
+        <a class="pic" href={`/${p.id}/`} tabindex="-1" aria-hidden="true"><Photo src={p.data.image} alt="" ratio="16 / 9" label="Photo coming soon" /></a>
+        <h3><a href={`/${p.id}/`}>{p.data.title}</a></h3>
+        <p>{blurb(p.data.excerpt)}</p>
+        <a class="btn rose" href={`/${p.id}/`}>Details</a>
+      </article>
+    ))}
   </div>
-</Base>
-<style>.past { margin-top: 3rem; }</style>
+  {upcoming.length > 0 && past.length > 0 && (
+    <>
+      <h2>Recent events</h2>
+      {past.map((e) => <EventCard event={e} />)}
+    </>
+  )}
+</ContentPage>
+<style>
+  .top { display: grid; gap: 2.5rem; padding-top: clamp(2rem, 5vw, 3.5rem); align-items: start; }
+  @media (min-width: 52rem) { .top { grid-template-columns: minmax(0, 1fr) 22rem; gap: 3.5rem; } }
+  .top-list h2 { margin-top: 0; font-size: clamp(1.4rem, 2.6vw, 1.9rem); font-weight: 800; text-decoration: underline; text-decoration-thickness: 3px; text-underline-offset: .22em; }
+  .cards { display: grid; gap: 2rem; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); }
+  .prog { display: flex; flex-direction: column; align-items: flex-start; padding: 1rem; background: var(--paper); border: 3px solid var(--ink); box-shadow: 5px 5px 0 var(--ink); }
+  .prog .pic { align-self: stretch; }
+  .prog :global(.photo) { margin: 0 0 .9rem; border: 2px solid var(--ink); box-shadow: none; }
+  .prog h3 { margin: 0 0 .4rem; font-size: 1.2rem; } .prog h3 a { text-decoration: none; }
+  .prog h3 a:hover { text-decoration: underline; }
+  .prog p { font-size: .9rem; line-height: 1.45; margin-bottom: 1rem; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+  .prog .btn { margin-top: auto; font-size: .9rem; }
+</style>
