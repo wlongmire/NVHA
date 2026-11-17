@@ -85,7 +85,12 @@ const sections = CATEGORIES.map((c) => ({ ...c, id: c.name.toLowerCase().replace
   .jump { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: 2.5rem; }
   .jump a { text-decoration: none; font-weight: 700; font-size: .85rem; padding: .35rem .8rem; border: 2px solid var(--ink); background: var(--paper); }
   .jump a:hover, .jump a:focus-visible { background: var(--mustard); }
-  .cat { margin-bottom: 3.5rem; scroll-margin-top: 7rem; }
+  .cat, .all { position: relative; isolation: isolate; padding-block: 2.75rem; scroll-margin-top: 7rem; }
+  .cat::before, .all::before { content: ''; position: absolute; z-index: -1; inset-block: 0; left: 50%; width: 100vw; margin-left: -50vw; border-bottom: 4px solid var(--ink); }
+  .cat:nth-of-type(3n+1)::before { background: var(--mustard) url('/brand/texture-mustard.svg') center top / cover no-repeat; }
+  .cat:nth-of-type(3n+2)::before { background: var(--cream) url('/brand/texture-cream.svg') 0 0 / 300px 300px repeat; }
+  .cat:nth-of-type(3n)::before { background: var(--periwinkle) url('/brand/texture-periwinkle.svg') center top / cover no-repeat; }
+  .all::before { background: var(--cream) url('/brand/texture-cream.svg') 0 0 / 300px 300px repeat; border-bottom: 0; }
   .cat-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: .25rem 1.25rem; margin-bottom: 1.5rem; }
   .cat-head h2, .all h2 { margin: 0; font-size: clamp(1.4rem, 2.6vw, 1.9rem); font-weight: 800; text-decoration: underline; text-decoration-thickness: 3px; text-underline-offset: .22em; }
   .cat-head p { margin: 0; font-size: .95rem; }
@@ -96,7 +101,6 @@ const sections = CATEGORIES.map((c) => ({ ...c, id: c.name.toLowerCase().replace
   h3 { font-size: 1.15rem; margin: 0 0 .4rem; } h3 a { text-decoration: none; } h3 a:hover { text-decoration: underline; }
   .ex { margin: 0; font-size: .9rem; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
   .more { margin: 1.25rem 0 0; }
-  .all { border-top: 4px solid var(--ink); padding-top: 2.5rem; scroll-margin-top: 7rem; }
   .tools { display: grid; gap: 1rem; margin: 1.25rem 0 .75rem; }
   .search input { width: 100%; max-width: 32rem; font: inherit; padding: .65rem .8rem; border: 3px solid var(--ink); border-radius: 0; background: var(--paper); }
   .sr { position: absolute; left: -999px; }
