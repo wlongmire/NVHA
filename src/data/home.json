@@ -35,7 +35,7 @@
   },
   "actions": [
     {
-      "link": "Visit the House",
+      "link": "At The Writers House",
       "blurb": "Readings, open mics and the monthly Midnight Notes in Waterfront South.",
       "href": "#house",
       "title": "Life at the Writers House",
@@ -56,7 +56,7 @@
       ]
     },
     {
-      "link": "Write with us",
+      "link": "Poets & Haikuists",
       "blurb": "A weekly prompt, recorded workshops and a youth contest for short-form poets everywhere.",
       "href": "#poets",
       "title": "For poets & haikuists",
@@ -77,7 +77,7 @@
       ]
     },
     {
-      "link": "Bring haiku to class",
+      "link": "For Educators",
       "blurb": "The Tiny Truth Project brings mindful short-form writing into Camden classrooms.",
       "href": "#educators",
       "title": "For teachers & schools",
@@ -98,7 +98,7 @@
       ]
     },
     {
-      "link": "Support the House",
+      "link": "Support Our Work",
       "blurb": "Gifts, shop purchases and space rentals keep our programs free.",
       "href": "#support",
       "title": "Keep poetry free in Camden",
