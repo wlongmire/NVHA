@@ -442,6 +442,11 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   /* the four audience links: one row of equal boxes along the bottom of the hero */
   /* the four audience links */
   h1 mark { background: #fdd876b0; display: inline-block; line-height: 1; border-radius: .04em; color: inherit; padding: .06em .14em 0; margin: 0 -.14em; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+  /* the highlights fade in first, Camden then world, just ahead of the audience buttons */
+  @keyframes mark-in { from { background-color: #fdd87600; } }
+  h1 mark { animation: mark-in .7s ease-out backwards; animation-delay: .15s; }
+  h1 mark + mark, h1 mark ~ mark { animation-delay: .45s; }
+  @media (prefers-reduced-motion: reduce) { h1 mark { animation: none; } }
   .actions { position: relative; z-index: 2; display: grid; gap: 1rem; grid-template-columns: repeat(2, 1fr); margin-top: 2rem; }
   @media (max-width: 32rem) { .actions { grid-template-columns: 1fr; } }
   /* the audience links are a desktop feature; phones and tablets go without them */
