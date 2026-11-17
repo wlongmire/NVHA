@@ -29,7 +29,9 @@ const trail = [{ label: 'Home', href: '/' }, ...crumbs];
 </Base>
 <style>
   .banner { border-bottom: 4px solid var(--ink); padding-block: clamp(1.75rem, 4vw, 3rem); }
-  .banner.periwinkle { background: var(--periwinkle); } .banner.mustard { background: var(--mustard); } .banner.cream { background: var(--cream); }
+  .banner.periwinkle { background: var(--periwinkle) url('/brand/texture-periwinkle.svg') center top / cover no-repeat; }
+  .banner.mustard { background: var(--mustard) url('/brand/texture-mustard.svg') center top / cover no-repeat; }
+  .banner.cream { background: var(--cream) url('/brand/texture-cream.svg') 0 0 / 300px 300px repeat; }
   .crumbs { font-size: .85rem; margin-bottom: .75rem; } .crumbs a { text-decoration: none; font-weight: 700; } .crumbs a:hover { text-decoration: underline; }
   .banner h1 { margin: 0 0 1rem; font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 800; line-height: 1.05; text-decoration: underline; text-decoration-thickness: 3px; text-underline-offset: .22em; }
   .lede { margin: 0; max-width: 40rem; font-size: 1.05rem; }
