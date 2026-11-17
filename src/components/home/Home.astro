@@ -210,9 +210,13 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
       </div>
       {haikuPosts.length > 0 && (
         <div class="reads">
-          <h3>Keep reading about haiku</h3>
-          <ul>{haikuPosts.map((a) => <li><a href={`/${a.id}/`}>{a.data.title}</a></li>)}</ul>
-          <a class="btn rose" href="/blogs/">All articles</a>
+          <div class="reads-head">
+            <h3>Keep reading about haiku</h3>
+            <a class="btn rose" href="/blogs/">All articles</a>
+          </div>
+          <ul>{haikuPosts.map((a) => (
+            <li><a href={`/${a.id}/`}><span class="reads-tag">Article</span><strong>{a.data.title}</strong><span class="reads-go">Read &rarr;</span></a></li>
+          ))}</ul>
         </div>
       )}
     </div>
@@ -495,11 +499,17 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   .split { display: grid; gap: 3rem; align-items: center; }
   @media (min-width: 52rem) { .split { grid-template-columns: 1fr 1fr; gap: 5rem; } }
   .big { font-size: clamp(2rem, 4vw, 3rem); } .sub { font-weight: 700; font-size: 1.1rem; }
-  .reads { display: flex; align-items: center; flex-wrap: wrap; gap: 1rem 1.5rem; margin-top: 2rem; padding-top: 1.25rem; border-top: 3px solid var(--ink); }
-  .reads h3 { margin: 0; font-size: 1.2rem; font-weight: 800; }
-  .reads ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: .6rem; flex: 1 1 24rem; }
-  .reads li a { display: block; padding: .4rem .8rem; font-weight: 700; text-decoration: none; background: var(--paper); border: 2px solid var(--ink); box-shadow: 3px 3px 0 var(--ink); transition: transform .25s ease, box-shadow .25s ease; }
-  .reads li a:hover, .reads li a:focus-visible { transform: translate(1px, 1px); box-shadow: 2px 2px 0 var(--ink); }
+  .reads { margin-top: 2rem; padding-top: 1.5rem; border-top: 3px solid var(--ink); }
+  .reads-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1.25rem; }
+  .reads-head .btn { white-space: nowrap; flex: none; }
+  .reads h3 { margin: 0; font-size: clamp(1.2rem, 2vw, 1.5rem); font-weight: 800; }
+  .reads ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 1.25rem; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  @media (min-width: 52rem) { .reads ul { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  .reads li a { height: 100%; display: flex; flex-direction: column; gap: .5rem; padding: .9rem 1rem; text-decoration: none; background: var(--paper); border: 3px solid var(--ink); box-shadow: 5px 5px 0 var(--ink); transition: transform .25s ease, box-shadow .25s ease; }
+  .reads li a:hover, .reads li a:focus-visible { transform: translate(1px, 1px); box-shadow: 4px 4px 0 var(--ink); }
+  .reads-tag { font-size: .7rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; opacity: .65; }
+  .reads li strong { font-weight: 800; line-height: 1.25; font-size: 1rem; }
+  .reads-go { margin-top: auto; padding-top: .25rem; font-weight: 800; }
   .stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-block: 1.75rem; }
   .stats span { display: flex; flex-direction: column; justify-content: space-between; gap: .35rem; padding: .8rem 1rem; background: var(--paper); color: var(--ink); border: 3px solid var(--ink); box-shadow: 4px 4px 0 var(--ink); font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; line-height: 1.2; }
   .stats b { font-size: 2.6rem; font-family: var(--font-display); line-height: 1; letter-spacing: 0; }
