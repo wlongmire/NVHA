@@ -9,7 +9,7 @@ const SLUG = '[a-z0-9][a-z0-9-]{0,80}';
 export function typeOfPath(path: string): DocType | null {
   const m = path.match(new RegExp(`^src/content/(events|posts|pages|products)/${SLUG}\\.md$`));
   if (m) return typeById(m[1]) ?? null;
-  // the homepage (src/data/home.json) is deliberately not editable here
+  if (path === 'src/data/home.json') return typeById('home') ?? null;
   if (path === 'src/data/people.json') return typeById('people') ?? null;
   if (path === 'src/data/site.json') return typeById('site') ?? null;
   return null;
