@@ -183,6 +183,8 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
       const lift = () => document.documentElement.style.setProperty('--lift', getComputedStyle(bar).position === 'fixed' && !bar.classList.contains('away') ? `${bar.offsetHeight + 12}px` : '0px');
       if ('IntersectionObserver' in window) new IntersectionObserver(([e]) => { bar.classList.toggle('away', e.isIntersecting); lift(); }).observe(foot);
       addEventListener('resize', lift); lift();
+      const fade = () => bar.classList.toggle('floating', scrollY > innerHeight * 0.15);
+      addEventListener('scroll', fade, { passive: true }); fade();
     }
   </script>
 
@@ -462,6 +464,8 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
     .action-box { position: absolute; bottom: 0; left: 0; width: 100%; overflow: hidden; border: 0; background: #fdd876bf; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); box-shadow: none; transition: width .25s ease, background-color .25s ease; }
     .action-slot:nth-child(n+3) .action-box { left: auto; right: 0; }
   }
+  /* once you scroll past the first screen the buttons turn see-through, and fill back in when you point at one */
+  @media (min-width: 56rem) { .actions.floating .action-box { background: #fdd87680; } }
   /* only where there is a mouse: hovering or tabbing to a box widens it and reveals a short line and links inside it */
   @media (min-width: 56rem) and (hover: hover), (min-width: 56rem) and (pointer: fine) {
     .action-more { display: grid; grid-template-rows: 0fr; opacity: 0; transition: grid-template-rows .25s ease, opacity .2s ease; }
