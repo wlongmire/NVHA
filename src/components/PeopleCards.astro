@@ -1,9 +1,12 @@
 ---
-// A grid of people cards (board, staff). Each person: name, role (optional), bio, photo (optional path under /uploads/).
+// A grid of people cards (board, staff). Each person: name, role (optional), bio, photo (optional path under /uploads/),
+// links (optional list of { type, href }; type is instagram, facebook, x, linkedin, youtube, bluesky, website or email),
+// and more (optional longer text, shown in a popup behind a "More" button; blank lines start new paragraphs).
 // Without a photo the card shows initials on a palette color. *Asterisks* in a bio set italics.
 const { people = [], fallbackRole = '' } = Astro.props;
 const tones = ['periwinkle', 'mustard', 'brick', 'cream'];
 const initials = (n: string) => n.replace(/\b(Dr|Sr|Jr)\.?/g, '').split(/\s+/).filter(Boolean).filter((w) => /^[A-Za-z]/.test(w) && !/^[A-Z]\.$/.test(w)).slice(0, 2).map((w) => w[0].toUpperCase()).join('');
+const labels: Record<string, string> = { instagram: 'Instagram', facebook: 'Facebook', x: 'X', linkedin: 'LinkedIn', youtube: 'YouTube', bluesky: 'Bluesky', website: 'Website', email: 'Email' };
 const esc = (t: string) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/\*(.+?)\*/g, '<em>$1</em>');
 ---
 <ul class="people">
@@ -16,10 +19,33 @@ const esc = (t: string) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replac
         <p class="role">{p.role || fallbackRole}</p>
         <h3>{p.name}</h3>
         <p class="bio" set:html={esc(p.bio)} />
+        {(p.links?.length || p.more) && (
+          <div class="extras">
+            {p.links?.map((l) => <a class="soc" href={l.type === 'email' && !l.href.startsWith('mailto:') ? `mailto:${l.href}` : l.href} target={l.type === 'email' ? undefined : '_blank'} rel="noopener" aria-label={`${p.name} on ${labels[l.type] ?? l.type}`}>{labels[l.type] ?? l.type}</a>)}
+            {p.more && <button type="button" class="more" data-dialog={`person-${i}`}>More</button>}
+          </div>
+        )}
       </div>
+      {p.more && (
+        <dialog class="pop" id={`person-${i}`} aria-label={p.name}>
+          <button type="button" class="x" aria-label="Close">×</button>
+          <p class="role">{p.role || fallbackRole}</p>
+          <h3>{p.name}</h3>
+          {p.more.split(/\n\s*\n/).map((para) => <p set:html={esc(para)} />)}
+        </dialog>
+      )}
     </li>
   ))}
 </ul>
+<script>
+  document.querySelectorAll<HTMLButtonElement>('.people .more').forEach((b) => {
+    const d = document.getElementById(b.dataset.dialog!) as HTMLDialogElement | null;
+    if (!d) return;
+    b.addEventListener('click', () => d.showModal());
+    d.querySelector('.x')?.addEventListener('click', () => d.close());
+    d.addEventListener('click', (e) => { if (e.target === d) d.close(); });   // a click on the dim backdrop closes it
+  });
+</script>
 <style>
   .people { list-style: none; padding: 0 !important; margin: 1.25rem 0 0; display: grid; gap: 1.5rem; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); }
   .person { margin: 0 !important; display: flex; flex-direction: column; background: var(--paper); border: 3px solid var(--ink); box-shadow: 5px 5px 0 var(--ink); }
@@ -31,4 +57,15 @@ const esc = (t: string) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replac
   .role { font-family: var(--font-label); font-size: .72rem !important; letter-spacing: .08em; text-transform: uppercase; margin: 0 0 .35rem; min-height: 2.2em; display: flex; align-items: flex-end; }
   h3 { margin: 0 0 .5rem; font-size: 1.15rem; line-height: 1.15; }
   .bio { margin: 0; font-size: .9rem !important; line-height: 1.5; }
+  .extras { display: flex; flex-wrap: wrap; gap: .4rem .5rem; align-items: center; margin-top: auto; padding-top: .9rem; }
+  .soc { font-family: var(--font-label); font-size: .7rem; letter-spacing: .06em; text-transform: uppercase; text-decoration: none; font-weight: 500; padding: .2rem .5rem; border: 2px solid var(--ink); background: var(--paper); }
+  .soc:hover, .soc:focus-visible { background: var(--mustard); }
+  .more { margin-left: auto; font: inherit; font-size: .8rem; font-weight: 700; padding: .25rem .8rem; background: var(--mustard); color: var(--ink); border: 2px solid var(--ink); box-shadow: 2px 2px 0 var(--ink); cursor: pointer; }
+  .more:hover, .more:focus-visible { transform: translate(1px, 1px); box-shadow: 1px 1px 0 var(--ink); }
+  .pop { width: min(34rem, calc(100vw - 2rem)); max-height: calc(100vh - 3rem); overflow-y: auto; padding: 1.5rem 1.5rem 1.25rem; background: var(--paper); color: var(--ink); border: 3px solid var(--ink); box-shadow: 6px 6px 0 var(--ink); }
+  .pop::backdrop { background: #1f1d1d99; }
+  .pop h3 { font-size: 1.5rem; margin-bottom: .75rem; }
+  .pop p:not(.role) { font-size: .95rem; line-height: 1.6; }
+  .pop .role { min-height: 0; margin-bottom: .25rem; }
+  .x { position: absolute; top: .4rem; right: .6rem; background: none; border: 0; font-size: 1.75rem; line-height: 1; cursor: pointer; color: var(--ink); }
 </style>
