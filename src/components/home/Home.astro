@@ -133,55 +133,6 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
     </div>
   </section>
 
-  <section class="supporters" aria-label="Our supporters">
-    <div class="wrap">
-      <span class="label">Our supporters</span>
-    </div>
-    <div class="carousel" data-carousel>
-      <button class="car-btn" type="button" data-dir="-1" aria-label="Previous supporter">&#8592;</button>
-      <div class="car-view">
-        <ul class="car-track">
-          {home.supporters.map((s) => <li><img src={s.logo} alt={s.name} loading="lazy" /><span>{s.caption ?? s.name}</span></li>)}
-        </ul>
-      </div>
-      <button class="car-btn" type="button" data-dir="1" aria-label="Next supporter">&#8594;</button>
-    </div>
-  </section>
-  <script>
-    // supporters: steps one logo at a time (on its own every few seconds, or with the arrows) and loops back round to the first
-    document.querySelectorAll<HTMLElement>('[data-carousel]').forEach((car) => {
-      const track = car.querySelector<HTMLElement>('.car-track')!;
-      const originals = Array.from(track.children) as HTMLElement[];
-      const n = originals.length;
-      originals.forEach((li) => { const c = li.cloneNode(true) as HTMLElement; c.setAttribute('aria-hidden', 'true'); c.querySelector('img')?.setAttribute('alt', ''); track.appendChild(c); });
-      const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
-      let idx = 0, busy = false, paused = false;
-      const width = () => originals[0].offsetWidth;
-      const place = (animate: boolean) => {
-        track.style.transition = animate ? 'transform .6s ease' : 'none';
-        track.style.transform = `translate3d(${-idx * width()}px,0,0)`;
-        if (!animate) void track.offsetWidth;
-      };
-      const step = (dir: number) => {
-        if (busy) return;
-        if (dir < 0 && idx === 0) { idx = n; place(false); }
-        busy = true;
-        idx += dir;
-        place(!still);
-        // transitionend can be skipped (hidden tab, reduced motion), so a timer finishes the step too
-        setTimeout(done, still ? 0 : 650);
-      };
-      const done = () => { if (!busy) return; if (idx >= n) { idx -= n; place(false); } busy = false; };
-      car.querySelectorAll<HTMLElement>('.car-btn').forEach((b) => b.addEventListener('click', () => step(Number(b.dataset.dir))));
-      car.addEventListener('mouseenter', () => { paused = true; });
-      car.addEventListener('mouseleave', () => { paused = false; });
-      car.addEventListener('focusin', () => { paused = true; });
-      car.addEventListener('focusout', () => { paused = false; });
-      addEventListener('resize', () => place(false));
-      if (!still) setInterval(() => { if (!paused && !document.hidden) step(1); }, 3500);
-    });
-  </script>
-
   <section class="band cream" id="house">
     <div class="wrap">
       <header class="band-head"><span class="num">01</span><h2>At the Writers House</h2></header>
@@ -256,6 +207,55 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
       </div>
     </div>
   </section>
+
+  <section class="supporters" aria-label="Our supporters">
+    <div class="wrap">
+      <span class="label">Our supporters</span>
+    </div>
+    <div class="carousel" data-carousel>
+      <button class="car-btn" type="button" data-dir="-1" aria-label="Previous supporter">&#8592;</button>
+      <div class="car-view">
+        <ul class="car-track">
+          {home.supporters.map((s) => <li><img src={s.logo} alt={s.name} loading="lazy" /><span>{s.caption ?? s.name}</span></li>)}
+        </ul>
+      </div>
+      <button class="car-btn" type="button" data-dir="1" aria-label="Next supporter">&#8594;</button>
+    </div>
+  </section>
+  <script>
+    // supporters: steps one logo at a time (on its own every few seconds, or with the arrows) and loops back round to the first
+    document.querySelectorAll<HTMLElement>('[data-carousel]').forEach((car) => {
+      const track = car.querySelector<HTMLElement>('.car-track')!;
+      const originals = Array.from(track.children) as HTMLElement[];
+      const n = originals.length;
+      originals.forEach((li) => { const c = li.cloneNode(true) as HTMLElement; c.setAttribute('aria-hidden', 'true'); c.querySelector('img')?.setAttribute('alt', ''); track.appendChild(c); });
+      const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      let idx = 0, busy = false, paused = false;
+      const width = () => originals[0].offsetWidth;
+      const place = (animate: boolean) => {
+        track.style.transition = animate ? 'transform .6s ease' : 'none';
+        track.style.transform = `translate3d(${-idx * width()}px,0,0)`;
+        if (!animate) void track.offsetWidth;
+      };
+      const step = (dir: number) => {
+        if (busy) return;
+        if (dir < 0 && idx === 0) { idx = n; place(false); }
+        busy = true;
+        idx += dir;
+        place(!still);
+        // transitionend can be skipped (hidden tab, reduced motion), so a timer finishes the step too
+        setTimeout(done, still ? 0 : 650);
+      };
+      const done = () => { if (!busy) return; if (idx >= n) { idx -= n; place(false); } busy = false; };
+      car.querySelectorAll<HTMLElement>('.car-btn').forEach((b) => b.addEventListener('click', () => step(Number(b.dataset.dir))));
+      car.addEventListener('mouseenter', () => { paused = true; });
+      car.addEventListener('mouseleave', () => { paused = false; });
+      car.addEventListener('focusin', () => { paused = true; });
+      car.addEventListener('focusout', () => { paused = false; });
+      addEventListener('resize', () => place(false));
+      if (!still) setInterval(() => { if (!paused && !document.hidden) step(1); }, 3500);
+    });
+  </script>
 
 <style>
   .media-pop { width: min(60rem, 92vw); max-height: 92vh; padding: clamp(1.25rem, 3vw, 2rem); border: 2px solid var(--ink); border-radius: var(--radius); background: var(--paper); color: var(--ink); box-shadow: 8px 8px 0 var(--ink); }
