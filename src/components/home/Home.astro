@@ -518,7 +518,11 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   .band-head { display: flex; align-items: baseline; gap: 1rem; margin-bottom: 1.75rem; }
   .kicker { margin: 0 0 .3rem; font-weight: 800; letter-spacing: .01em; }
   .band-head h2 { margin: 0; font-size: clamp(1.75rem, 4vw, 2.75rem); }
-  .yellow { background: var(--mustard); } .cream { background: var(--cream); } .rose { background: var(--brick); color: #fff; } .blue { background: var(--periwinkle); }
+  /* every panel carries the same fine watercolor mottling as the hero, in its own color */
+  .yellow { background: var(--mustard) url('/brand/texture-mustard.svg') center top / cover no-repeat; }
+  .cream { background: var(--cream) url('/brand/texture-cream.svg') center top / cover no-repeat; }
+  .rose { background: var(--brick) url('/brand/texture-brick.svg') center top / cover no-repeat; color: #fff; }
+  .blue { background: var(--periwinkle) url('/brand/texture-periwinkle.svg') center top / cover no-repeat; }
   .three { display: grid; gap: 3rem; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); }
   .card { display: flex; flex-direction: column; align-items: flex-start; } .card :global(.photo) { align-self: stretch; }
   .card .btn { margin-top: auto; }

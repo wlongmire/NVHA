@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 680" preserveAspectRatio="xMidYMin slice">
+  <!-- Fine, low-contrast watercolor mottling in #9a9df7, the same treatment as the homepage hero (hero-texture.svg), for behind a homepage section. -->
+  <defs>
+    <filter id="light" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency=".011" numOctaves="5" seed="57" />
+      <feColorMatrix values="0 0 0 0 0.80  0 0 0 0 0.81  0 0 0 0 0.98  2.4 0 0 0 -1.1" />
+      <feComponentTransfer><feFuncA type="table" tableValues="0 .05 .16 .2 .22" /></feComponentTransfer>
+    </filter>
+    <filter id="deep" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency=".014" numOctaves="5" seed="3" />
+      <feColorMatrix values="0 0 0 0 0.45  0 0 0 0 0.46  0 0 0 0 0.73  0 2.4 0 0 -1.1" />
+      <feComponentTransfer><feFuncA type="table" tableValues="0 .04 .13 .17 .18" /></feComponentTransfer>
+    </filter>
+    <filter id="grain" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency=".8" numOctaves="2" seed="3" />
+      <feColorMatrix values="0 0 0 0 0.20  0 0 0 0 0.20  0 0 0 0 0.32  0 0 0 .1 0" />
+    </filter>
+  </defs>
+  <rect width="1440" height="680" fill="#9a9df7" />
+  <rect width="1440" height="680" filter="url(#light)" />
+  <rect width="1440" height="680" filter="url(#deep)" />
+  <rect width="1440" height="680" filter="url(#grain)" />
+</svg>
