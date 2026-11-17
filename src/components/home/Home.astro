@@ -251,7 +251,10 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
           <p class="sub">{educators.subtitle}</p>
           <p>{educators.text}</p>
           <p class="stats">{educators.stats.map((s) => <span><b>{s.n}</b>{s.label}</span>)}</p>
-          <a class="btn" href={educators.href}>{educators.link}</a>
+          <p class="btns">
+            <a class="btn" href={educators.href}>{educators.link}</a>
+            <a class="btn paper" href={educators.prospectusHref} target="_blank" rel="noopener">{educators.prospectusLink}</a>
+          </p>
         </div>
       </div>
     </div>
@@ -534,6 +537,8 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   .reads-tag { font-size: .7rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; opacity: .65; }
   .reads li strong { font-weight: 800; line-height: 1.25; font-size: 1rem; }
   .reads-go { margin-top: auto; padding-top: .25rem; font-weight: 800; }
+  #educators .btn.paper { background: var(--paper); color: var(--ink); }
+  #educators .btns { display: flex; flex-wrap: wrap; gap: .75rem 1rem; margin: 0; }
   .stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-block: 1.75rem; }
   .stats span { display: flex; flex-direction: column; justify-content: space-between; gap: .35rem; padding: .8rem 1rem; background: var(--paper); color: var(--ink); border: 3px solid var(--ink); box-shadow: 4px 4px 0 var(--ink); font-size: .75rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; line-height: 1.2; }
   .stats b { font-size: 2.6rem; font-family: var(--font-display); line-height: 1; letter-spacing: 0; }
