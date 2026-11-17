@@ -521,11 +521,8 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   /* every panel carries the same fine watercolor mottling as the hero, in its own color */
   .yellow { background: var(--mustard) url('/brand/texture-mustard.svg') center top / cover no-repeat; }
   .cream { background: var(--cream) url('/brand/texture-cream.svg') 0 0 / 300px 300px repeat; }   /* the cream panel gets a woven linen texture instead of the watercolor one */
-  /* the educators panel is ruled like a school notebook: pale lines every 2rem over the brick watercolor,
-     and on wide screens a double margin line down the left, like the red one on notebook paper */
-  .rose { --rules: repeating-linear-gradient(to bottom, transparent 0 calc(2rem - 1px), #ffffff40 calc(2rem - 1px) 2rem);
-    background: var(--rules), var(--brick) url('/brand/texture-brick.svg') center top / cover no-repeat; color: #fff; }
-  @media (min-width: 60rem) { .rose { background: linear-gradient(90deg, transparent 1.25rem, #ffc4c48c 1.25rem calc(1.25rem + 2px), transparent calc(1.25rem + 2px) calc(1.25rem + 7px), #ffc4c48c calc(1.25rem + 7px) calc(1.25rem + 9px), transparent calc(1.25rem + 9px)), var(--rules), var(--brick) url('/brand/texture-brick.svg') center top / cover no-repeat; } }
+  /* the educators panel: the brick watercolor with very faint notebook rules, widely spaced */
+  .rose { background: repeating-linear-gradient(to bottom, transparent 0 calc(3rem - 1px), #ffffff1a calc(3rem - 1px) 3rem), var(--brick) url('/brand/texture-brick.svg') center top / cover no-repeat; color: #fff; }
   .blue { background: var(--periwinkle) url('/brand/texture-periwinkle.svg') center top / cover no-repeat; }
   .three { display: grid; gap: 3rem; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); }
   .card { display: flex; flex-direction: column; align-items: flex-start; } .card :global(.photo) { align-self: stretch; }
