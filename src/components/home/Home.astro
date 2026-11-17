@@ -8,6 +8,13 @@ import { fmtDay } from '../../lib/dates';
 
 const { hasNext, upcoming, products } = await loadHome();
 // "Visit the House" points at what's on next, worked out when the site is built (every save in /edit rebuilds it)
+const money = (n: number) => n.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+// a one-line blurb for each item: the first sentence of its description, with markdown marks removed
+const blurb = (md = '') => {
+  const t = md.replace(/!?\[([^\]]*)\]\([^)]*\)/g, '$1').replace(/[#*_>`]/g, '').replace(/\s+/g, ' ').trim();
+  const first = t.match(/^.*?[.!?](\s|$)/)?.[0].trim() ?? t;
+  return first.length > 110 ? first.slice(0, 107).trimEnd() + '…' : first;
+};
 const nextEvent = hasNext ? upcoming[0] : undefined;
 const describe = (a: { href: string; blurb: string }) =>
   a.href === '#house' && nextEvent ? `Next up: ${nextEvent.data.title}, ${fmtDay(nextEvent.data.start)}.` : a.blurb;
@@ -85,6 +92,15 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
       pop.querySelector('.media-close')?.addEventListener('click', shut);
       pop.addEventListener('click', (e) => { if (e.target === pop) shut(); });
     }
+  </script>
+  <script>
+    document.querySelectorAll<HTMLElement>('[data-shop]').forEach((b) =>
+      b.addEventListener('click', () => {
+        const shop = b.closest('.panel')?.querySelector<HTMLElement>('.shop');
+        const item = shop?.querySelector<HTMLElement>('a');
+        if (shop && item) shop.scrollBy({ left: Number(b.dataset.shop) * (item.offsetWidth + 20), behavior: 'smooth' });
+      }),
+    );
   </script>
   <section class="hero">
     <div class="wrap hero-grid">
@@ -194,10 +210,13 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
       <div class="support">
         <div class="panel dark">
           <h3>Books and merchandise</h3>
-          <div class="shop">{products.map((p) => (
-            <a href="/store/"><Photo src={p.data.image} alt="" ratio="1 / 1" /><span>{p.data.title}</span></a>
+          <div class="shop" tabindex="0" aria-label="Books and merchandise, scroll sideways for more">{products.map((p) => (
+            <a href="/store/"><Photo src={p.data.image} alt="" ratio="1 / 1" /><strong>{p.data.title}</strong><em>{money(p.data.price)}</em><span>{blurb(p.body)}</span></a>
           ))}</div>
-          <a class="btn rose" href="/store/">See more</a>
+          <div class="shop-foot">
+            <a class="btn rose" href="/store/">See more</a>
+            <span class="shop-arrows"><button class="car-btn" type="button" data-shop="-1" aria-label="Previous items">&#8592;</button><button class="car-btn" type="button" data-shop="1" aria-label="Next items">&#8594;</button></span>
+          </div>
         </div>
         <div class="panel dark">
           <h3>{home.support.rentTitle}</h3>
@@ -416,7 +435,14 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   .support { display: grid; gap: 2rem; grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr)); }
   .panel { padding: clamp(1.5rem, 3vw, 2.5rem); border-radius: var(--radius); display: flex; flex-direction: column; align-items: flex-start; gap: 1.25rem; }
   .panel h3 { margin: 0; } .panel .btns { margin-top: auto; } .dark { background: var(--ink); color: #fff; }
-  .shop { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; margin-block: 1.5rem 2rem; } .shop a { font-size: .8rem; text-decoration: none; } .shop :global(.photo) { margin-bottom: .6rem; }
+  .shop { display: flex; gap: 1.25rem; width: 100%; margin-block: 1rem 1.25rem; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; padding: 0 8px 8px 0; }
+  .shop::-webkit-scrollbar { display: none; }
+  .shop a { flex: 0 0 38%; scroll-snap-align: start; font-size: .85rem; line-height: 1.35; text-decoration: none; display: flex; flex-direction: column; }
+  .shop :global(.photo) { margin-bottom: .7rem; }
+  .shop strong { font-weight: 800; } .shop em { font-style: normal; font-weight: 700; margin-block: .15rem .3rem; }
+  .shop span { opacity: .8; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .shop-foot { margin-top: auto; width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+  .shop-arrows { display: flex; gap: .5rem; }
 
   /* the same bold look all the way down: black rules under every section, outlined pictures with an offset shadow, white outlined cards */
   .supporters, .band { border-bottom: 4px solid var(--ink); }
