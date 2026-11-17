@@ -33,6 +33,12 @@
     "link": "Learn More",
     "href": "/store/"
   },
+  "kickers": {
+    "house": "Visit us in Waterfront South:",
+    "poets": "Write, share and learn with us:",
+    "educators": "Bring haiku into your classroom:",
+    "support": "Help keep our programs free:"
+  },
   "actions": [
     {
       "link": "At The Writers House",

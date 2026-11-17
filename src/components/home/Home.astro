@@ -135,7 +135,7 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
 
   <section class="band cream" id="house">
     <div class="wrap">
-      <header class="band-head"><h2>At the Writers House</h2></header>
+      <header class="band-head"><div>{home.kickers.house && <p class="kicker">{home.kickers.house}</p>}<h2>At the Writers House</h2></div></header>
       <div class="house">
         <figure>
           <Photo src={house.houseImage} alt="" ratio="4 / 3" />
@@ -157,7 +157,7 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
 
   <section class="band yellow" id="poets">
     <div class="wrap">
-      <header class="band-head"><h2>Poets &amp; Haikuists</h2></header>
+      <header class="band-head"><div>{home.kickers.poets && <p class="kicker">{home.kickers.poets}</p>}<h2>Poets &amp; Haikuists</h2></div></header>
       <div class="three">
         {home.programs.map((p) => (
           <article class="card">
@@ -174,7 +174,7 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
 
   <section class="band rose" id="educators">
     <div class="wrap">
-      <header class="band-head"><h2>For Educators</h2></header>
+      <header class="band-head"><div>{home.kickers.educators && <p class="kicker">{home.kickers.educators}</p>}<h2>For Educators</h2></div></header>
       <div class="split">
         <Photo src={educators.image} alt={educators.imageAlt} ratio="4 / 3" />
         <div>
@@ -190,7 +190,7 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
 
   <section class="band blue" id="support">
     <div class="wrap">
-      <header class="band-head"><h2>Support Our Work</h2></header>
+      <header class="band-head"><div>{home.kickers.support && <p class="kicker">{home.kickers.support}</p>}<h2>Support Our Work</h2></div></header>
       <div class="support">
         <div class="panel dark">
           <h3 class="label">Books and merchandise</h3>
@@ -394,6 +394,7 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   .band { padding-block: clamp(2.5rem, 5vw, 4rem); }
   .supporters + .band { margin-top: clamp(2rem, 4vw, 3rem); }
   .band-head { display: flex; align-items: baseline; gap: 1rem; margin-bottom: 1.75rem; }
+  .kicker { margin: 0 0 .3rem; font-weight: 800; letter-spacing: .01em; }
   .band-head h2 { margin: 0; font-size: clamp(1.75rem, 4vw, 2.75rem); }
   .yellow { background: var(--mustard); } .cream { background: var(--cream); } .rose { background: var(--brick); color: #fff; } .blue { background: var(--periwinkle); }
   .three { display: grid; gap: 3rem; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); }
