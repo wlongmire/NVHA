@@ -8,7 +8,7 @@ export async function loadHome() {
   const upcoming = next.length ? next : [...events].sort((a, b) => b.data.start.localeCompare(a.data.start)).slice(0, 3);
   const products = (await getCollection('products', (p) => !p.data.draft));
   // articles shown under Poets & Haikuists, in this order (a slug that no longer exists is skipped)
-  const haikuSlugs = ['haiku-themes-for-beginners', 'haiku-writing-mistakes', 'haiku-vs-poetry', 'what-is-contemporary-america-haiku'];
+  const haikuSlugs = ['haiku-themes-for-beginners', 'haiku-writing-mistakes', 'haiku-vs-poetry', 'what-is-contemporary-america-haiku', 'haiku-lesson-plans', 'ginko-walks', 'timeline-of-nicks-life-in-poetry'];
   const posts = await getCollection('posts', (p) => !p.data.draft);
   const haikuPosts = haikuSlugs.map((id) => posts.find((p) => p.id === id)).filter((p) => p !== undefined);
   return { hasNext: next.length > 0, upcoming, products, haikuPosts };

@@ -93,6 +93,21 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
     }
   </script>
   <script>
+    // article cards: the arrow buttons, and the left and right arrow keys, move along the row
+    document.querySelectorAll<HTMLElement>('.reads').forEach((box) => {
+      const list = box.querySelector<HTMLElement>('ul');
+      if (!list) return;
+      const move = (dir: number) => {
+        const card = list.querySelector<HTMLElement>('li');
+        if (card) list.scrollBy({ left: dir * (card.offsetWidth + 20), behavior: 'smooth' });
+      };
+      box.querySelectorAll<HTMLElement>('[data-reads]').forEach((b) => b.addEventListener('click', () => move(Number(b.dataset.reads))));
+      list.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { e.preventDefault(); move(e.key === 'ArrowRight' ? 1 : -1); }
+      });
+    });
+  </script>
+  <script>
     // the amount chips pass the chosen gift on to the donation page
     document.querySelectorAll<HTMLElement>('[data-give]').forEach((box) => {
       const btn = box.querySelector<HTMLAnchorElement>('[data-give-btn]');
@@ -212,9 +227,13 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
         <div class="reads">
           <div class="reads-head">
             <h3>Keep reading about haiku</h3>
-            <a class="btn rose" href="/blogs/">All articles</a>
+            <span class="reads-nav">
+              <button class="car-btn" type="button" data-reads="-1" aria-label="Previous articles">&#8592;</button>
+              <button class="car-btn" type="button" data-reads="1" aria-label="Next articles">&#8594;</button>
+              <a class="btn rose" href="/blogs/">All articles</a>
+            </span>
           </div>
-          <ul>{haikuPosts.map((a) => (
+          <ul aria-label="Haiku articles; use the left and right arrow keys to browse">{haikuPosts.map((a) => (
             <li><a href={`/${a.id}/`}><span class="reads-tag">Article</span><strong>{a.data.title}</strong><span class="reads-go">Read &rarr;</span></a></li>
           ))}</ul>
         </div>
@@ -501,10 +520,14 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   .big { font-size: clamp(2rem, 4vw, 3rem); } .sub { font-weight: 700; font-size: 1.1rem; }
   .reads { margin-top: 2rem; padding-top: 1.5rem; border-top: 3px solid var(--ink); }
   .reads-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1.25rem; }
+  @media (max-width: 40rem) { .reads-head { flex-wrap: wrap; } }
   .reads-head .btn { white-space: nowrap; flex: none; }
   .reads h3 { margin: 0; font-size: clamp(1.2rem, 2vw, 1.5rem); font-weight: 800; }
-  .reads ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 1.25rem; grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  @media (min-width: 52rem) { .reads ul { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  .reads-nav { display: flex; align-items: center; gap: .5rem; } .reads-nav .btn { margin-left: .5rem; }
+  .reads ul { list-style: none; margin: 0; padding: 0 8px 8px 0; display: flex; gap: 1.25rem; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
+  .reads ul::-webkit-scrollbar { display: none; }
+  .reads li { flex: 0 0 calc((100% - 1.25rem) / 2); scroll-snap-align: start; }
+  @media (min-width: 52rem) { .reads li { flex-basis: calc((100% - 3.75rem) / 4); } }
   .reads li a { height: 100%; display: flex; flex-direction: column; gap: .5rem; padding: .9rem 1rem; text-decoration: none; background: var(--paper); border: 3px solid var(--ink); box-shadow: 5px 5px 0 var(--ink); transition: transform .25s ease, box-shadow .25s ease; }
   .reads li a:hover, .reads li a:focus-visible { transform: translate(1px, 1px); box-shadow: 4px 4px 0 var(--ink); }
   .reads-tag { font-size: .7rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; opacity: .65; }
