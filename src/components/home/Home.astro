@@ -193,7 +193,7 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
       <header class="band-head"><div>{home.kickers.support && <p class="kicker">{home.kickers.support}</p>}<h2>Support Our Work</h2></div></header>
       <div class="support">
         <div class="panel dark">
-          <h3 class="label">Books and merchandise</h3>
+          <h3>Books and merchandise</h3>
           <div class="shop">{products.map((p) => (
             <a href="/store/"><Photo src={p.data.image} alt="" ratio="1 / 1" /><span>{p.data.title}</span></a>
           ))}</div>
@@ -430,8 +430,7 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   .panel .btn { --ink-sh: var(--ink); border-color: var(--ink); }
   .panel .btn.rose { color: #fff; }
   .panel :global(.photo) { box-shadow: 4px 4px 0 var(--ink); }
-  .panel .label { color: var(--ink); }
-  .panel h3:not(.label) { font-size: clamp(1.4rem, 2.4vw, 1.9rem); font-weight: 800; line-height: 1.15; }
+  .panel h3 { font-size: clamp(1.4rem, 2.4vw, 1.9rem); font-weight: 800; line-height: 1.15; }
   .rose .btn { --ink-sh: var(--ink); border-color: var(--ink); }
 
   /* every picture in the panels is square; on desktop they are capped by the window height so each section still fits one screen */
