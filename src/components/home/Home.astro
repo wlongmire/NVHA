@@ -511,6 +511,7 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   .house figure :global(.photo) { align-self: stretch; }
   .house figcaption { margin-bottom: 1rem; } .house figure .btn, .house .events .btn { margin-top: auto; }
   @media (max-width: 40rem) { .house figure .btn { padding-inline: .8rem; white-space: nowrap; } }
+  .house .events > :global(.event:last-of-type) { margin-bottom: 1.25rem; }
   .house .events > :global(*) { align-self: stretch; } .house .events .btn { align-self: flex-start; }
   @media (min-width: 64rem) { .house { gap: 3rem; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.5fr); } .house .events { grid-column: auto; margin-top: 0; } }
   figure { margin: 0; } figcaption { margin-top: 1rem; } figcaption .arrow-link { display: inline-block; margin-top: .5rem; }
