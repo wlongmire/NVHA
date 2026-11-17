@@ -24,6 +24,15 @@
     "imageAlt": "Mural on the Writers House wall of a child writing with a pencil, with birds, cherry blossoms and daffodils",
     "imagePosition": "30% 76%"
   },
+  "featured": {
+    "kind": "Presenting our Newest Publication:",
+    "title": "Student Haiku And Senryu Anthology 2022-2026",
+    "text": "In this first edition of the Nick Virgilio Writers House Youth Anthology, we collect the winners, and for the first time, the finalists of the Nick Virgilio Memorial Student Haiku and Senryu Competition from the years 2022-2026.\n\nThis book brings together the best middle and high school poets from around the country and around the world, from Georgia to California, and from Romania to Samoa. These students prove that poetry is humanity defined, and that haiku in particular reveals what it means to be human.",
+    "image": "/uploads/2026/11/student-haiku-senryu-anthology.png",
+    "imageAlt": "Cover of the Student Haiku and Senryu Anthology 2022-2026",
+    "link": "Learn More",
+    "href": "/store/"
+  },
   "actions": [
     {
       "link": "Visit the House",
