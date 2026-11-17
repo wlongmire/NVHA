@@ -520,7 +520,7 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   .band-head h2 { margin: 0; font-size: clamp(1.75rem, 4vw, 2.75rem); }
   /* every panel carries the same fine watercolor mottling as the hero, in its own color */
   .yellow { background: var(--mustard) url('/brand/texture-mustard.svg') center top / cover no-repeat; }
-  .cream { background: var(--cream) url('/brand/texture-cream.svg') center top / cover no-repeat; }
+  .cream { background: var(--cream) url('/brand/texture-cream.svg') 0 0 / 300px 300px repeat; }   /* the cream panel gets a woven linen texture instead of the watercolor one */
   .rose { background: var(--brick) url('/brand/texture-brick.svg') center top / cover no-repeat; color: #fff; }
   .blue { background: var(--periwinkle) url('/brand/texture-periwinkle.svg') center top / cover no-repeat; }
   .three { display: grid; gap: 3rem; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); }
