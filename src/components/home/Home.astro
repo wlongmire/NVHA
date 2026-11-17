@@ -185,6 +185,10 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
       addEventListener('resize', lift); lift();
       const fade = () => bar.classList.toggle('floating', scrollY > innerHeight * 0.15);
       addEventListener('scroll', fade, { passive: true }); fade();
+      // each arrow points toward its panel: down while the panel is still ahead, up once you have scrolled past its top
+      const slots = [...bar.querySelectorAll<HTMLElement>('.action-slot')].map((slot) => ({ slot, target: document.querySelector(slot.querySelector('a')!.getAttribute('href')!) }));
+      const aim = () => slots.forEach(({ slot, target }) => { if (target) slot.dataset.dir = target.getBoundingClientRect().top < 100 ? 'up' : 'down'; });
+      addEventListener('scroll', aim, { passive: true }); addEventListener('resize', aim); aim();
     }
   </script>
 
@@ -452,6 +456,8 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   @media (prefers-reduced-motion: reduce) { .live-dot { animation: none; } }
   .action-link .arrow { flex: none; transition: transform .25s ease; }
   .action-slot:hover .arrow, .action-link:focus-visible .arrow { transform: translateY(2px); }
+  .action-slot[data-dir='up'] .action-link .arrow { transform: rotate(180deg); }
+  .action-slot[data-dir='up']:hover .action-link .arrow, .action-slot[data-dir='up'] .action-link:focus-visible .arrow { transform: rotate(180deg) translateY(2px); }
 
   @media (min-width: 56rem) {
     /* under the mural only, aligned right, quieter than the hero buttons */
