@@ -118,6 +118,18 @@ const org = {
   </div>
 
   <main id="main"><slot /></main>
+  <button type="button" class="to-top" id="to-top" aria-label="Back to top" hidden>
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7" /></svg>
+  </button>
+  <script is:inline>
+    (function () {
+      var b = document.getElementById('to-top'); if (!b) return;
+      var calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      function update() { var on = scrollY > innerHeight * 0.8; if (on && b.hidden) b.hidden = false; b.classList.toggle('show', on); }
+      addEventListener('scroll', update, { passive: true }); update();
+      b.addEventListener('click', function () { scrollTo({ top: 0, behavior: calm ? 'auto' : 'smooth' }); });
+    })();
+  </script>
 
   <footer class="site-footer">
     <div class="wrap foot">

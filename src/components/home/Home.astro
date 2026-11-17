@@ -173,6 +173,27 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   </section>
 
 
+  <nav class="dock" id="dock" aria-label="Jump to a section">
+    {home.actions.map((a) => <a href={a.href}>{a.link}</a>)}
+  </nav>
+  <script>
+    // once the top of the page has scrolled away, the four audience buttons stay with you at the bottom of the screen
+    const dock = document.getElementById('dock');
+    const hero = document.querySelector('.hero');
+    if (dock && hero) {
+      const links = [...dock.querySelectorAll<HTMLAnchorElement>('a')];
+      const targets = links.map((a) => document.querySelector(a.getAttribute('href')!));
+      const update = () => {
+        dock.classList.toggle('show', hero.getBoundingClientRect().bottom < 0);
+        const mid = innerHeight * 0.4;
+        let cur = -1;
+        targets.forEach((t, i) => { if (t && t.getBoundingClientRect().top < mid) cur = i; });
+        links.forEach((a, i) => (i === cur ? a.setAttribute('aria-current', 'true') : a.removeAttribute('aria-current')));
+      };
+      addEventListener('scroll', update, { passive: true }); addEventListener('resize', update); update();
+    }
+  </script>
+
   <section class="featured" aria-label="Featured" style={`--bg: url('${house.nickImage}')`}>
     <div class="wrap feat-grid">
       <div class="feat-copy">
@@ -422,6 +443,16 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   .hero { padding-bottom: clamp(2rem, 4vw, 3rem); }
   /* the four audience links: one row of equal boxes along the bottom of the hero */
   /* the four audience links */
+  /* the docked copy of the audience buttons: a pill at the bottom of the screen that appears after the top of the page */
+  .dock { position: fixed; z-index: 25; left: 50%; bottom: 1.1rem; display: none; gap: .5rem; padding: .5rem; max-width: calc(100vw - 7rem);
+    opacity: 0; pointer-events: none; transform: translate(-50%, 1rem); transition: opacity .25s ease, transform .25s ease; }
+  .dock.show { opacity: 1; pointer-events: auto; transform: translate(-50%, 0); }
+  .dock a { white-space: nowrap; text-decoration: none; font-weight: 700; font-size: .85rem; color: var(--ink); padding: .5rem .9rem; border: 2px solid var(--ink);
+    background: color-mix(in srgb, var(--mustard) 88%, transparent); backdrop-filter: blur(6px); box-shadow: 3px 3px 0 var(--ink); transition: transform .25s ease, box-shadow .25s ease, background .25s ease; }
+  .dock a:hover, .dock a:focus-visible { transform: translate(1px, 1px); box-shadow: 2px 2px 0 var(--ink); }
+  .dock a[aria-current] { background: var(--ink); color: #fff; }
+  @media (min-width: 56rem) { .dock { display: flex; } }
+  @media (prefers-reduced-motion: reduce) { .dock, .dock a { transition: none; } }
   .actions { position: relative; z-index: 2; display: grid; gap: 1rem; grid-template-columns: repeat(2, 1fr); margin-top: 2rem; }
   @media (max-width: 32rem) { .actions { grid-template-columns: 1fr; } }
   /* the audience links are a desktop feature; phones and tablets go without them */

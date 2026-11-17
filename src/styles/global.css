@@ -148,3 +148,11 @@ main:has(> .band:last-child) + .site-footer, main:has(> .supporters) + .site-foo
   .site-header { position: sticky; top: 0; z-index: 30; }
 }
 
+
+/* back to top: a round button at the right edge that appears once you have scrolled down */
+.to-top { position: fixed; z-index: 26; right: clamp(.9rem, 2vw, 1.5rem); bottom: clamp(.9rem, 2vw, 1.5rem); width: 3rem; height: 3rem; border-radius: 50%; display: grid; place-items: center; cursor: pointer;
+  background: var(--mustard); color: var(--ink); border: 2px solid var(--ink); box-shadow: 3px 3px 0 var(--ink); opacity: 0; pointer-events: none; transform: translateY(.75rem);
+  transition: opacity .25s ease, transform .25s ease, box-shadow .25s ease; }
+.to-top.show { opacity: 1; pointer-events: auto; transform: none; }
+.to-top.show:hover, .to-top.show:focus-visible { transform: translate(1px, 1px); box-shadow: 2px 2px 0 var(--ink); }
+@media (prefers-reduced-motion: reduce) { .to-top { transition: none; } }
