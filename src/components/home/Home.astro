@@ -138,11 +138,11 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
       <header class="band-head"><div>{home.kickers.house && <p class="kicker">{home.kickers.house}</p>}<h2>At the Writers House</h2></div></header>
       <div class="house">
         <figure>
-          <Photo src={house.houseImage} alt="" ratio="4 / 3" />
+          <Photo src={house.houseImage} alt="" ratio="1 / 1" />
           <figcaption><strong>{house.houseCaption}</strong><br />{site.address}<br /><a class="arrow-link" href="/writers-house/">About the House</a></figcaption>
         </figure>
         <figure>
-          <Photo src={house.nickImage} alt="Nick Virgilio at his typewriter" ratio="4 / 5" />
+          <Photo src={house.nickImage} alt="Nick Virgilio at his typewriter" ratio="1 / 1" />
           <figcaption>{house.nickCaption}<br /><a class="arrow-link" href="/nick-virgilio-poet/">About Nick</a></figcaption>
         </figure>
         <div class="events">
@@ -161,7 +161,7 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
       <div class="three">
         {home.programs.map((p) => (
           <article class="card">
-            <Photo src={p.image} alt="" ratio="4 / 3" />
+            <Photo src={p.image} alt="" ratio="1 / 1" />
             <h3>{p.title}</h3>
             <p>{p.text}</p>
             {p.note && <p class="note">{p.note}</p>}
@@ -176,7 +176,7 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
     <div class="wrap">
       <header class="band-head"><div>{home.kickers.educators && <p class="kicker">{home.kickers.educators}</p>}<h2>For Educators</h2></div></header>
       <div class="split">
-        <Photo src={educators.image} alt={educators.imageAlt} ratio="4 / 3" />
+        <Photo src={educators.image} alt={educators.imageAlt} ratio="1 / 1" />
         <div>
           <h3 class="big">{educators.title}</h3>
           <p class="sub">{educators.subtitle}</p>
@@ -195,7 +195,7 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
         <div class="panel dark">
           <h3 class="label">Books and merchandise</h3>
           <div class="shop">{products.map((p) => (
-            <a href="/store/"><Photo src={p.data.image} alt="" ratio="3 / 4" /><span>{p.data.title}</span></a>
+            <a href="/store/"><Photo src={p.data.image} alt="" ratio="1 / 1" /><span>{p.data.title}</span></a>
           ))}</div>
           <a class="btn rose" href="/store/">See more</a>
         </div>
@@ -430,14 +430,11 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   .panel h3:not(.label) { font-size: clamp(1.4rem, 2.4vw, 1.9rem); font-weight: 800; line-height: 1.15; }
   .rose .btn { --ink-sh: var(--ink); border-color: var(--ink); }
 
-  /* on desktop each section is sized to fit one screen: the pictures scale with the window height instead of their usual ratios */
+  /* every picture in the panels is square; on desktop they are capped by the window height so each section still fits one screen */
   @media (min-width: 56rem) and (min-height: 38rem) {
-    .band :global(.photo) { aspect-ratio: auto !important; }
-    .card :global(.photo) { height: clamp(9rem, 28svh, 20rem); margin-bottom: 1rem; }
-    .house figure :global(.photo) { height: clamp(11rem, 38svh, 28rem); }
-    .split :global(.photo) { height: clamp(12rem, 44svh, 30rem); }
-    .shop :global(.photo) { height: clamp(7rem, 20svh, 13rem); }
-    .events :global(.photo) { height: auto; aspect-ratio: 1 / 1 !important; }
+    .card :global(.photo) { width: min(100%, 27svh); margin-bottom: 1rem; }
+    .house figure :global(.photo) { width: min(100%, 40svh); }
+    .split :global(.photo) { width: min(100%, 46svh); justify-self: start; }
   }
 
   /* featured panel: dark, with the current highlight and its cover */
