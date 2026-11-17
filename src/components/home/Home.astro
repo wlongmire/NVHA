@@ -94,6 +94,15 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
     }
   </script>
   <script>
+    // event photos fade from one to the next every five seconds (paused for people who prefer reduced motion)
+    document.querySelectorAll<HTMLElement>('[data-slides]').forEach((box) => {
+      const imgs = [...box.querySelectorAll('img')];
+      let i = 0;
+      if (imgs.length < 2 || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      setInterval(() => { imgs[i].classList.remove('on'); i = (i + 1) % imgs.length; imgs[i].classList.add('on'); }, 5000);
+    });
+  </script>
+  <script>
     document.querySelectorAll<HTMLElement>('[data-shop]').forEach((b) =>
       b.addEventListener('click', () => {
         const shop = b.closest('.panel')?.querySelector<HTMLElement>('.shop');
@@ -221,7 +230,11 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
         <div class="panel dark">
           <h3>{home.support.rentTitle}</h3>
           <p>The Writers House is available for readings, workshops and community events, and our poets are available to hire. Rentals and bookings help fund our free programs.</p>
-          <p class="btns"><a class="btn rose" href={home.support.rentHref}>{home.support.rentLink}</a><a class="btn" href={site.donateHref}>Donate here</a></p>
+          <div class="slides" data-slides role="group" aria-label="Photos from events at the Writers House">
+            <img class="on" src="/uploads/2026/11/house-audience.jpg" alt="A full room of neighbors listening to a reading at the Writers House" loading="lazy" />
+            <img src="/uploads/2026/11/house-reading.jpg" alt="A poet reading at the podium in the Writers House front room" loading="lazy" />
+          </div>
+          <p class="btns"><a class="btn rose" href={home.support.rentHref}>{home.support.rentLink}</a></p>
         </div>
       </div>
     </div>
@@ -442,6 +455,10 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   .shop strong { font-weight: 800; } .shop em { font-style: normal; font-weight: 700; margin-block: .15rem .3rem; }
   .shop span { opacity: .8; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
   .shop-foot { margin-top: auto; width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+  .slides { position: relative; width: 100%; aspect-ratio: 5 / 2; border: 3px solid var(--ink); box-shadow: 4px 4px 0 var(--ink); overflow: hidden; background: #0001; }
+  .slides img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 35%; opacity: 0; transition: opacity .9s ease; }
+  .slides img.on { opacity: 1; }
+  @media (prefers-reduced-motion: reduce) { .slides img { transition: none; } }
   .shop-arrows { display: flex; gap: .5rem; }
 
   /* the same bold look all the way down: black rules under every section, outlined pictures with an offset shadow, white outlined cards */
