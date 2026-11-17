@@ -93,6 +93,19 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
     }
   </script>
   <script>
+    // the amount chips pass the chosen gift on to the donation page
+    document.querySelectorAll<HTMLElement>('[data-give]').forEach((box) => {
+      const btn = box.querySelector<HTMLAnchorElement>('[data-give-btn]');
+      const base = box.dataset.href || '/donate-now/';
+      const update = () => {
+        const v = box.querySelector<HTMLInputElement>('input:checked')?.value;
+        if (btn) btn.href = v ? `${base}?amount=${v}` : base;
+      };
+      box.addEventListener('change', update);
+      update();
+    });
+  </script>
+  <script>
     // event photos fade from one to the next every five seconds (paused for people who prefer reduced motion)
     document.querySelectorAll<HTMLElement>('[data-slides]').forEach((box) => {
       const imgs = [...box.querySelectorAll('img')];
@@ -215,6 +228,22 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   <section class="band blue" id="support">
     <div class="wrap">
       <header class="band-head"><div>{home.kickers.support && <p class="kicker">{home.kickers.support}</p>}<h2>Support Our Work</h2></div></header>
+      <div class="panel dark give" data-give data-href={donate.href}>
+        <div class="give-copy">
+          <h3>Give today</h3>
+          <p>Your gift keeps our workshops, readings and youth programs free for everyone in Camden.</p>
+        </div>
+        <form class="give-form" onsubmit="return false">
+          <fieldset>
+            <legend class="sr">Choose an amount</legend>
+            {donate.amounts.map((a, i) => (
+              <label class="chip"><input type="radio" name="amt" value={a} checked={i === 0} /><span>${a}</span></label>
+            ))}
+            <label class="chip"><input type="radio" name="amt" value="" /><span>Other</span></label>
+          </fieldset>
+          <a class="btn rose" data-give-btn href={donate.href}>Donate</a>
+        </form>
+      </div>
       <div class="support">
         <div class="panel dark">
           <h3>Books and merchandise</h3>
@@ -460,6 +489,17 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   .shop span { opacity: .8; display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden; }
   .shop-foot { margin-top: auto; width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
   .rent h3 { font-size: clamp(1.15rem, 1.8vw, 1.45rem); } .rent p { font-size: .9rem; line-height: 1.45; margin-bottom: 0; }
+  .give { flex-direction: row; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem 2rem; margin-bottom: 2rem; padding-block: 1.25rem; }
+  .give-copy { flex: 1 1 18rem; } .give-copy h3 { margin-bottom: .25rem; } .give-copy p { margin: 0; font-size: .95rem; }
+  .give-form { display: flex; align-items: center; flex-wrap: wrap; gap: 1rem; }
+  .give-form fieldset { display: flex; gap: .6rem; border: 0; margin: 0; padding: 0; min-width: 0; }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .chip input { position: absolute; opacity: 0; } .chip { cursor: pointer; }
+  .chip span { display: block; min-width: 4rem; text-align: center; padding: .45rem .9rem; font-weight: 800; background: var(--paper); border: 2px solid var(--ink); box-shadow: 3px 3px 0 var(--ink); transition: background-color .2s ease; }
+  .chip:hover span { background: #0000000d; }
+  @media (max-width: 30rem) { .give-form fieldset { gap: .45rem; } .chip span { min-width: 0; padding: .45rem .7rem; } }
+  .chip input:checked + span { background: var(--mustard); }
+  .chip input:focus-visible + span { outline: 3px solid var(--ink); outline-offset: 2px; }
   .slides { position: relative; width: 100%; aspect-ratio: 3 / 2; border: 3px solid var(--ink); box-shadow: 4px 4px 0 var(--ink); overflow: hidden; background: #0001; }
   .slides img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 35%; opacity: 0; transition: opacity .9s ease; }
   .slides img.on { opacity: 1; }
