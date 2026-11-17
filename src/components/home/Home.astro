@@ -135,7 +135,7 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
 
   <section class="band cream" id="house">
     <div class="wrap">
-      <header class="band-head"><span class="num">01</span><h2>At the Writers House</h2></header>
+      <header class="band-head"><h2>At the Writers House</h2></header>
       <div class="house">
         <figure>
           <Photo src={house.houseImage} alt="" ratio="4 / 3" />
@@ -157,7 +157,7 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
 
   <section class="band yellow" id="poets">
     <div class="wrap">
-      <header class="band-head"><span class="num">02</span><h2>Poets &amp; Haikuists</h2></header>
+      <header class="band-head"><h2>Poets &amp; Haikuists</h2></header>
       <div class="three">
         {home.programs.map((p) => (
           <article class="card">
@@ -174,7 +174,7 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
 
   <section class="band rose" id="educators">
     <div class="wrap">
-      <header class="band-head"><span class="num">03</span><h2>For Educators</h2></header>
+      <header class="band-head"><h2>For Educators</h2></header>
       <div class="split">
         <Photo src={educators.image} alt={educators.imageAlt} ratio="4 / 3" />
         <div>
@@ -190,7 +190,7 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
 
   <section class="band blue" id="support">
     <div class="wrap">
-      <header class="band-head"><span class="num">04</span><h2>Support Our Work</h2></header>
+      <header class="band-head"><h2>Support Our Work</h2></header>
       <div class="support">
         <div class="panel dark">
           <h3 class="label">Books and merchandise</h3>
@@ -393,9 +393,8 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   /* numbered bands */
   .band { padding-block: clamp(2.5rem, 5vw, 4rem); }
   .supporters + .band { margin-top: clamp(2rem, 4vw, 3rem); }
-  .band-head { display: flex; align-items: baseline; gap: 1rem; border-bottom: 2px solid currentColor; padding-bottom: .75rem; margin-bottom: 2rem; }
+  .band-head { display: flex; align-items: baseline; gap: 1rem; margin-bottom: 1.75rem; }
   .band-head h2 { margin: 0; font-size: clamp(1.75rem, 4vw, 2.75rem); }
-  .num { font-family: var(--font-label); font-size: .9rem; }
   .yellow { background: var(--mustard); } .cream { background: var(--cream); } .rose { background: var(--brick); color: #fff; } .blue { background: var(--periwinkle); }
   .three { display: grid; gap: 3rem; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); }
   .card :global(.photo) { margin-bottom: 1.5rem; } .card h3 { font-size: 1.75rem; text-transform: uppercase; letter-spacing: .01em; }
@@ -416,8 +415,7 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
 
   /* the same bold look all the way down: black rules under every section, outlined pictures with an offset shadow, white outlined cards */
   .supporters, .band { border-bottom: 4px solid var(--ink); }
-  .band-head { border-bottom: 4px solid var(--ink); align-items: center; }
-  .band-head .num { display: grid; place-items: center; min-width: 2.4rem; height: 2.4rem; padding-inline: .4rem; font-weight: 700; color: var(--ink); background: var(--paper); border: 2px solid var(--ink); }
+  .band-head { align-items: center; }
   .band :global(.photo) { border: 3px solid var(--ink); border-radius: 0; box-shadow: 6px 6px 0 var(--ink); }
   .band .card h3, .band .big, .band .events h3 { font-weight: 800; }
   .events :global(.photo) { border-width: 2px; box-shadow: 3px 3px 0 var(--ink); }
