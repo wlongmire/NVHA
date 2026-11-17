@@ -104,6 +104,7 @@ export const TYPES: DocType[] = [
       { key: 'kickers.poets', label: 'Line above the "Poets & Haikuists" heading', type: 'text', max: 80 },
       { key: 'kickers.educators', label: 'Line above the "For Educators" heading', type: 'text', max: 80 },
       { key: 'kickers.support', label: 'Line above the "Support Our Work" heading', type: 'text', max: 80 },
+      { key: 'kickers.supporters', label: 'Line above the "Our Supporters" heading', type: 'text', max: 80 },
       { key: 'featured.kind', label: 'Featured panel: short line above the title', type: 'text', max: 80, placeholder: 'Presenting our newest publication:' },
       { key: 'featured.title', label: 'Featured panel: title', type: 'text', required: true, max: 100 },
       { key: 'featured.text', label: 'Featured panel: description (leave a blank line between paragraphs)', type: 'textarea', max: 900 },

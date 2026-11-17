@@ -210,7 +210,7 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
 
   <section class="supporters" aria-label="Our supporters">
     <div class="wrap">
-      <p class="kicker">Our supporters:</p>
+      <header class="band-head">{home.kickers.supporters ? <div><p class="kicker">{home.kickers.supporters}</p><h2>Our Supporters</h2></div> : <h2>Our Supporters</h2>}</header>
     </div>
     <div class="carousel" data-carousel>
       <button class="car-btn" type="button" data-dir="-1" aria-label="Previous supporter">&#8592;</button>
@@ -374,9 +374,9 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   }
 
 
-  .supporters { padding-block: 1.1rem .75rem; }
-  .supporters .wrap { margin-bottom: .5rem; }
-  .supporters .kicker { margin: 0; }
+  .supporters { padding-block: 2rem 1rem; }
+  .supporters .wrap { margin-bottom: .75rem; }
+  .supporters .band-head { margin-bottom: 0; }
   /* logos step along one at a time and loop round; arrows step by hand, hover pauses */
   .carousel { --per: 4; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: .75rem; max-width: 80rem; margin-inline: auto; padding-inline: var(--gutter); }
   @media (max-width: 62rem) { .carousel { --per: 3; } }
