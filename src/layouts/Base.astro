@@ -80,7 +80,7 @@ const org = {
             const cur = n.href === '/' ? (here === '/' ? 'page' : undefined) : here.startsWith(n.href) ? 'page' : undefined;
             return n.children ? (
               <div class="nav-item">
-                <a href={n.href} aria-current={cur} aria-haspopup="true">{n.label}</a>
+                <a href={n.href} aria-current={cur} aria-haspopup="true">{n.label}<svg class="caret" viewBox="0 0 10 6" width="10" height="6" aria-hidden="true"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" /></svg></a>
                 <ul class="sub">
                   {n.children.map((c) => c.divider ? <li class="sep" role="separator"></li> : <li><a href={c.href}>{c.label}</a></li>)}
                 </ul>
