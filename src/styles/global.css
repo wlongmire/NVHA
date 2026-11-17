@@ -151,7 +151,7 @@ main:has(> .band:last-child) + .site-footer, main:has(> .supporters) + .site-foo
 
 /* back to top: a round button at the right edge that appears once you have scrolled down */
 .to-top { position: fixed; z-index: 1001; right: clamp(.9rem, 2vw, 1.5rem); bottom: calc(clamp(.9rem, 2vw, 1.5rem) + var(--lift, 0px)); width: 3rem; height: 3rem; border-radius: 50%; display: grid; place-items: center; cursor: pointer;
-  background: #fdd87680; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); color: var(--ink); border: 2px solid var(--ink); box-shadow: 3px 3px 0 var(--ink); opacity: 0; pointer-events: none; transform: translateY(.75rem);
+  background: #fdd87680; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); color: var(--ink); border: 3px solid var(--ink); box-shadow: 3px 3px 0 var(--ink); opacity: 0; pointer-events: none; transform: translateY(.75rem);
   transition: opacity .25s ease, transform .25s ease, box-shadow .25s ease, background-color .25s ease, bottom .45s cubic-bezier(.3, .9, .3, 1); }
 .to-top.show { opacity: 1; pointer-events: auto; transform: none; }
 .to-top.show:hover, .to-top.show:focus-visible { background: #fdd876f2; transform: translate(1px, 1px); box-shadow: 2px 2px 0 var(--ink); }

@@ -467,11 +467,11 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
     .action-label { gap: .45rem; padding: 1.05rem 1.15rem; font-size: .9rem; white-space: nowrap; }
     .sizer { display: flex; visibility: hidden; border: 1.5px solid transparent; }
     /* the box sits on the slot's bottom edge, so when it grows it grows upward over the mural */
-    .action-box { position: absolute; bottom: 0; left: 0; width: 100%; overflow: hidden; border: 0; background: #fdd876bf; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); box-shadow: none; transition: width .25s ease, background-color .25s ease; }
+    .action-box { position: absolute; bottom: 0; left: 0; width: 100%; overflow: hidden; border: 0; background: #fdd876bf; -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); box-shadow: none; transition: width .25s ease, background-color .25s ease, box-shadow .25s ease; }
     .action-slot:nth-child(n+3) .action-box { left: auto; right: 0; }
   }
-  /* once you scroll past the first screen the buttons turn see-through, and fill back in when you point at one */
-  @media (min-width: 56rem) { .actions.floating .action-box { background: #fdd87680; } }
+  /* once you scroll past the first screen the buttons turn see-through and get a black outline, and fill back in when you point at one */
+  @media (min-width: 56rem) { .actions.floating .action-box { background: #fdd87680; box-shadow: inset 0 0 0 2px var(--ink); } }
   /* only where there is a mouse: hovering or tabbing to a box widens it and reveals a short line and links inside it */
   @media (min-width: 56rem) and (hover: hover), (min-width: 56rem) and (pointer: fine) {
     .action-more { display: grid; grid-template-rows: 0fr; opacity: 0; transition: grid-template-rows .25s ease, opacity .2s ease; }
