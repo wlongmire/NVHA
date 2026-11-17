@@ -4,23 +4,25 @@
 export type Field = {
   key: string;                       // the key in the file; "seo.title" reaches into a nested object
   label: string;
-  type: 'text' | 'textarea' | 'number' | 'date' | 'time' | 'checkbox' | 'image' | 'lines' | 'numbers' | 'repeater';
+  type: 'text' | 'select' | 'textarea' | 'number' | 'date' | 'time' | 'checkbox' | 'image' | 'lines' | 'numbers' | 'repeater';
   help?: string;
   required?: boolean;
   max?: number;                      // longest allowed text
   placeholder?: string;
   fields?: Field[];                  // repeater: the fields of each row
   addLabel?: string;                 // repeater: text of the "add" button
+  options?: string[];                // select: the choices
   virtual?: boolean;                 // shown in the form but turned into other keys when saving (see toFile)
 };
 
 export type DocType = {
-  id: 'events' | 'posts' | 'pages' | 'products' | 'home';
+  id: 'events' | 'posts' | 'pages' | 'products' | 'home' | 'people' | 'site';
   label: string;                     // sidebar tab
   singular: string;
   format: 'md' | 'json';
   dir?: string;                      // folder of markdown files
-  file?: string;                     // the one JSON file (home)
+  file?: string;                     // the one JSON file (homepage, people, site settings)
+  listLabel?: string;                // the single row shown in the list for a one-file type
   titleKey: string;
   creatable: boolean;
   body?: { label: string; help: string };
@@ -94,7 +96,7 @@ export const TYPES: DocType[] = [
     empty: () => ({ title: '', price: 0, image: '', inStock: true, buyLink: '', variations: [], draft: false }),
   },
   {
-    id: 'home', label: 'Homepage', singular: 'homepage', format: 'json', file: 'src/data/home.json', titleKey: 'hero.headline', creatable: false,
+    id: 'home', label: 'Homepage', singular: 'homepage', format: 'json', file: 'src/data/home.json', listLabel: 'Edit the homepage', titleKey: 'hero.headline', creatable: false,
     fields: [
       { key: 'hero.headline', label: 'Headline', type: 'text', required: true, max: 120 },
       { key: 'hero.text', label: 'Intro text', type: 'textarea', max: 400 },
@@ -112,8 +114,59 @@ export const TYPES: DocType[] = [
       { key: 'featured.imageAlt', label: 'Featured panel: describe the picture', type: 'text', max: 200 },
       { key: 'featured.link', label: 'Featured panel: button text', type: 'text', max: 40, placeholder: 'Learn more' },
       { key: 'featured.href', label: 'Featured panel: where the button goes', type: 'text', max: 300, placeholder: '/store/' },
+      { key: 'educators.title', label: 'For Educators: program title', type: 'text', max: 80 },
+      { key: 'educators.subtitle', label: 'For Educators: subtitle', type: 'text', max: 160 },
+      { key: 'educators.text', label: 'For Educators: description', type: 'textarea', max: 500 },
+      { key: 'educators.stats', label: 'For Educators: numbers in the boxes', type: 'repeater', addLabel: 'Add a number', help: 'Four fit best. Each box has a number and a short label.', fields: [
+        { key: 'n', label: 'Number', type: 'text', max: 12 },
+        { key: 'label', label: 'Label', type: 'text', max: 30 },
+      ] },
+      { key: 'educators.link', label: 'For Educators: first button text', type: 'text', max: 60 },
+      { key: 'educators.href', label: 'For Educators: first button goes to', type: 'text', max: 300 },
+      { key: 'educators.prospectusLink', label: 'For Educators: prospectus button text', type: 'text', max: 60 },
+      { key: 'educators.prospectusHref', label: 'For Educators: prospectus button goes to', type: 'text', max: 500, help: 'A web address, for example a Google Drive link.' },
       { key: 'donate.amounts', label: 'Give today amounts (dollars, separated by commas)', type: 'numbers', help: 'Qgiv offers its own amounts too. Keep these to three or four.' },
       ...SEO,
+    ],
+    empty: () => ({}),
+  },
+  {
+    id: 'people', label: 'Board & Staff', singular: 'person', format: 'json', file: 'src/data/people.json', listLabel: 'Edit board and staff', titleKey: 'none', creatable: false,
+    fields: [
+      { key: 'board', label: 'Board of directors', type: 'repeater', addLabel: 'Add a board member', fields: [
+      { key: 'name', label: 'Name', type: 'text', required: true, max: 80 },
+      { key: 'role', label: 'Role', type: 'text', max: 80, placeholder: 'President' },
+      { key: 'bio', label: 'Short bio (on the card)', type: 'textarea', max: 400, help: 'Put *asterisks* around a book title to italicize it.' },
+      { key: 'photo', label: 'Photo', type: 'image' },
+      { key: 'more', label: 'Longer bio (optional)', type: 'textarea', max: 2500, help: 'If filled in, the card gets a "More" button that opens this in a popup. A blank line starts a new paragraph.' },
+      { key: 'links', label: 'Links', type: 'repeater', addLabel: 'Add a link', fields: [
+        { key: 'type', label: 'Kind', type: 'select', options: ['instagram', 'facebook', 'x', 'linkedin', 'youtube', 'bluesky', 'website', 'email'] },
+        { key: 'href', label: 'Web address (or email address)', type: 'text', max: 300 },
+      ] },
+      ] },
+      { key: 'emeritus', label: 'Emeritus board and advisors', type: 'textarea', max: 1500, help: 'Plain text. To link a name, write [Name](https://web-address).' },
+      { key: 'staff', label: 'Staff', type: 'repeater', addLabel: 'Add a staff member', fields: [
+      { key: 'name', label: 'Name', type: 'text', required: true, max: 80 },
+      { key: 'role', label: 'Role', type: 'text', max: 80, placeholder: 'President' },
+      { key: 'bio', label: 'Short bio (on the card)', type: 'textarea', max: 400, help: 'Put *asterisks* around a book title to italicize it.' },
+      { key: 'photo', label: 'Photo', type: 'image' },
+      { key: 'more', label: 'Longer bio (optional)', type: 'textarea', max: 2500, help: 'If filled in, the card gets a "More" button that opens this in a popup. A blank line starts a new paragraph.' },
+      { key: 'links', label: 'Links', type: 'repeater', addLabel: 'Add a link', fields: [
+        { key: 'type', label: 'Kind', type: 'select', options: ['instagram', 'facebook', 'x', 'linkedin', 'youtube', 'bluesky', 'website', 'email'] },
+        { key: 'href', label: 'Web address (or email address)', type: 'text', max: 300 },
+      ] },
+      ] },
+    ],
+    empty: () => ({}),
+  },
+  {
+    id: 'site', label: 'Site settings', singular: 'settings', format: 'json', file: 'src/data/site.json', listLabel: 'Edit announcement bar', titleKey: 'none', creatable: false,
+    fields: [
+      { key: 'announcements', label: 'Announcement bar messages', type: 'repeater', addLabel: 'Add a message', help: 'The bar at the very top of every page. Visitors can step through the messages and close the bar.', fields: [
+        { key: 'text', label: 'Message', type: 'text', max: 120 },
+        { key: 'href', label: 'Goes to', type: 'text', max: 300, placeholder: '/house-events/' },
+      ] },
+      { key: 'contactFormAction', label: 'Contact form address (Formspree)', type: 'text', max: 300, placeholder: 'https://formspree.io/f/xxxxxxxx', help: 'Leave empty until the form service is set up.' },
     ],
     empty: () => ({}),
   },

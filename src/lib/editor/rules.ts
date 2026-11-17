@@ -10,6 +10,8 @@ export function typeOfPath(path: string): DocType | null {
   const m = path.match(new RegExp(`^src/content/(events|posts|pages|products)/${SLUG}\\.md$`));
   if (m) return typeById(m[1]) ?? null;
   if (path === 'src/data/home.json') return typeById('home') ?? null;
+  if (path === 'src/data/people.json') return typeById('people') ?? null;
+  if (path === 'src/data/site.json') return typeById('site') ?? null;
   return null;
 }
 
@@ -53,7 +55,9 @@ const isStr = (v: unknown): v is string => typeof v === 'string';
 const UNSAFE = /<\s*(script|iframe|object|embed|style)\b|javascript:|\son\w+\s*=/i;
 const DAY = /^\d{4}-\d{2}-\d{2}$/;
 const WHEN = /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2})?$/;
-const picture = (v: unknown) => v === '' || (isStr(v) && /^\/uploads\/[A-Za-z0-9/_.-]+\.(jpe?g|png|webp)$/i.test(v) && !v.includes('..'));
+// The old website's picture addresses are accepted too, so the temporary photos on Board & Staff can be saved around.
+const OLD_SITE_PICTURE = /^https:\/\/nickvirgiliohaiku\.org\/wp-content\/uploads\/[A-Za-z0-9/_.-]+$/;
+const picture = (v: unknown) => v === '' || (isStr(v) && (OLD_SITE_PICTURE.test(v) || (/^\/uploads\/[A-Za-z0-9/_.-]+\.(jpe?g|png|webp)$/i.test(v) && !v.includes('..'))));
 const webLink = (v: unknown) => v === '' || (isStr(v) && /^(https?:\/\/[^\s<>"]+|mailto:[^\s<>"]+|\/[A-Za-z0-9/_#?=&.-]*)$/.test(v));
 
 function walk(v: unknown, visit: (s: string, where: string) => void, where = '') {
@@ -106,8 +110,31 @@ export function validate(type: DocType, data: Record<string, any>, body: string,
         else if (Array.isArray(original[k]) !== Array.isArray(data[k]) || typeof original[k] !== typeof data[k]) errors.push(`"${k}" has the wrong kind of value.`);
       }
       if (!webLink(getPath(data, 'featured.href'))) errors.push('The featured button must go to a page on this site (starting with /) or a full web address.');
+      for (const k of ['educators.href', 'educators.prospectusHref']) if (!webLink(getPath(data, k))) errors.push('The For Educators buttons must go to a page on this site (starting with /) or a full web address.');
       const amounts = getPath(data, 'donate.amounts');
       if (!Array.isArray(amounts) || amounts.length > 5 || amounts.some((a) => typeof a !== 'number' || a < 1 || a > 100000)) errors.push('Give today amounts must be up to five whole numbers.');
+      break;
+    }
+    case 'people': {
+      if (original) for (const k of Object.keys(original)) if (!(k in data) || Array.isArray(original[k]) !== Array.isArray(data[k])) errors.push(`"${k}" has the wrong kind of value.`);
+      const KINDS = ['instagram', 'facebook', 'x', 'linkedin', 'youtube', 'bluesky', 'website', 'email'];
+      for (const group of ['board', 'staff']) {
+        (Array.isArray(data[group]) ? data[group] : []).forEach((p: any, i: number) => {
+          const who = p?.name || `${group} ${i + 1}`;
+          for (const l of Array.isArray(p?.links) ? p.links : []) {
+            if (!KINDS.includes(l?.type)) errors.push(`${who}: choose a kind for each link.`);
+            else if (l.type === 'email' ? !(isStr(l.href) && /^(mailto:)?[^\s@<>"]+@[^\s@<>"]+\.[^\s@<>"]+$/.test(l.href)) : !(isStr(l.href) && /^https?:\/\/[^\s<>"]+$/.test(l.href))) errors.push(`${who}: a link needs a full web address starting with https://`);
+          }
+        });
+      }
+      break;
+    }
+    case 'site': {
+      if (original) for (const k of Object.keys(original)) if (!(k in data) || Array.isArray(original[k]) !== Array.isArray(data[k]) || typeof original[k] !== typeof data[k]) errors.push(`"${k}" has the wrong kind of value.`);
+      const a = data.announcements;
+      if (!Array.isArray(a) || a.length < 1 || a.length > 6) errors.push('Keep between one and six announcement messages.');
+      else a.forEach((m: any, i: number) => { if (!isStr(m?.text) || !m.text.trim()) errors.push(`Message ${i + 1} is empty.`); if (!webLink(m?.href)) errors.push(`Message ${i + 1} must go to a page on this site (starting with /) or a full web address.`); });
+      if (data.contactFormAction !== '' && !(isStr(data.contactFormAction) && /^https:\/\/[^\s<>"]+$/.test(data.contactFormAction))) errors.push('The contact form address must start with https://');
       break;
     }
   }
