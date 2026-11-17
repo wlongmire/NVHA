@@ -1,6 +1,8 @@
 ---
 // Forms that sit inside a text page: the donation form (Qgiv), the newsletter signup (Mailchimp) and the contact buttons.
+import site from '../data/site.json';
 const { kind } = Astro.props;
+const topics = ['Programs and workshops', 'Renting the Writers House', 'Hiring a poet', 'Donations and giving', 'Press and media', 'Something else'];
 ---
   {kind === 'donate' && (
     <div class="embed">
@@ -26,10 +28,51 @@ const { kind } = Astro.props;
   )}
 
   {kind === 'contact' && (
-    <p class="contact-btns">
-      <a class="btn rose" href="mailto:info@nickvirgiliohaiku.org">Email us</a>
-      <a class="btn" href="tel:+18564322489">Call 856-432-2489</a>
-    </p>
+    <>
+      <form class="cform" id="contact-form" method="post" action={site.contactFormAction || undefined} data-mailto="info@nickvirgiliohaiku.org" novalidate>
+        <h2>Send us a message</h2>
+        <div class="row">
+          <label>Name <input type="text" name="name" required autocomplete="name" /></label>
+          <label>Email address <input type="email" name="email" required autocomplete="email" /></label>
+        </div>
+        <label>What is this about?
+          <select name="topic">{topics.map((t) => <option>{t}</option>)}</select>
+        </label>
+        <label>Message <textarea name="message" rows="6" required></textarea></label>
+        <div aria-hidden="true" style="position:absolute;left:-5000px"><label>Leave this empty <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" /></label></div>
+        <p class="cform-msg" id="contact-msg" role="status" aria-live="polite" hidden></p>
+        <button class="btn rose" type="submit">Send message</button>
+      </form>
+      <p class="contact-btns">
+        <a class="btn" href="mailto:info@nickvirgiliohaiku.org">Email us</a>
+        <a class="btn" href="tel:+18564322489">Call 856-432-2489</a>
+      </p>
+      <script>
+        const form = document.getElementById('contact-form') as HTMLFormElement | null;
+        const note = document.getElementById('contact-msg') as HTMLElement | null;
+        const say = (t: string, ok = false) => { if (!note) return; note.hidden = false; note.textContent = t; note.dataset.ok = ok ? '1' : ''; };
+        form?.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          if (!form.reportValidity()) return;
+          const data = new FormData(form);
+          if (data.get('_gotcha')) return;
+          if (form.getAttribute('action')) {
+            const btn = form.querySelector('button') as HTMLButtonElement; btn.disabled = true;
+            try {
+              const r = await fetch(form.action, { method: 'POST', body: data, headers: { Accept: 'application/json' } });
+              if (!r.ok) throw new Error();
+              form.reset(); say('Thank you! Your message is on its way, and we will reply soon.', true);
+            } catch { say('Sorry, that did not send. Please email info@nickvirgiliohaiku.org instead.'); }
+            btn.disabled = false;
+          } else {
+            // no form service connected yet: open the visitor's email app with the message filled in
+            const body = `${data.get('message')}\n\n${data.get('name')}\n${data.get('email')}`;
+            location.href = `mailto:${form.dataset.mailto}?subject=${encodeURIComponent('Website message: ' + data.get('topic'))}&body=${encodeURIComponent(body)}`;
+            say('Your email app should open with your message ready to send.', true);
+          }
+        });
+      </script>
+    </>
   )}
 
 <style>
@@ -41,5 +84,15 @@ const { kind } = Astro.props;
   .signup fieldset { border: 0; padding: 0; margin: 0; display: grid; gap: .5rem; } .signup legend { font-weight: 700; font-size: .9rem; margin-bottom: .5rem; }
   .signup .radio { display: flex; gap: .5rem; align-items: center; font-weight: 400; font-size: 1rem; }
   .signup button { justify-self: start; cursor: pointer; font: inherit; font-weight: 700; }
+  .cform { margin-top: 2.5rem; display: grid; gap: 1rem; background: var(--cream); padding: clamp(1.25rem, 4vw, 2rem); border: 3px solid var(--ink); box-shadow: 5px 5px 0 var(--ink); position: relative; }
+  .cform h2 { margin: 0 0 .25rem; }
+  .cform .row { display: grid; gap: 1rem; } @media (min-width: 40rem) { .cform .row { grid-template-columns: 1fr 1fr; } }
+  .cform label { display: grid; gap: .3rem; font-weight: 700; font-size: .9rem; }
+  .cform input[type='text'], .cform input[type='email'], .cform select, .cform textarea { font: inherit; font-weight: 400; padding: .6rem .7rem; border: 2px solid var(--ink); border-radius: 0; background: #fff; width: 100%; }
+  .cform textarea { resize: vertical; }
+  .cform button { justify-self: start; cursor: pointer; font: inherit; font-weight: 700; }
+  .cform button:disabled { opacity: .6; cursor: wait; }
+  .cform-msg { margin: 0; font-weight: 700; }
+  .cform-msg[data-ok='']:not([hidden]) { color: #8a1f1f; }
   .contact-btns { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 2rem; }
 </style>

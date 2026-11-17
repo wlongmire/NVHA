@@ -4,31 +4,69 @@
       "name": "Robin Palley",
       "role": "President",
       "bio": "Haiku poet; Senior Vice President, Healthcare Consulting, at Epsilon, a Publicis Groupe company.",
-      "photo": ""
+      "photo": "https://nickvirgiliohaiku.org/wp-content/uploads/elementor/thumbs/image9-rkzrttp7u4jobc9yj5h2in5h1hcrb0ghai1qs6jsu0.jpg",
+      "links": [
+        {
+          "type": "linkedin",
+          "href": "https://www.linkedin.com/in/robin-palley/"
+        }
+      ]
     },
     {
       "name": "Warren C. Longmire",
       "role": "Vice-President",
       "bio": "Poet, technologist, and educator from North Philadelphia. His second collection, *Bird/Diz [an erased history of bebop]*, was published by Bunny Presse in 2022. Graduate of the Iowa Writers' Workshop.",
-      "photo": ""
+      "photo": "https://nickvirgiliohaiku.org/wp-content/uploads/elementor/thumbs/DSCF0443Color-ra5we5g7lc8oatdtkyn4p76dc4u37723042p07tsxk.jpg",
+      "links": [
+        {
+          "type": "instagram",
+          "href": "https://www.instagram.com/alongmirewriter/"
+        },
+        {
+          "type": "linkedin",
+          "href": "https://www.linkedin.com/in/warrenlongmire/"
+        },
+        {
+          "type": "website",
+          "href": "http://www.alongmirewriter.com"
+        }
+      ]
     },
     {
       "name": "Bonnie Squires",
       "role": "Co-Vice President",
       "bio": "President of Squires Consulting, a woman-owned communications and fundraising firm.",
-      "photo": ""
+      "photo": "https://nickvirgiliohaiku.org/wp-content/uploads/elementor/thumbs/image-asset-qrlk8nzqdaznjp2snnz98jizse9euh4fb04pfm0y48.jpeg",
+      "links": [
+        {
+          "type": "linkedin",
+          "href": "https://www.linkedin.com/in/bonnie-squires-0291737/"
+        }
+      ]
     },
     {
       "name": "Henry Brann",
       "role": "Co-Vice President and Building Committee Chair",
       "bio": "A member of the Association since its inception; published two chapbooks.",
-      "photo": ""
+      "photo": "https://nickvirgiliohaiku.org/wp-content/uploads/elementor/thumbs/IMG_6375-rkzrsq7zv31mrpvaxoeqlx443arcbq3r52ncmk6c3c.jpg",
+      "links": [
+        {
+          "type": "linkedin",
+          "href": "https://www.linkedin.com/in/henry-brann-9421624/"
+        }
+      ]
     },
     {
       "name": "Dr. Geoffrey M. Sill",
       "role": "Treasurer",
       "bio": "Emeritus Professor of English at Rutgers University–Camden, where he taught British and American literature for forty years.",
-      "photo": ""
+      "photo": "https://nickvirgiliohaiku.org/wp-content/uploads/elementor/thumbs/rsz_1image1-rkzs433sg0ld23ddm35g8jxmhws0c26zpafkdxc2wo.png",
+      "links": [
+        {
+          "type": "linkedin",
+          "href": "https://www.linkedin.com/in/geoffreysill/"
+        }
+      ]
     },
     {
       "name": "Erin O'Neill",
@@ -40,76 +78,132 @@
       "name": "Vanessa Woods",
       "role": "Fundraising Committee Chair",
       "bio": "MS, LPC. A mental health advocate, healer, and leader.",
-      "photo": ""
+      "photo": "https://nickvirgiliohaiku.org/wp-content/uploads/elementor/thumbs/wew-rkzrwazvvdxwyao91q2mlim9h34mm9azas0vdgveew.jpg",
+      "links": [
+        {
+          "type": "website",
+          "href": "https://southjerseycopingclinic.com/"
+        }
+      ]
     },
     {
       "name": "Reet Starwind",
       "role": "Community Outreach Committee Chair",
       "bio": "\"Interstellar Storyteller\"; a Camden region organizer, educator, and creative director.",
-      "photo": ""
+      "photo": "https://nickvirgiliohaiku.org/wp-content/uploads/elementor/thumbs/rsz_1rsz_1image12-qt77b2lr1eyaapny2owuw5f2ghm0b9huxl0hn20vqw.jpg",
+      "links": [
+        {
+          "type": "instagram",
+          "href": "https://www.instagram.com/mrstarwind"
+        }
+      ]
     },
     {
       "name": "Kevin Shelly",
       "role": "",
       "bio": "Writer and retired journalist; author of *Lynne Bogue Hunt: A Sporting Life*.",
-      "photo": ""
+      "photo": "https://nickvirgiliohaiku.org/wp-content/uploads/elementor/thumbs/rsz_1image14-qt77llepjncu9kdpmqniaztturqxha9opnx61kf83c.jpg",
+      "links": [
+        {
+          "type": "linkedin",
+          "href": "https://www.linkedin.com/in/kevin-c-shelly-2907782a/"
+        }
+      ]
     },
     {
       "name": "Alfred J. Dansbury, Sr.",
       "role": "",
       "bio": "Degrees from Rutgers University, Eastern University and Rowan University.",
-      "photo": ""
+      "photo": "https://nickvirgiliohaiku.org/wp-content/uploads/elementor/thumbs/AD-7-headshot-desk-r9tksu2wy3g95tpf64yfb00r3vk6stzbfc6pclowc8.jpg",
+      "more": "Taught English in New Jersey and Massachusetts before a 38-year career with the City of Camden's housing services and grants management offices, where he coordinated the federal HOPWA housing program for 14 years.\n\nHe was an adjunct instructor at Camden County College and published the novel *The Strength of Courage* in 2022. His education includes a BA in English and Journalism from Rutgers, an MA in Education from Eastern Michigan University, an MA in Business Administration from Eastern University, and an MA in Writing from Rowan University."
     },
     {
       "name": "Tazuo Bashō Yamaguchi",
       "role": "",
       "bio": "Internationally recognized haiku poet, educator, filmmaker, and multidisciplinary artist; official Gyoji for the NVHA-sponsored Haiku Dojo.",
-      "photo": ""
+      "photo": "https://nickvirgiliohaiku.org/wp-content/uploads/elementor/thumbs/tazuo-yamaguchi-Google-Search-2026-04-14-19-14-14-rm0oxhfrfedv2ovqt2dm9yb03kbxszck2fdkn4cjp4.png"
     },
     {
       "name": "Faryn Kushner",
       "role": "",
       "bio": "A longtime patron of the arts.",
-      "photo": ""
+      "photo": "https://nickvirgiliohaiku.org/wp-content/uploads/elementor/thumbs/rsz_image11-qt77nai7vvoh87wypz29b2esgtdsdm08m2bq8jwmuw.jpg",
+      "links": [
+        {
+          "type": "linkedin",
+          "href": "https://www.linkedin.com/in/faryn/"
+        }
+      ]
     },
     {
       "name": "Dr. Adam Henze",
       "role": "",
       "bio": "Researcher, educator, and spoken word artist; Director of Literacy Programming at Flanner House and Director of Power of a Sentence, a creative writing program in Indiana prisons.",
-      "photo": ""
+      "photo": "https://nickvirgiliohaiku.org/wp-content/uploads/elementor/thumbs/hq720-rm0pydlpoaw0rpaidihgn55bh0hkxata516nr3n9h4.jpg",
+      "more": "PhD in Literacy, Culture, and Language Education from Indiana University. He has shared his work in more than 30 states. With his wife, he owns Indy Type Shop, a typewriter repair shop, antiquarian bookstore and event space."
     }
   ],
-  "emeritus": "Kathleen O'Toole, Ben Hill, Rocky Wilson, Lamont Steptoe, Theresa Banford, and Fr. Michael Doyle, former pastor of Sacred Heart Church, whose vision helped create the Writers House. We hold in loving memory Nick's brother Tony Virgilio and Father Michael Doyle, who together inspired its creation.",
+  "emeritus": "Kathleen O'Toole, Ben Hill, Rocky Wilson, [Lamont Steptoe](https://en.wikipedia.org/wiki/Lamont_B._Steptoe), Theresa Banford, and [Fr. Michael Doyle](https://fathermichaeldoyle.com/doyle-doc), former pastor of Sacred Heart Church, whose vision helped create the Writers House. We hold in loving memory Nick's brother Tony Virgilio and Father Michael Doyle, who together inspired its creation.",
   "staff": [
     {
       "name": "Camille Wilson",
       "role": "Programming & communications",
       "bio": "Handles programming, social media and communications.",
-      "photo": ""
+      "photo": "https://nickvirgiliohaiku.org/wp-content/uploads/elementor/thumbs/rsz_1image6-rkzs1tbtxfhf00o5vlswpmkitdz2qe6ce1obmupby0.jpg",
+      "links": [
+        {
+          "type": "linkedin",
+          "href": "https://www.linkedin.com/in/camille-wilson-952355143/"
+        }
+      ]
     },
     {
       "name": "Nasar Rider",
       "role": "Website & programs",
       "bio": "Born and raised in Camden, a web design specialist who manages the website and keeps many Writers House programs flowing.",
-      "photo": ""
+      "photo": "https://nickvirgiliohaiku.org/wp-content/uploads/elementor/thumbs/image8-qt77t28ju9kui1j80yut43znqyxwmpwx2mi1apcmns.jpg",
+      "links": [
+        {
+          "type": "linkedin",
+          "href": "https://www.linkedin.com/in/nasar-rider-1aab13223/"
+        }
+      ]
     },
     {
       "name": "Juwan Clayton",
       "role": "",
       "bio": "Born and raised in Camden, studied Criminal Justice at Rutgers University.",
-      "photo": ""
+      "photo": "https://nickvirgiliohaiku.org/wp-content/uploads/elementor/thumbs/rsz_image3-qt77uw194o2x2qvncraoyndxbxxllj64no60w2n2k8.jpg",
+      "links": [
+        {
+          "type": "linkedin",
+          "href": "https://www.linkedin.com/in/juwan-clayton-874b31145/"
+        }
+      ]
     },
     {
       "name": "Sean Lynch",
       "role": "",
       "bio": "A writer and editor in Philadelphia; his fifth collection is *Halo Nest: Poems on Grief* (Alien Buddha Press).",
-      "photo": ""
+      "photo": "https://nickvirgiliohaiku.org/wp-content/uploads/2024/12/2.jpg",
+      "links": [
+        {
+          "type": "instagram",
+          "href": "https://www.instagram.com/seanwilliamlynch/"
+        }
+      ]
     },
     {
       "name": "Nycir Keen",
       "role": "",
       "bio": "A Philadelphia-based poet with roots in competitive slam poetry.",
-      "photo": ""
+      "photo": "https://nickvirgiliohaiku.org/wp-content/uploads/elementor/thumbs/saa-r004663rbvc8hc5ak5m922pdaofhiao4ouox9hcvco.jpg",
+      "links": [
+        {
+          "type": "instagram",
+          "href": "https://www.instagram.com/nycewititkeen/"
+        }
+      ]
     }
   ]
 }

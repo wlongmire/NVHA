@@ -29,7 +29,7 @@
         },
         {
           "label": "Board & Staff",
-          "href": "/about-us/#board-of-directors"
+          "href": "/board-and-staff/"
         }
       ]
     },
@@ -179,5 +179,6 @@
       "text": "Sign up for the newsletter for events and news.",
       "href": "/newsletter/"
     }
-  ]
+  ],
+  "contactFormAction": ""
 }

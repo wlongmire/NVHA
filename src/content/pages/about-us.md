@@ -44,3 +44,7 @@ The Nick Virgilio Writers House is dedicated to an accessible and inclusive crea
 - Closed captioning is provided for our Zoom meetings and YouTube videos.
 - Large print versions of our books can be ordered through print-on-demand services.
 - Sign language interpretation is available at our poetry readings with prior notice.
+
+## Board and staff
+
+Meet the [board of directors, emeritus advisors and staff](/board-and-staff/) who guide the Association and keep the Writers House running.
