@@ -432,9 +432,9 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
 
   /* every picture in the panels is square; on desktop they are capped by the window height so each section still fits one screen */
   @media (min-width: 56rem) and (min-height: 38rem) {
-    .card :global(.photo) { width: min(100%, 27svh); margin-bottom: 1rem; }
-    .house figure :global(.photo) { width: min(100%, 40svh); }
-    .split :global(.photo) { width: min(100%, 46svh); justify-self: start; }
+    .card :global(.photo) { width: min(100%, 44svh); margin-bottom: 1rem; }
+    .house figure :global(.photo) { width: min(100%, 48svh); }
+    .split :global(.photo) { width: min(100%, 56svh); justify-self: start; }
   }
 
   /* featured panel: dark, with the current highlight and its cover */
