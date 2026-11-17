@@ -51,7 +51,7 @@ p { margin: 0 0 1em; }
   .nav-actions { align-self: center; }
   .nav-links { align-items: stretch; }
   .nav-links > a { align-self: center; }
-  .nav-item { display: flex; align-items: center; padding-inline: .9rem; margin-inline: -.9rem; border: 1px solid transparent; border-bottom: 0; }
+  .nav-item { display: flex; align-items: center; padding-inline: .5rem; margin-inline: -.5rem; border: 1px solid transparent; border-bottom: 0; }
   .nav-item:hover, .nav-item:focus-within { background: var(--paper); border-color: #1f1d1d40; }
 }
 @media (min-width: 64rem) {
