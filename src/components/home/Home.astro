@@ -228,22 +228,6 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   <section class="band blue" id="support">
     <div class="wrap">
       <header class="band-head"><div>{home.kickers.support && <p class="kicker">{home.kickers.support}</p>}<h2>Support Our Work</h2></div></header>
-      <div class="panel dark give" data-give data-href={donate.href}>
-        <div class="give-copy">
-          <h3>Give today</h3>
-          <p>Your gift keeps our workshops, readings and youth programs free for everyone in Camden.</p>
-        </div>
-        <form class="give-form" onsubmit="return false">
-          <fieldset>
-            <legend class="sr">Choose an amount</legend>
-            {donate.amounts.map((a, i) => (
-              <label class="chip"><input type="radio" name="amt" value={a} checked={i === 0} /><span>${a}</span></label>
-            ))}
-            <label class="chip"><input type="radio" name="amt" value="" /><span>Other</span></label>
-          </fieldset>
-          <a class="btn rose" data-give-btn href={donate.href}>Donate</a>
-        </form>
-      </div>
       <div class="support">
         <div class="panel dark">
           <h3>Books and merchandise</h3>
@@ -267,6 +251,22 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
           <p>The Writers House is available for readings, workshops and community events, and our poets are available to hire. Rentals and bookings help fund our free programs.</p>
           <p class="btns"><a class="btn rose" href={home.support.rentHref}>{home.support.rentLink}</a></p>
         </div>
+      </div>
+      <div class="panel dark give" data-give data-href={donate.href}>
+        <div class="give-copy">
+          <h3>Give today</h3>
+          <p>Your gift keeps our workshops, readings and youth programs free for everyone in Camden.</p>
+        </div>
+        <form class="give-form" onsubmit="return false">
+          <fieldset>
+            <legend class="sr">Choose an amount</legend>
+            {donate.amounts.map((a, i) => (
+              <label class="chip"><input type="radio" name="amt" value={a} checked={i === 0} /><span>${a}</span></label>
+            ))}
+            <label class="chip"><input type="radio" name="amt" value="" /><span>Other</span></label>
+          </fieldset>
+          <a class="btn rose" data-give-btn href={donate.href}>Donate</a>
+        </form>
       </div>
     </div>
   </section>
@@ -489,7 +489,7 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   .shop span { opacity: .8; display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden; }
   .shop-foot { margin-top: auto; width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
   .rent h3 { font-size: clamp(1.15rem, 1.8vw, 1.45rem); } .rent p { font-size: .9rem; line-height: 1.45; margin-bottom: 0; }
-  .give { flex-direction: row; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem 2rem; margin-bottom: 2rem; padding-block: 1.25rem; }
+  .give { flex-direction: row; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem 2rem; margin-top: 2rem; padding-block: 1.25rem; }
   .give-copy { flex: 1 1 18rem; } .give-copy h3 { margin-bottom: .25rem; } .give-copy p { margin: 0; font-size: .95rem; }
   .give-form { display: flex; align-items: center; flex-wrap: wrap; gap: 1rem; }
   .give-form fieldset { display: flex; gap: .6rem; border: 0; margin: 0; padding: 0; min-width: 0; }
