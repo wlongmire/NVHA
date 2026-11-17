@@ -176,17 +176,19 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
       <div class="house">
         <figure>
           <Photo src={house.houseImage} alt="" ratio="1 / 1" />
-          <figcaption><strong>{house.houseCaption}</strong><br />{site.address}<br /><a class="arrow-link" href="/writers-house/">About the House</a></figcaption>
+          <figcaption><strong>{house.houseCaption}</strong><br />{site.address}</figcaption>
+          <a class="btn rose" href="/writers-house/">About the House</a>
         </figure>
         <figure>
           <Photo src={house.nickImage} alt="Nick Virgilio at his typewriter" ratio="1 / 1" />
-          <figcaption>{house.nickCaption}<br /><a class="arrow-link" href="/nick-virgilio-poet/">About Nick</a></figcaption>
+          <figcaption>{house.nickCaption}</figcaption>
+          <a class="btn rose" href="/nick-virgilio-poet/">About Nick</a>
         </figure>
         <div class="events">
           <h3>{hasNext ? 'Upcoming events' : 'Recent events'}</h3>
           {!hasNext && <p>Nothing new is scheduled yet. Here is what we've been up to.</p>}
           {upcoming.slice(0, 2).map((e) => <EventCard event={e} />)}
-          <a class="arrow-link" href="/house-events/">More events</a>
+          <a class="btn rose" href="/house-events/">More events</a>
         </div>
       </div>
     </div>
@@ -467,6 +469,12 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   .note { font-weight: 700; }
   .house { display: grid; gap: 1.25rem 1rem; grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .house .events { grid-column: 1 / -1; margin-top: 1rem; }
+  /* each column is a stack with its button pinned to the bottom */
+  .house figure, .house .events { display: flex; flex-direction: column; align-items: flex-start; }
+  .house figure :global(.photo) { align-self: stretch; }
+  .house figcaption { margin-bottom: 1rem; } .house figure .btn, .house .events .btn { margin-top: auto; }
+  @media (max-width: 40rem) { .house figure .btn { font-size: .85rem; padding-inline: .8rem; white-space: nowrap; } }
+  .house .events > :global(*) { align-self: stretch; } .house .events .btn { align-self: flex-start; }
   @media (max-width: 40rem) { .house figcaption { font-size: .85rem; } }
   @media (min-width: 64rem) { .house { gap: 3rem; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.5fr); } .house .events { grid-column: auto; margin-top: 0; } }
   figure { margin: 0; } figcaption { margin-top: 1rem; font-size: .95rem; } figcaption .arrow-link { display: inline-block; margin-top: .5rem; }
