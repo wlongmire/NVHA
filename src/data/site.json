@@ -165,5 +165,19 @@
         }
       ]
     }
+  ],
+  "announcements": [
+    {
+      "text": "Free poetry workshops, readings and youth programs in Camden, NJ.",
+      "href": "/house-events/"
+    },
+    {
+      "text": "Join a free online haiku workshop.",
+      "href": "/online-workshops/"
+    },
+    {
+      "text": "Sign up for the newsletter for events and news.",
+      "href": "/newsletter/"
+    }
   ]
 }
