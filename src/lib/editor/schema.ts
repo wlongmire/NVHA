@@ -39,61 +39,15 @@ const DRAFT: Field = { key: 'draft', label: 'Hide from the site', type: 'checkbo
 
 export const TYPES: DocType[] = [
   {
-    id: 'events', label: 'Events', singular: 'event', format: 'md', dir: 'src/content/events', titleKey: 'title', creatable: true,
-    body: { label: 'About this event', help: 'What happens, who it is for, anything to bring.' },
+    id: 'site', label: 'Site settings', singular: 'settings', format: 'json', file: 'src/data/site.json', listLabel: 'Edit announcement bar', titleKey: 'none', creatable: false,
     fields: [
-      { key: 'title', label: 'Event name', type: 'text', required: true, max: 200 },
-      { key: 'startDate', label: 'Date', type: 'date', required: true, virtual: true },
-      { key: 'startTime', label: 'Start time', type: 'time', virtual: true, help: 'Leave empty for an all-day event.' },
-      { key: 'endDate', label: 'Last day', type: 'date', virtual: true, help: 'Only for events that run more than one day.' },
-      { key: 'endTime', label: 'End time', type: 'time', virtual: true },
-      { key: 'venue', label: 'Where', type: 'text', max: 200, placeholder: 'Nick Virgilio Writers House' },
-      { key: 'address', label: 'Address', type: 'text', max: 200 },
-      { key: 'link', label: 'RSVP or sign-up link', type: 'text', max: 500, help: 'A full web address starting with https://' },
-      { key: 'cost', label: 'Cost', type: 'text', max: 100, placeholder: 'Free' },
-      { key: 'image', label: 'Picture', type: 'image' },
-      { key: 'featured', label: 'Feature this event', type: 'checkbox' },
-      DRAFT,
-    ],
-    empty: () => ({ title: '', start: '', end: '', allDay: true, venue: 'Nick Virgilio Writers House', address: '1801 Broadway, Camden, NJ', link: '', cost: 'Free', image: '', featured: false, draft: false }),
-  },
-  {
-    id: 'posts', label: 'Articles', singular: 'article', format: 'md', dir: 'src/content/posts', titleKey: 'title', creatable: true,
-    body: { label: 'Article text', help: 'Use ## for headings, **bold**, *italic*, and - for bullet lists.' },
-    fields: [
-      { key: 'title', label: 'Title', type: 'text', required: true, max: 200 },
-      { key: 'date', label: 'Date', type: 'date', required: true },
-      { key: 'excerpt', label: 'Short summary', type: 'textarea', max: 500, help: 'Shown on the Articles page.' },
-      { key: 'image', label: 'Picture', type: 'image' },
-      ...SEO,
-      DRAFT,
-    ],
-    empty: () => ({ title: '', date: new Date().toISOString().slice(0, 10), excerpt: '', image: '', seo: {}, draft: false }),
-  },
-  {
-    id: 'pages', label: 'Pages', singular: 'page', format: 'md', dir: 'src/content/pages', titleKey: 'title', creatable: false,
-    body: { label: 'Page text', help: 'Use ## for headings, **bold**, *italic*, and - for bullet lists. Forms (donate, newsletter) are added automatically.' },
-    fields: [
-      { key: 'title', label: 'Page title', type: 'text', required: true, max: 200 },
-      { key: 'lede', label: 'Opening sentence', type: 'textarea', max: 400 },
-      { key: 'image', label: 'Top picture', type: 'image' },
-      { key: 'imageAlt', label: 'Describe the picture', type: 'text', max: 200, help: 'For people who cannot see it, and for search engines.' },
-      ...SEO,
+      { key: 'announcements', label: 'Announcement bar messages', type: 'repeater', addLabel: 'Add a message', help: 'The bar at the very top of every page. Visitors can step through the messages and close the bar.', fields: [
+        { key: 'text', label: 'Message', type: 'text', max: 120 },
+        { key: 'href', label: 'Goes to', type: 'text', max: 300, placeholder: '/house-events/' },
+      ] },
+      { key: 'contactFormAction', label: 'Contact form address (Formspree)', type: 'text', max: 300, placeholder: 'https://formspree.io/f/xxxxxxxx', help: 'Leave empty until the form service is set up.' },
     ],
     empty: () => ({}),
-  },
-  {
-    id: 'products', label: 'Store', singular: 'product', format: 'md', dir: 'src/content/products', titleKey: 'title', creatable: true,
-    body: { label: 'Description', help: 'A sentence or two about the book or item.' },
-    fields: [
-      { key: 'title', label: 'Product name', type: 'text', required: true, max: 200 },
-      { key: 'price', label: 'Price (US dollars)', type: 'number', required: true },
-      { key: 'image', label: 'Picture', type: 'image' },
-      { key: 'buyLink', label: 'Checkout link', type: 'text', max: 500, help: 'The link where people pay (from Stripe, Square or similar). Starts with https://' },
-      { key: 'inStock', label: 'In stock', type: 'checkbox' },
-      DRAFT,
-    ],
-    empty: () => ({ title: '', price: 0, image: '', inStock: true, buyLink: '', variations: [], draft: false }),
   },
   {
     id: 'home', label: 'Homepage', singular: 'homepage', format: 'json', file: 'src/data/home.json', listLabel: 'Edit the homepage', titleKey: 'hero.headline', creatable: false,
@@ -131,6 +85,18 @@ export const TYPES: DocType[] = [
     empty: () => ({}),
   },
   {
+    id: 'pages', label: 'Pages', singular: 'page', format: 'md', dir: 'src/content/pages', titleKey: 'title', creatable: false,
+    body: { label: 'Page text', help: 'Use ## for headings, **bold**, *italic*, and - for bullet lists. Forms (donate, newsletter) are added automatically.' },
+    fields: [
+      { key: 'title', label: 'Page title', type: 'text', required: true, max: 200 },
+      { key: 'lede', label: 'Opening sentence', type: 'textarea', max: 400 },
+      { key: 'image', label: 'Top picture', type: 'image' },
+      { key: 'imageAlt', label: 'Describe the picture', type: 'text', max: 200, help: 'For people who cannot see it, and for search engines.' },
+      ...SEO,
+    ],
+    empty: () => ({}),
+  },
+  {
     id: 'people', label: 'Board & Staff', singular: 'person', format: 'json', file: 'src/data/people.json', listLabel: 'Edit board and staff', titleKey: 'none', creatable: false,
     fields: [
       { key: 'board', label: 'Board of directors', type: 'repeater', addLabel: 'Add a board member', fields: [
@@ -160,15 +126,49 @@ export const TYPES: DocType[] = [
     empty: () => ({}),
   },
   {
-    id: 'site', label: 'Site settings', singular: 'settings', format: 'json', file: 'src/data/site.json', listLabel: 'Edit announcement bar', titleKey: 'none', creatable: false,
+    id: 'events', label: 'Events', singular: 'event', format: 'md', dir: 'src/content/events', titleKey: 'title', creatable: true,
+    body: { label: 'About this event', help: 'What happens, who it is for, anything to bring.' },
     fields: [
-      { key: 'announcements', label: 'Announcement bar messages', type: 'repeater', addLabel: 'Add a message', help: 'The bar at the very top of every page. Visitors can step through the messages and close the bar.', fields: [
-        { key: 'text', label: 'Message', type: 'text', max: 120 },
-        { key: 'href', label: 'Goes to', type: 'text', max: 300, placeholder: '/house-events/' },
-      ] },
-      { key: 'contactFormAction', label: 'Contact form address (Formspree)', type: 'text', max: 300, placeholder: 'https://formspree.io/f/xxxxxxxx', help: 'Leave empty until the form service is set up.' },
+      { key: 'title', label: 'Event name', type: 'text', required: true, max: 200 },
+      { key: 'startDate', label: 'Date', type: 'date', required: true, virtual: true },
+      { key: 'startTime', label: 'Start time', type: 'time', virtual: true, help: 'Leave empty for an all-day event.' },
+      { key: 'endDate', label: 'Last day', type: 'date', virtual: true, help: 'Only for events that run more than one day.' },
+      { key: 'endTime', label: 'End time', type: 'time', virtual: true },
+      { key: 'venue', label: 'Where', type: 'text', max: 200, placeholder: 'Nick Virgilio Writers House' },
+      { key: 'address', label: 'Address', type: 'text', max: 200 },
+      { key: 'link', label: 'RSVP or sign-up link', type: 'text', max: 500, help: 'A full web address starting with https://' },
+      { key: 'cost', label: 'Cost', type: 'text', max: 100, placeholder: 'Free' },
+      { key: 'image', label: 'Picture', type: 'image' },
+      { key: 'featured', label: 'Feature this event', type: 'checkbox' },
+      DRAFT,
     ],
-    empty: () => ({}),
+    empty: () => ({ title: '', start: '', end: '', allDay: true, venue: 'Nick Virgilio Writers House', address: '1801 Broadway, Camden, NJ', link: '', cost: 'Free', image: '', featured: false, draft: false }),
+  },
+  {
+    id: 'posts', label: 'Articles', singular: 'article', format: 'md', dir: 'src/content/posts', titleKey: 'title', creatable: true,
+    body: { label: 'Article text', help: 'Use ## for headings, **bold**, *italic*, and - for bullet lists.' },
+    fields: [
+      { key: 'title', label: 'Title', type: 'text', required: true, max: 200 },
+      { key: 'date', label: 'Date', type: 'date', required: true },
+      { key: 'excerpt', label: 'Short summary', type: 'textarea', max: 500, help: 'Shown on the Articles page.' },
+      { key: 'image', label: 'Picture', type: 'image' },
+      ...SEO,
+      DRAFT,
+    ],
+    empty: () => ({ title: '', date: new Date().toISOString().slice(0, 10), excerpt: '', image: '', seo: {}, draft: false }),
+  },
+  {
+    id: 'products', label: 'Store', singular: 'product', format: 'md', dir: 'src/content/products', titleKey: 'title', creatable: true,
+    body: { label: 'Description', help: 'A sentence or two about the book or item.' },
+    fields: [
+      { key: 'title', label: 'Product name', type: 'text', required: true, max: 200 },
+      { key: 'price', label: 'Price (US dollars)', type: 'number', required: true },
+      { key: 'image', label: 'Picture', type: 'image' },
+      { key: 'buyLink', label: 'Checkout link', type: 'text', max: 500, help: 'The link where people pay (from Stripe, Square or similar). Starts with https://' },
+      { key: 'inStock', label: 'In stock', type: 'checkbox' },
+      DRAFT,
+    ],
+    empty: () => ({ title: '', price: 0, image: '', inStock: true, buyLink: '', variations: [], draft: false }),
   },
 ];
 
