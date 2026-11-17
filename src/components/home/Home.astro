@@ -148,7 +148,7 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
         <div class="events">
           <h3>{hasNext ? 'Upcoming events' : 'Recent events'}</h3>
           {!hasNext && <p>Nothing new is scheduled yet. Here is what we've been up to.</p>}
-          <div class="event-list">{upcoming.slice(0, 2).map((e) => <EventCard event={e} />)}</div>
+          {upcoming.slice(0, 2).map((e) => <EventCard event={e} />)}
           <a class="arrow-link" href="/house-events/">More events</a>
         </div>
       </div>
@@ -435,15 +435,6 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
     .card :global(.photo) { width: min(100%, 44svh); margin-bottom: 1rem; }
     .house figure :global(.photo) { width: min(100%, 48svh); }
     .split :global(.photo) { width: min(100%, 56svh); justify-self: start; }
-  }
-
-  /* on phones the events sit side by side, each as a small card: picture, text, then the RSVP button */
-  @media (max-width: 40rem) {
-    .event-list { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-    .event-list :global(.event) { grid-template-columns: 1fr; height: auto; align-content: start; align-items: start; gap: .75rem; padding-block: 0 1rem; border-bottom: 0; }
-    .event-list :global(.event .photo) { width: 100%; }
-    .event-list :global(.event h3) { font-size: 1.05rem; }
-    .event-list :global(.rsvp) { grid-column: 1; justify-self: start; }
   }
 
   /* featured panel: dark, with the current highlight and its cover */
