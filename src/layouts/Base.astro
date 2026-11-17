@@ -76,11 +76,20 @@ const org = {
       <label for="nav-toggle" class="nav-burger" aria-hidden="true"><span></span></label>
       <nav class="site-nav" aria-label="Main">
         <div class="nav-links">
-          {site.nav.map((n) => <a href={n.href} aria-current={n.href === '/' ? (here === '/' ? 'page' : undefined) : here.startsWith(n.href) ? 'page' : undefined}>{n.label}</a>)}
+          {site.nav.map((n) => {
+            const cur = n.href === '/' ? (here === '/' ? 'page' : undefined) : here.startsWith(n.href) ? 'page' : undefined;
+            return n.children ? (
+              <div class="nav-item">
+                <a href={n.href} aria-current={cur} aria-haspopup="true">{n.label}</a>
+                <ul class="sub">
+                  {n.children.map((c) => c.divider ? <li class="sep" role="separator"></li> : <li><a href={c.href}>{c.label}</a></li>)}
+                </ul>
+              </div>
+            ) : <a href={n.href} aria-current={cur}>{n.label}</a>;
+          })}
         </div>
         <div class="nav-actions">
           <a class="btn line" href="/newsletter/">Newsletter</a>
-          <a class="btn" href={site.donateHref}>Support</a>
         </div>
       </nav>
     </div>

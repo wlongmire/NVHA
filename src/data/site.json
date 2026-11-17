@@ -7,25 +7,163 @@
   "address": "1801 Broadway, Camden, NJ 08104",
   "defaultImage": "/uploads/2024/07/l2.jpg",
   "nav": [
-    { "label": "Home", "href": "/" },
-    { "label": "About", "href": "/about-us/" },
-    { "label": "Programming", "href": "/house-events/" },
-    { "label": "Youth + Education", "href": "/poetry-teaching-for-camden-schools/" },
-    { "label": "Articles", "href": "/blogs/" },
-    { "label": "Store", "href": "/store/" }
+    {
+      "label": "Home",
+      "href": "/"
+    },
+    {
+      "label": "About",
+      "href": "/about-us/",
+      "children": [
+        {
+          "label": "Nick Virgilio, Poet",
+          "href": "/nick-virgilio-poet/"
+        },
+        {
+          "label": "The Virgilio Writers House",
+          "href": "/writers-house/"
+        },
+        {
+          "label": "Nick Virgilio Haiku Association",
+          "href": "/about-us/"
+        },
+        {
+          "label": "Board & Staff",
+          "href": "/about-us/#board-of-directors"
+        }
+      ]
+    },
+    {
+      "label": "Programming",
+      "href": "/house-events/",
+      "children": [
+        {
+          "label": "Events Calendar",
+          "href": "/house-events/"
+        },
+        {
+          "divider": true
+        },
+        {
+          "label": "Haiku in Action",
+          "href": "/haiku-in-action/"
+        },
+        {
+          "label": "Camden Ginkos",
+          "href": "/ginko-walks/"
+        },
+        {
+          "label": "Midnight Notes",
+          "href": "/the-midnight-notes-live-series/"
+        },
+        {
+          "label": "The Virgilio Open Mic",
+          "href": "/the-virgilio-virtual-haiku-open-mic/"
+        },
+        {
+          "label": "Book the Writers House",
+          "href": "/contact-us/"
+        }
+      ]
+    },
+    {
+      "label": "Youth & Edu",
+      "href": "/poetry-teaching-for-camden-schools/",
+      "children": [
+        {
+          "label": "The Tiny Truth Project: In-School Program",
+          "href": "/poetry-teaching-for-camden-schools/"
+        },
+        {
+          "label": "The Virgilio Student Haiku Competition",
+          "href": "/scholarship-contest/"
+        },
+        {
+          "label": "Black Pearl Student Magazine",
+          "href": "/poetry-teaching-for-camden-schools/"
+        },
+        {
+          "label": "How To Haiku Online Workshops",
+          "href": "/online-workshops/"
+        }
+      ]
+    },
+    {
+      "label": "Articles",
+      "href": "/blogs/",
+      "children": [
+        {
+          "label": "Blog",
+          "href": "/blogs/"
+        },
+        {
+          "label": "Newsletters",
+          "href": "/newsletter/"
+        }
+      ]
+    },
+    {
+      "label": "Store",
+      "href": "/store/"
+    },
+    {
+      "label": "Support",
+      "href": "/donate-now/",
+      "children": [
+        {
+          "label": "Donate",
+          "href": "/donate-now/"
+        },
+        {
+          "label": "Why Give",
+          "href": "/donate-now/"
+        },
+        {
+          "label": "Our Supporters",
+          "href": "/#supporters"
+        }
+      ]
+    }
   ],
   "donateHref": "/donate-now/",
   "footerGroups": [
-    { "title": "Explore", "links": [
-      { "label": "About Nick Virgilio", "href": "/nick-virgilio-poet/" },
-      { "label": "Events", "href": "/house-events/" },
-      { "label": "Education", "href": "/poetry-teaching-for-camden-schools/" },
-      { "label": "Store", "href": "/store/" }
-    ] },
-    { "title": "Get involved", "links": [
-      { "label": "Donate", "href": "/donate-now/" },
-      { "label": "Contact us", "href": "/contact-us/" },
-      { "label": "Newsletter", "href": "/newsletter/" }
-    ] }
+    {
+      "title": "Explore",
+      "links": [
+        {
+          "label": "About Nick Virgilio",
+          "href": "/nick-virgilio-poet/"
+        },
+        {
+          "label": "Events",
+          "href": "/house-events/"
+        },
+        {
+          "label": "Education",
+          "href": "/poetry-teaching-for-camden-schools/"
+        },
+        {
+          "label": "Store",
+          "href": "/store/"
+        }
+      ]
+    },
+    {
+      "title": "Get involved",
+      "links": [
+        {
+          "label": "Donate",
+          "href": "/donate-now/"
+        },
+        {
+          "label": "Contact us",
+          "href": "/contact-us/"
+        },
+        {
+          "label": "Newsletter",
+          "href": "/newsletter/"
+        }
+      ]
+    }
   ]
 }
