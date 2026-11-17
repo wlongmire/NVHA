@@ -92,7 +92,7 @@ p { margin: 0 0 1em; }
 .page-head { padding-block: 2.5rem 1rem; } .page-head h1 { font-size: clamp(2rem, 5vw, 3.25rem); }
 
 /* pages that end in a full-width color band run straight into the footer */
-main:has(> .band:last-child) + .site-footer { margin-top: 0; }
+main:has(> .band:last-child) + .site-footer, main:has(> .supporters) + .site-footer { margin-top: 0; }
 
 /* on phones only the header stays pinned; the announcement bar scrolls away to save screen space */
 @media (max-width: 52rem) {
