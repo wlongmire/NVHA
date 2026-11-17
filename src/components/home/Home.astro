@@ -500,8 +500,10 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   .card .btn { margin-top: auto; }
   .card :global(.photo) { margin-bottom: 1.5rem; } .card { container-type: inline-size; }
   /* titles stay on one line: the type size follows the card width */
-  .card h3 { font-size: min(1.75rem, 6.6cqw); text-transform: uppercase; letter-spacing: .01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .card h3 { padding-bottom: .3em; font-size: min(1.75rem, 6.6cqw); text-transform: uppercase; letter-spacing: .01em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .note { font-weight: 700; }
+  /* every section and panel title is underlined */
+  .featured h2, .band h2, .band h3, .supporters h2 { text-decoration: underline; text-decoration-thickness: 3px; text-underline-offset: .22em; text-decoration-color: currentColor; }
   /* one size for all running text and buttons below the hero, so the sections read as one page */
   .featured, .band { font-size: .9rem; line-height: 1.5; }
   .featured .btn, .band .btn { font-size: .9rem; }
