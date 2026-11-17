@@ -400,8 +400,10 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   .three { display: grid; gap: 3rem; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); }
   .card :global(.photo) { margin-bottom: 1.5rem; } .card h3 { font-size: 1.75rem; text-transform: uppercase; letter-spacing: .01em; }
   .note { font-weight: 700; }
-  .house { display: grid; gap: 3rem; grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr)); }
-  @media (min-width: 64rem) { .house { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.5fr); } }
+  .house { display: grid; gap: 1.25rem 1rem; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .house .events { grid-column: 1 / -1; margin-top: 1rem; }
+  @media (max-width: 40rem) { .house figcaption { font-size: .85rem; } }
+  @media (min-width: 64rem) { .house { gap: 3rem; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.5fr); } .house .events { grid-column: auto; margin-top: 0; } }
   figure { margin: 0; } figcaption { margin-top: 1rem; font-size: .95rem; } figcaption .arrow-link { display: inline-block; margin-top: .5rem; }
   .events h3 { font-size: 1.5rem; }
   .split { display: grid; gap: 3rem; align-items: center; }
