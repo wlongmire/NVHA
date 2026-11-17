@@ -6,7 +6,7 @@
 export const env = (key: string): string | undefined =>
   (typeof process !== 'undefined' ? process.env[key] : undefined) ?? (import.meta.env as Record<string, string | undefined>)[key];
 
-export const REPO = () => env('GITHUB_REPO') || 'TODO-owner/nvha-site';
+export const REPO = () => env('GITHUB_REPO') || 'wlongmire/NVHA';
 export const BRANCH = () => env('GITHUB_BRANCH') || 'main';
 
 export const SESSION_HOURS = 4;
