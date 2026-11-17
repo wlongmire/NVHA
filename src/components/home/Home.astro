@@ -156,21 +156,22 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
         <Photo src={hero.image} alt={hero.imageAlt} ratio="1 / 1" position={hero.imagePosition} label="Hero image" loading="eager" />
       </div>
     </div>
-    <nav class="wrap actions" aria-label="Jump to a section">
-      {home.actions.map((a, i) => (
-        <div class="action-slot">
-          {/* invisible copy of the label that holds the slot's size, so the box can grow without moving anything */}
-          <span class="action-label sizer" aria-hidden="true"><span>{a.href === '#house' && nextEvent && <span class="live-dot" />}{a.link}</span><span class="arrow">↓</span></span>
-          <div class="action-box">
-            <div class="action-more" id={`more-${i}`}>
-              <div><p>{describe(a)}</p></div>
-            </div>
-            <a class="action-label action-link" href={a.href} aria-describedby={`more-${i}`}><span>{a.href === '#house' && nextEvent && <span class="live-dot" aria-hidden="true" />}{a.link}</span><span class="arrow" aria-hidden="true">↓</span></a>
-          </div>
-        </div>
-      ))}
-    </nav>
   </section>
+  {/* outside the hero on purpose: it is fixed to the screen, and inside the hero it would be stacked under the panels that follow */}
+  <nav class="wrap actions" aria-label="Jump to a section">
+    {home.actions.map((a, i) => (
+      <div class="action-slot">
+        {/* invisible copy of the label that holds the slot's size, so the box can grow without moving anything */}
+        <span class="action-label sizer" aria-hidden="true"><span>{a.href === '#house' && nextEvent && <span class="live-dot" />}{a.link}</span><span class="arrow">↓</span></span>
+        <div class="action-box">
+          <div class="action-more" id={`more-${i}`}>
+            <div><p>{describe(a)}</p></div>
+          </div>
+          <a class="action-label action-link" href={a.href} aria-describedby={`more-${i}`}><span>{a.href === '#house' && nextEvent && <span class="live-dot" aria-hidden="true" />}{a.link}</span><span class="arrow" aria-hidden="true">↓</span></a>
+        </div>
+      </div>
+    ))}
+  </nav>
 
 
   <script>
