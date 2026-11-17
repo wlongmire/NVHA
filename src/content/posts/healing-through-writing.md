@@ -1,6 +1,7 @@
 ---
 title: Healing Through Writing
 date: '2024-07-24'
+category: "Learn Haiku"
 excerpt: Our haiku classes for elementary and middle school-aged children offer Camden youth the opportunity to receive early creative writing education and to learn to love writing, building resilience in processing [&hellip;]
 image: ''
 seo:

@@ -191,7 +191,7 @@ export const prerender = false;
       }
       case 'select': {
         const sel = el('select', { id }) as HTMLSelectElement;
-        for (const o of f.options ?? []) sel.append(el('option', { value: o }, o));
+        for (const o of f.options ?? []) sel.append(el('option', { value: o }, o || '(none)'));
         sel.value = value ?? (f.options?.[0] ?? ''); sel.addEventListener('change', dirty);
         return { node: sel, read: () => sel.value };
       }

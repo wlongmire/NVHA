@@ -1,6 +1,7 @@
 ---
 title: Common Haiku Writing Mistakes
 date: '2025-06-30'
+category: "Learn Haiku"
 excerpt: 'Haiku might look simple—just three lines and a few syllables, right? But anyone who’s ever tried to write one knows the truth: haiku is a deceptively difficult art form. These [&hellip;]'
 image: ''
 seo:

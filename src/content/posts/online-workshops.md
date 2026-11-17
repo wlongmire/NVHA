@@ -1,6 +1,7 @@
 ---
 title: Online Workshops
 date: '2024-11-14'
+category: "Programs & Events"
 excerpt: We offer free online poetry workshops throughout the year for writers of all ages featuring award-winning poets and educators. From workshops on the link between poetry and music to discovering [&hellip;]
 image: ''
 seo:

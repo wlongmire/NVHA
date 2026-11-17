@@ -1,6 +1,7 @@
 ---
 title: Haiku In Action
 date: '2024-07-24'
+category: "Programs & Events"
 excerpt: With the rapid pace of the events of our times, it has never been more important to share your perspective. What better form than haiku to get a snapshot of [&hellip;]
 image: ''
 seo:

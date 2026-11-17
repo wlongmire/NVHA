@@ -1,6 +1,7 @@
 ---
 title: Poetry Teaching for Camden Schools
 date: '2024-06-18'
+category: "Programs & Events"
 excerpt: Warren Longmire, Curriculum Creator After teaching short-form poetry classes at the Salvation Army Kroc Center in 2023, we’re thrilled to launch a free, six-week short-form poetry program for 6th graders [&hellip;]
 image: ''
 seo:

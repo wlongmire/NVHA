@@ -1,6 +1,7 @@
 ---
 title: Why Nick’s Work Still Resonates
 date: '2025-07-11'
+category: "Nick Virgilio & Camden"
 excerpt: Words that will reverberate over time were once written by a quiet voice amid the busy streets of Camden, New Jersey. English language haiku pioneer Nick Virgilio captured the essence [&hellip;]
 image: ''
 seo:

@@ -1,6 +1,7 @@
 ---
 title: How Camden Shaped Nick’s Haiku
 date: '2025-07-11'
+category: "Nick Virgilio & Camden"
 excerpt: New Jersey’s Camden. A city that had been a titan of shipbuilding and industry, more recently has endured great hardships. While it may seem like a place of suffering to [&hellip;]
 image: ''
 seo:

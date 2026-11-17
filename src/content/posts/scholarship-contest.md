@@ -1,6 +1,7 @@
 ---
 title: Scholarship Contest
 date: '2024-06-18'
+category: "Programs & Events"
 excerpt: 'Attention teachers and students interested in our Haiku Society of America Virgilio scholarship contest: We have just posted to our YouTube channel a workshop led by Tom Painting on writing [&hellip;]'
 image: ''
 seo:

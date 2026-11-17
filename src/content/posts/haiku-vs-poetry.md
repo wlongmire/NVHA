@@ -1,6 +1,7 @@
 ---
 title: Haiku Vs. Other Poetry Forms
 date: '2025-06-30'
+category: "Learn Haiku"
 excerpt: A few words placed precisely properly have a very potent effect. You already understand why haiku is such a powerful form if you have ever read one that caused you [&hellip;]
 image: ''
 seo:

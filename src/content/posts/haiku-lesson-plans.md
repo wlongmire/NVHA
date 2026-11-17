@@ -1,6 +1,7 @@
 ---
 title: Haiku Lesson Plans For Teachers
 date: '2025-06-30'
+category: "Learn Haiku"
 excerpt: As teachers, we are always looking for new and creative ways to inspire our students’ creativity and critical thinking, and support attentiveness in this age of distraction. Poetry is an [&hellip;]
 image: ''
 seo:

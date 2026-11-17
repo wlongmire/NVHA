@@ -1,6 +1,7 @@
 import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
+import { CATEGORY_NAMES } from './lib/categories';
 
 // Search-engine settings for one page. Anything left empty falls back to the site defaults.
 const seo = z.object({
@@ -16,6 +17,7 @@ const posts = defineCollection({
   schema: z.object({
     title: z.string(),
     date: z.string(),                     // YYYY-MM-DD
+    category: z.enum(CATEGORY_NAMES).optional(),   // which group it sits in on the Latest Posts page
     excerpt: z.string().default(''),
     image: z.string().default(''),
     draft: z.boolean().default(false),

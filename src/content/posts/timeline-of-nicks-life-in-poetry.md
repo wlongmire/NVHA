@@ -1,6 +1,7 @@
 ---
 title: Timeline Of Nick’s Life In Poetry
 date: '2025-07-17'
+category: "Nick Virgilio & Camden"
 excerpt: There are poets and visionaries—souls who write to reveal the truth hidden in the ordinary, not to get praise. One such person was Nick Virgilio. One of the founders of [&hellip;]
 image: ''
 seo:

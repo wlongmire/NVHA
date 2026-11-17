@@ -1,6 +1,7 @@
 // What /edit is allowed to touch, and checks that stop a bad edit from breaking the site.
 // Only content files can be edited: never layouts, styles or code.
 import { MAX_TEXT_BYTES } from './config';
+import { CATEGORY_NAMES } from '../categories';
 import { typeById, getPath, type DocType } from './schema';
 
 const SLUG = '[a-z0-9][a-z0-9-]{0,80}';
@@ -98,6 +99,7 @@ export function validate(type: DocType, data: Record<string, any>, body: string,
       break;
     case 'posts':
       if (!isStr(data.date) || !DAY.test(data.date)) errors.push('Choose the article date.');
+      if (data.category !== undefined && data.category !== '' && !CATEGORY_NAMES.includes(data.category)) errors.push('Choose one of the listed categories.');
       break;
     case 'products':
       if (typeof data.price !== 'number' || !Number.isFinite(data.price) || data.price < 0 || data.price > 10000) errors.push('Enter the price as a number, like 15 or 24.50.');

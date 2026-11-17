@@ -1,6 +1,7 @@
 ---
 title: What Is Contemporary America Haiku?
 date: '2025-06-26'
+category: "Learn Haiku"
 excerpt: In a time of constant scrolling, buzzing alerts, and limitless entertainment, it might be challenging to take a moment to simply feel. But what if that could be accomplished with [&hellip;]
 image: ''
 seo:

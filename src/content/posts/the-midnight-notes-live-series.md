@@ -1,6 +1,7 @@
 ---
 title: The Midnight Notes Live Series
 date: '2024-11-14'
+category: "Programs & Events"
 excerpt: Launched in 2023, our series of late-night workshops called “The Midnight Notes,” are designed to offer young emerging Camden writers and poets the opportunity to learn with and from like-minded [&hellip;]
 image: ''
 seo:

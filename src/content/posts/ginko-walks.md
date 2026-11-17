@@ -1,6 +1,7 @@
 ---
 title: Ginko Walks
 date: '2024-11-14'
+category: "Programs & Events"
 excerpt: In each of these hour-long workshops / nature walks, local poets take us through immersive mindful experiences in places of particular inspiration to them. These walks are modeled on haiku [&hellip;]
 image: ''
 seo:

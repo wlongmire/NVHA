@@ -1,6 +1,7 @@
 ---
 title: Top Haiku Themes For Beginners
 date: '2025-06-30'
+category: "Learn Haiku"
 excerpt: Starting a haiku writing journey is like opening a window to the subtle beauty of the world. Haiku’s straightforward structure—three lines with (or without) a 5-7-5 syllable pattern—offers novices a [&hellip;]
 image: ''
 seo:

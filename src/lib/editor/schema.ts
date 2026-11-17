@@ -1,6 +1,8 @@
 // What staff can edit on /edit, described as data: which kinds of content there are, and which form fields each one has.
 // This file has no server-only code, so the /edit page (in the browser) and the save checks (on the server) share it.
 
+import { CATEGORY_NAMES } from '../categories';
+
 export type Field = {
   key: string;                       // the key in the file; "seo.title" reaches into a nested object
   label: string;
@@ -149,12 +151,13 @@ export const TYPES: DocType[] = [
     fields: [
       { key: 'title', label: 'Title', type: 'text', required: true, max: 200 },
       { key: 'date', label: 'Date', type: 'date', required: true },
+      { key: 'category', label: 'Category', type: 'select', options: ['', ...CATEGORY_NAMES], help: 'Which group it sits in on the Latest Posts page.' },
       { key: 'excerpt', label: 'Short summary', type: 'textarea', max: 500, help: 'Shown on the Articles page.' },
       { key: 'image', label: 'Picture', type: 'image' },
       ...SEO,
       DRAFT,
     ],
-    empty: () => ({ title: '', date: new Date().toISOString().slice(0, 10), excerpt: '', image: '', seo: {}, draft: false }),
+    empty: () => ({ title: '', date: new Date().toISOString().slice(0, 10), category: '', excerpt: '', image: '', seo: {}, draft: false }),
   },
   {
     id: 'products', label: 'Store', singular: 'product', format: 'md', dir: 'src/content/products', titleKey: 'title', creatable: true,
@@ -203,6 +206,7 @@ export function toFile(type: DocType, form: Record<string, any>): Record<string,
     for (const k of ['startDate', 'startTime', 'endDate', 'endTime']) delete data[k];
   }
   if (type.id === 'posts' || type.id === 'pages' || type.id === 'home') {
+    if (type.id === 'posts' && !data.category) delete data.category;
     const seo = data.seo;
     if (seo && typeof seo === 'object') for (const k of Object.keys(seo)) if (seo[k] === '' || seo[k] == null) delete seo[k];
   }

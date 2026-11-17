@@ -3,29 +3,112 @@ import { getCollection } from 'astro:content';
 import ContentPage from '../components/ContentPage.astro';
 import Photo from '../components/Photo.astro';
 import { fmtPostDate } from '../lib/dates';
+import { CATEGORIES } from '../lib/categories';
 
 const posts = (await getCollection('posts', (p) => !p.data.draft)).sort((a, b) => b.data.date.localeCompare(a.data.date));
+const blurb = (s: string) => s.replace(/\s*\[&hellip;\]$/, '…');
+const sections = CATEGORIES.map((c) => ({ ...c, id: c.name.toLowerCase().replace(/[^a-z]+/g, '-').replace(/^-|-$/g, ''), items: posts.filter((p) => p.data.category === c.name) }));
 ---
 <ContentPage title="Latest Posts" lede="Haiku articles, program news and stories from the Writers House." tone="periwinkle" side={false} wide base={{ seoKey: 'blogs' }}>
-  <div class="wide">
-    <div class="grid">
-      {posts.map((p) => (
-        <article>
-          <a href={`/${p.id}/`}><Photo src={p.data.image} alt="" ratio="3 / 2" label="Post image" /></a>
-          <p class="label">{fmtPostDate(p.data.date)}</p>
-          <h2><a href={`/${p.id}/`}>{p.data.title}</a></h2>
-          <p>{p.data.excerpt.replace(/\s*\[&hellip;\]$/, '…')}</p>
-        </article>
-      ))}
+  <nav class="jump" aria-label="Post categories">
+    {sections.map((s) => <a href={`#${s.id}`}>{s.name}</a>)}
+    <a href="#all-posts">All posts</a>
+  </nav>
+
+  {sections.map((s, i) => (
+    <section class={`cat ${i % 2 ? 'alt' : ''}`} id={s.id}>
+      <div class="cat-head">
+        <h2>{s.name}</h2>
+        <p>{s.blurb}</p>
+      </div>
+      <div class="grid">
+        {s.items.slice(0, 3).map((p) => (
+          <article>
+            <a href={`/${p.id}/`}><Photo src={p.data.image} alt="" ratio="3 / 2" label="Post image" /></a>
+            <p class="label">{fmtPostDate(p.data.date)}</p>
+            <h3><a href={`/${p.id}/`}>{p.data.title}</a></h3>
+            <p class="ex">{blurb(p.data.excerpt)}</p>
+          </article>
+        ))}
+      </div>
+      {s.items.length > 3 && <p class="more"><a class="arrow-link" href={`#all-posts`} data-cat={s.name}>All {s.items.length} in {s.name}</a></p>}
+    </section>
+  ))}
+
+  <section class="all" id="all-posts">
+    <h2>All posts</h2>
+    <div class="tools">
+      <label class="search"><span class="sr">Search posts</span><input type="search" id="q" placeholder="Search all posts" autocomplete="off" /></label>
+      <div class="chips" role="group" aria-label="Filter by category">
+        <button type="button" class="chip" data-cat="" aria-pressed="true">All</button>
+        {CATEGORIES.map((c) => <button type="button" class="chip" data-cat={c.name} aria-pressed="false">{c.name}</button>)}
+      </div>
     </div>
-  </div>
+    <p class="count" id="count" role="status" aria-live="polite"></p>
+    <ul class="list" id="list">
+      {posts.map((p) => (
+        <li data-cat={p.data.category ?? ''} data-text={`${p.data.title} ${blurb(p.data.excerpt)} ${p.data.category ?? ''}`.toLowerCase()}>
+          <p class="when">{fmtPostDate(p.data.date)}</p>
+          <div class="what">
+            <h3><a href={`/${p.id}/`}>{p.data.title}</a></h3>
+            <p class="ex">{blurb(p.data.excerpt)}</p>
+          </div>
+          {p.data.category && <span class="tag">{p.data.category}</span>}
+        </li>
+      ))}
+    </ul>
+    <p class="none" id="none" hidden>No posts match that search.</p>
+  </section>
 </ContentPage>
+<script>
+  const q = document.getElementById('q') as HTMLInputElement;
+  const items = [...document.querySelectorAll<HTMLElement>('#list li')];
+  const chips = [...document.querySelectorAll<HTMLButtonElement>('.chip')];
+  let cat = '';
+  function apply() {
+    const words = q.value.toLowerCase().split(/\s+/).filter(Boolean);
+    let n = 0;
+    for (const li of items) {
+      const ok = (!cat || li.dataset.cat === cat) && words.every((w) => li.dataset.text!.includes(w));
+      li.hidden = !ok; if (ok) n++;
+    }
+    document.getElementById('count')!.textContent = `${n} ${n === 1 ? 'post' : 'posts'}`;
+    document.getElementById('none')!.hidden = n > 0;
+  }
+  function pick(c: string) { cat = c; chips.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.cat === c))); apply(); }
+  chips.forEach((b) => b.addEventListener('click', () => pick(b.dataset.cat ?? '')));
+  document.querySelectorAll<HTMLElement>('.more a').forEach((a) => a.addEventListener('click', () => pick(a.dataset.cat ?? '')));
+  q.addEventListener('input', apply);
+  apply();
+</script>
 <style>
-  .wide { max-width: none; }
-  .grid { display: grid; gap: 3rem 2rem; grid-template-columns: repeat(auto-fill, minmax(19rem, 1fr)); }
-  article :global(.photo) { margin-bottom: 1.25rem; border: 2px solid var(--ink); box-shadow: 5px 5px 0 var(--ink); }
+  .jump { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: 2.5rem; }
+  .jump a { text-decoration: none; font-weight: 700; font-size: .85rem; padding: .35rem .8rem; border: 2px solid var(--ink); background: var(--paper); }
+  .jump a:hover, .jump a:focus-visible { background: var(--mustard); }
+  .cat { margin-bottom: 3.5rem; scroll-margin-top: 7rem; }
+  .cat-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: .25rem 1.25rem; margin-bottom: 1.5rem; }
+  .cat-head h2, .all h2 { margin: 0; font-size: clamp(1.4rem, 2.6vw, 1.9rem); font-weight: 800; text-decoration: underline; text-decoration-thickness: 3px; text-underline-offset: .22em; }
+  .cat-head p { margin: 0; font-size: .95rem; }
+  .grid { display: grid; gap: 2rem; grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr)); }
+  article :global(.photo) { margin-bottom: 1rem; border: 2px solid var(--ink); box-shadow: 5px 5px 0 var(--ink); transition: transform .25s ease, box-shadow .25s ease; }
   article > a { display: block; }
   article > a:hover :global(.photo), article > a:focus-visible :global(.photo) { box-shadow: 4px 4px 0 var(--ink); transform: translate(1px, 1px); }
-  article :global(.photo) { transition: transform .25s ease, box-shadow .25s ease; }
-  h2 { font-size: 1.3rem; } h2 a { text-decoration: none; }
+  h3 { font-size: 1.15rem; margin: 0 0 .4rem; } h3 a { text-decoration: none; } h3 a:hover { text-decoration: underline; }
+  .ex { margin: 0; font-size: .9rem; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .more { margin: 1.25rem 0 0; }
+  .all { border-top: 4px solid var(--ink); padding-top: 2.5rem; scroll-margin-top: 7rem; }
+  .tools { display: grid; gap: 1rem; margin: 1.25rem 0 .75rem; }
+  .search input { width: 100%; max-width: 32rem; font: inherit; padding: .65rem .8rem; border: 3px solid var(--ink); border-radius: 0; background: var(--paper); }
+  .sr { position: absolute; left: -999px; }
+  .chips { display: flex; flex-wrap: wrap; gap: .5rem; }
+  .chip { font: inherit; font-size: .85rem; font-weight: 700; padding: .3rem .8rem; border: 2px solid var(--ink); background: var(--paper); color: var(--ink); cursor: pointer; }
+  .chip[aria-pressed='true'] { background: var(--ink); color: #fff; }
+  .count { margin: 0 0 1rem; font-family: var(--font-label); font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; }
+  .list { list-style: none; margin: 0; padding: 0 !important; border-top: 2px solid var(--ink); }
+  .list li { margin: 0 !important; display: grid; gap: .35rem 1.5rem; grid-template-columns: 9rem 1fr auto; align-items: start; padding: 1rem 0; border-bottom: 1px solid #1f1d1d40; }
+  .list li[hidden] { display: none; }
+  .when { margin: .2rem 0 0; font-family: var(--font-label); font-size: .75rem; letter-spacing: .06em; text-transform: uppercase; }
+  .tag { font-family: var(--font-label); font-size: .68rem; letter-spacing: .06em; text-transform: uppercase; padding: .2rem .5rem; border: 2px solid var(--ink); background: var(--cream); white-space: nowrap; }
+  .none { font-weight: 700; margin-top: 1.5rem; }
+  @media (max-width: 40rem) { .list li { grid-template-columns: 1fr; } .tag { justify-self: start; } }
 </style>
