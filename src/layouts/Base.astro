@@ -65,7 +65,27 @@ const org = {
 <body>
   <a class="skip" href="#main">Skip to content</a>
   <div class="site-top">
-  <div class="topbar" aria-hidden="true"></div>
+  <div class="topbar" id="topbar" aria-label="Announcements">
+    <div class="wrap topbar-in">
+      <button type="button" class="tb-btn" data-dir="-1" aria-label="Previous announcement">‹</button>
+      <div class="tb-msgs">
+        {site.announcements.map((a, i) => <a class="tb-msg" href={a.href} hidden={i > 0}>{a.text}</a>)}
+      </div>
+      <button type="button" class="tb-btn" data-dir="1" aria-label="Next announcement">›</button>
+      <button type="button" class="tb-btn tb-close" aria-label="Close announcements">×</button>
+    </div>
+  </div>
+  <script is:inline>
+    (function () {
+      var bar = document.getElementById('topbar'); if (!bar) return;
+      try { if (sessionStorage.getItem('nvha-topbar') === 'closed') { bar.hidden = true; return; } } catch (e) {}
+      var msgs = bar.querySelectorAll('.tb-msg'), i = 0;
+      function show(n) { i = (n + msgs.length) % msgs.length; msgs.forEach(function (m, k) { m.hidden = k !== i; }); }
+      bar.querySelectorAll('[data-dir]').forEach(function (b) { b.addEventListener('click', function () { show(i + +b.dataset.dir); }); });
+      if (msgs.length < 2) bar.querySelectorAll('[data-dir]').forEach(function (b) { b.hidden = true; });
+      bar.querySelector('.tb-close').addEventListener('click', function () { bar.hidden = true; try { sessionStorage.setItem('nvha-topbar', 'closed'); } catch (e) {} });
+    })();
+  </script>
   <header class="site-header">
     <div class="wrap bar">
       <a class="brand" href="/" aria-label={`${site.shortName}, home`}>
