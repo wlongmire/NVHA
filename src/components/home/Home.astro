@@ -527,7 +527,7 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   .car-track { display: flex; width: max-content; list-style: none; margin: 0; padding: 0; will-change: transform; }
   .car-track li { flex: 0 0 calc(100cqw / var(--per)); box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .7rem; padding: 1rem .75rem; border: solid transparent; border-width: 0 .45rem; background: #9a9df73d padding-box; text-align: center; }
   .car-track img { align-self: stretch; width: 100%; height: calc(clamp(4rem, 7.5vw, 6rem) + 1rem); object-fit: contain; object-position: center; padding: .5rem .7rem; background: #fff; border-radius: calc(var(--radius) / 2); box-sizing: border-box; box-shadow: 0 0 0 1px #1f1d1d1f; }
-  .car-track span { display: grid; align-items: center; min-height: 2.5em; font-size: .85rem; font-weight: 700; line-height: 1.25; color: var(--ink); }
+  .car-track span { font-size: .85rem; font-weight: 700; line-height: 1.25; color: var(--ink); }
   .car-btn { flex: none; width: 2.6rem; height: 2.6rem; display: grid; place-items: center; font: inherit; font-size: 1.2rem; font-weight: 700; line-height: 1; color: var(--ink); background: var(--paper); border: 2px solid var(--ink); border-radius: var(--radius); cursor: pointer; transition: background-color .25s ease; }
   .car-btn:hover { background: #0000000d; }
   .car-btn:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
