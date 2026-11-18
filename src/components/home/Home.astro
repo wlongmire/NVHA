@@ -449,7 +449,7 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   @media (prefers-reduced-motion: reduce) { h1 mark { animation: none; } }
   /* then the three verbs get underlined, one after another */
   @keyframes ul-in { from { background-size: 0% 3px; } }
-  h1 .ul { background: linear-gradient(currentColor, currentColor) 0 calc(100% - .02em) / 100% 3px no-repeat; padding-bottom: .1em; animation: ul-in .6s cubic-bezier(.4,.1,.2,1) backwards; animation-delay: 2.1s; }
+  h1 .ul { background: linear-gradient(currentColor, currentColor) 0 calc(100% - .09em) / 100% 3px no-repeat; padding-bottom: .1em; animation: ul-in .6s cubic-bezier(.4,.1,.2,1) backwards; animation-delay: 2.1s; }
   h1 .ul:nth-of-type(2) { animation-delay: 2.5s; }
   h1 .ul:nth-of-type(3) { animation-delay: 2.9s; }
   @media (prefers-reduced-motion: reduce) { h1 .ul { animation: none; } }
