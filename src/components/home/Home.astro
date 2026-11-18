@@ -520,7 +520,10 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   .supporters .wrap { margin-bottom: .75rem; }
   .supporters .band-head { margin-bottom: 1.75rem; }
   /* logos step along one at a time and loop round; arrows step by hand, hover pauses */
-  .carousel { --per: 4; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: .75rem; max-width: 80rem; margin-inline: auto; padding-inline: var(--gutter); }
+  /* cards start flush with the title; the arrows sit at the right end of the title row */
+  .carousel { --per: 4; position: relative; display: block; max-width: var(--max); margin-inline: auto; padding-inline: calc(var(--gutter) - .45rem) var(--gutter); }
+  .carousel .car-btn { position: absolute; top: -3.6rem; right: var(--gutter); }
+  .carousel .car-btn[data-dir='-1'] { right: calc(var(--gutter) + 3.2rem); }
   @media (max-width: 62rem) { .carousel { --per: 3; } }
   @media (max-width: 40rem) { .carousel { --per: 2; } }
   .car-view { overflow: hidden; container-type: inline-size; }
