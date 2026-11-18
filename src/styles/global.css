@@ -30,7 +30,7 @@ p { margin: 0 0 1em; }
 
 /* header */
 .site-top { position: sticky; top: 0; z-index: 30; }
-.topbar { display: var(--topbar); background: var(--accent); height: .4rem; }
+.topbar { display: var(--topbar); background: var(--accent); height: .65rem; }
 .site-header { background: var(--bg); border-bottom: 3px solid var(--ink); position: relative; }
 @media (min-width: 56rem) { .site-header { border-bottom: 4px solid var(--ink); } }
 .bar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 5.75rem; }
