@@ -141,7 +141,7 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   <section class="hero">
     <div class="wrap hero-grid">
       <div class="hero-copy">
-        <h1>{hero.headline.split(/(Camden|world)/).map((part) => /^(Camden|world)$/.test(part) ? <mark>{part}</mark> : part)}</h1>
+        <h1>{hero.headline.split(/(Camden|world|write|reflect|gather)/).map((part) => /^(Camden|world)$/.test(part) ? <mark>{part}</mark> : /^(write|reflect|gather)$/.test(part) ? <span class="ul">{part}</span> : part)}</h1>
         <p class="lede">{hero.text}</p>
         <p class="btns">{hero.buttons.map((b) => {
           const vid = youtubeId(b.href);
@@ -447,6 +447,12 @@ const isAudio = (href: string) => /\.(mp3|m4a|wav|ogg)$/i.test(href);
   h1 mark { animation: mark-in .8s cubic-bezier(.4,.1,.2,1) backwards; animation-delay: .8s; }
   h1 mark + mark, h1 mark ~ mark { animation-delay: 1.3s; }
   @media (prefers-reduced-motion: reduce) { h1 mark { animation: none; } }
+  /* then the three verbs get underlined, one after another */
+  @keyframes ul-in { from { background-size: 0% 3px; } }
+  h1 .ul { background: linear-gradient(currentColor, currentColor) 0 calc(100% - .02em) / 100% 3px no-repeat; padding-bottom: .1em; animation: ul-in .6s cubic-bezier(.4,.1,.2,1) backwards; animation-delay: 2.1s; }
+  h1 .ul:nth-of-type(2) { animation-delay: 2.5s; }
+  h1 .ul:nth-of-type(3) { animation-delay: 2.9s; }
+  @media (prefers-reduced-motion: reduce) { h1 .ul { animation: none; } }
   .actions { position: relative; z-index: 2; display: grid; gap: 1rem; grid-template-columns: repeat(2, 1fr); margin-top: 2rem; }
   @media (max-width: 32rem) { .actions { grid-template-columns: 1fr; } }
   /* the audience links are a desktop feature; phones and tablets go without them */
